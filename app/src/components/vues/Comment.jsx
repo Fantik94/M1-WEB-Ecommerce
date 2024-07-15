@@ -41,7 +41,6 @@ const Comment = ({ name, dateJoined, rating, title, reviewDate, reviewText, help
         <p className="mt-1 text-xs text-gray-500">{helpfulCount} personnes ont trouvé cela utile</p>
         <div className="flex items-center mt-3">
           <a href="#" className="px-2 py-1.5 text-xs font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-100">Utile</a>
-          <a href="#" className="pl-4 text-sm font-medium text-blue-600 hover:underline ml-4 border-gray-200 border-l">Signaler un abus</a>
         </div>
       </aside>
     </article>
