@@ -1,6 +1,6 @@
 // src/components/vues/Home.jsx
 import React from 'react';
-import Banner from '../Banner';
+import Banner from './Banner';
 
 const Home = () => {
   return (

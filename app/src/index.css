@@ -1,3 +1,59 @@
+/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .glowing-text {
+    @apply relative py-4 text-6xl font-extrabold text-transparent text-center select-none;
+    background-image: linear-gradient(to right, #3b82f6, #2dd4bf, #ec4899);
+    background-clip: text;
+    -webkit-background-clip: text;
+    z-index: 10;
+  }
+
+  .glowing-text::before,
+  .glowing-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-clip: text;
+    -webkit-background-clip: text;
+    z-index: 5;
+  }
+
+  .glowing-text::before {
+    filter: blur(4px);
+    opacity: 0.6;
+  }
+
+  .glowing-text::after {
+    filter: blur(8px);
+    opacity: 0.4;
+  }
+}
+
+@layer utilities {
+  .animate-marquee {
+    animation: marquee 10s linear infinite;
+    white-space: nowrap;
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 8px #3b82f6, 0 0 2px #2dd4bf, 0 0 16px #ec4899, 0 0 20px #3b82f6, 0 0 24px #2dd4bf, 0 0 28px #ec4899, 0 0 32px #3b82f6;
+  }
+  to {
+    text-shadow: 0 0 16px #3b82f6, 0 0 1px #4dd4bf, 0 0 24px #ec4899, 0 0 28px #3b82f6, 0 0 32px #2dd4bf, 0 0 36px #ec4899, 0 0 40px #3b82f6;
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}

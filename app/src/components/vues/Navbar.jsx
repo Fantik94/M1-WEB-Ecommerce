@@ -9,7 +9,7 @@ const Navbar = () => {
     <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="../../public/icon.webp" className="h-12 rounded-xl" alt="Logo" />
+          <img src="/icon.webp" className="h-16 rounded-3xl" alt="Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gaming Avenue</span>
         </Link>
         <div className="hidden w-full md:block md:w-auto" id="navbar-multi-level">
@@ -42,7 +42,7 @@ const DropdownMenu = ({ title, children }) => (
       {title}
       <ChevronDownIcon className="w-5 h-5 ml-2" aria-hidden="true" />
     </Menu.Button>
-    <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700">
+    <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700 z-50">
       <div className="py-1">
         {children}
       </div>
