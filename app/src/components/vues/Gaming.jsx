@@ -38,7 +38,7 @@ const Gaming = () => {
                 image={`/subcategories/${subcategory.name}.webp`}
                 title={subcategory.name}
                 description={subcategory.description}
-                link={`/categories/1/subcategories/${subcategory.subcategory_id}`}
+                link={`/categories/1/subcategories/${subcategory.subcategory_id}/products`}
               />
             ))}
           </div>

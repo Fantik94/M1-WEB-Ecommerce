@@ -5,8 +5,8 @@
 
 @layer components {
   .glowing-text {
-    @apply relative py-4 text-6xl font-extrabold text-transparent text-center select-none;
-    background-image: linear-gradient(to right, #3b82f6, #2dd4bf, #ec4899);
+    @apply relative pb-4 text-6xl font-extrabold text-transparent text-center select-none;
+    background-image: linear-gradient(to right, #3b82f6, #2dd4bf, #85f3ed, #ec4899);
     background-clip: text;
     -webkit-background-clip: text;
     z-index: 10;
@@ -27,13 +27,13 @@
   }
 
   .glowing-text::before {
-    filter: blur(4px);
-    opacity: 0.6;
+    filter: blur(2px);
+    opacity: 0.3;
   }
 
   .glowing-text::after {
-    filter: blur(8px);
-    opacity: 0.4;
+    filter: blur(4px);
+    opacity: 0.2;
   }
 }
 
