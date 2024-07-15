@@ -1,5 +1,5 @@
 import express from 'express';
-import categorieRoutes from './Catégorie.js';
+import categorieRoutes from './Categorie.js';
 
 const app = express();
 const port = 3000;
