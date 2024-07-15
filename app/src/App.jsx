@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Produits from './components/vues/Produits';
 import Home from './components/vues/Home';
 import Navbar from './components/vues/Navbar';
+import Gaming from './components/vues/Gaming';
+import Alimentation from './components/vues/Alimentation';
 
 
 const App = () => {
@@ -13,6 +15,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/produits" element={<Produits />} />
+        <Route path="/gaming" element={<Gaming />} />
+        <Route path="/alimentation" element={<Alimentation />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
