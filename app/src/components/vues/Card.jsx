@@ -1,4 +1,3 @@
-// src/components/vues/Card.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -6,7 +5,7 @@ import { ArrowRightIcon } from '@heroicons/react/solid';
 
 const Card = ({ image, title, description, link }) => {
   return (
-    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow bg-gradient-to-r to-gray-800 from-slate-900 dark:border-gray-700 m-4">
+    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-4">
       <Link to={link}>
         <img className="p-8 rounded-t-lg" src={image} alt={title} />
       </Link>
@@ -53,4 +52,3 @@ Card.propTypes = {
 };
 
 export default Card;
-
