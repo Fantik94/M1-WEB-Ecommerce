@@ -1,8 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import categorieRoutes from './Categorie.js';
 
 const app = express();
 const port = 3000;
+
+// Utiliser le middleware CORS
+app.use(cors());
 
 // Ajouter le middleware pour parser le JSON
 app.use(express.json());
@@ -28,6 +32,7 @@ app.get('/test', (req, res) => {
 
 // Utilisation des routes de Catégorie en passant la config de la BDD
 app.use('/', categorieRoutes(dbConfig));
+app.use('/', subCategorieRoutes(dbConfig));
 
 // Autres routes...
 
