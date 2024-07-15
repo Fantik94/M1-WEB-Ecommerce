@@ -6,6 +6,9 @@ import Home from './components/vues/Home';
 import Navbar from './components/vues/Navbar';
 import Gaming from './components/vues/Gaming';
 import Alimentation from './components/vues/Alimentation';
+import Panier from './components/vues/Panier';
+import Login from './components/vues/Login';
+
 
 
 const App = () => {
@@ -16,8 +19,12 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/produits" element={<Produits />} />
         <Route path="/gaming" element={<Gaming />} />
+        <Route path="/panier" element={<Panier />} />
+        <Route path="/login" element={<Login />} />
+
+        
         <Route path="/alimentation" element={<Alimentation />} />
-        <Route path="*" element={<Navigate to="/" />} />
+       {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>
     </Router>
   );

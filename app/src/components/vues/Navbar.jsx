@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, ShoppingCartIcon, UserCircleIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 
 const Navbar = () => {
@@ -56,6 +56,14 @@ const Navbar = () => {
               <Link to="/produits" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Produits</Link>
             </li>
           </ul>
+        </div>
+        <div className="flex items-center space-x-4">
+          <Link to="/panier" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
+            <ShoppingCartIcon className="h-6 w-6" />
+          </Link>
+          <Link to="/login" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
+            <UserCircleIcon className="h-6 w-6" />
+          </Link>
         </div>
       </div>
     </nav>
