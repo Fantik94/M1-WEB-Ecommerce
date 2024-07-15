@@ -5,6 +5,7 @@ const produitRoutes = (dbConfig) => {
   const router = express.Router();
 
   // Route pour récupérer les produits d'une sous-catégorie spécifique
+  // A MODIF SI JAMAIS 
   router.get('/categories/:categoryId/subcategories/:subCategoryId/products', async (req, res) => {
     const { subCategoryId } = req.params;
     console.log(`Route /categories/${req.params.categoryId}/subcategories/${subCategoryId}/products called`);
