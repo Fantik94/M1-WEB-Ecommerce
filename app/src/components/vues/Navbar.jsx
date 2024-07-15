@@ -45,9 +45,9 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="/icon.webp" className="h-16 rounded-3xl" alt="Logo" />
+          <img src="/icon.webp" className="h-14 rounded-b-full rounded-t-full" alt="Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gaming Avenue</span>
         </Link>
         <div className="hidden w-full md:block md:w-auto" id="navbar-multi-level">
@@ -92,11 +92,13 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="flex items-center space-x-4">
-          <Link to="/panier" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
-            <ShoppingCartIcon className="h-6 w-6" />
-          </Link>
+          
           <Link to="/login" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
             <UserCircleIcon className="h-6 w-6" />
+          </Link>
+
+          <Link to="/panier" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
+            <ShoppingCartIcon className="h-6 w-6" />
           </Link>
         </div>
       </div>
