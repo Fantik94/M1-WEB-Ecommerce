@@ -6,7 +6,7 @@ import { ArrowRightIcon } from '@heroicons/react/solid';
 
 const Card2 = ({ image, title, price, link }) => {
   return (
-    <div class="flex flex-wrap justify-center">
+    <div className="flex flex-wrap justify-center">
     <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-4">
       <Link to={link}>
         <img className="p-8 rounded-t-lg" src={image} alt={title} />
@@ -30,7 +30,7 @@ const Card2 = ({ image, title, price, link }) => {
 Card2.propTypes = {
   image: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
+  price: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
 };
 

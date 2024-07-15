@@ -27,6 +27,9 @@ export default {
           "950":"#1e1b4b"
         }
       },
+      fontFamily: {
+        'sans': ['Inter', 'sans-serif'],
+      },
     },
   },
   plugins: [

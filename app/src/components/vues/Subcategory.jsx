@@ -39,6 +39,8 @@ const Subcategory = () => {
         Sous-Catégories
       </h2>
       <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{subcategory.name}</h1>
+      <div className="flex flex-wrap justify-center">
+          
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {products.map(product => (
           <Card2
@@ -50,6 +52,7 @@ const Subcategory = () => {
           />
         ))}
       </div>
+    </div>
     </div>
   );
 };
