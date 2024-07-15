@@ -24,48 +24,49 @@ const subCategorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour créer une nouvelle sous-catégorie
-  router.post('/categories/:categoryId/subcategories', async (req, res) => {
-    const categoryId = req.params.categoryId;
-    const { name, description } = req.body;
+// Route pour créer une nouvelle sous-catégorie
+router.post('/subcategories', async (req, res) => {
+  const { category_id, name, description } = req.body;
 
-    // Vérification des champs
-    if (!name || !description) {
-      return res.status(400).send('Name and description are required');
+  // Vérification des champs
+  if (!category_id || !name || !description) {
+    console.log('Missing fields:', { category_id, name, description });
+    return res.status(400).send('Category ID, name, and description are required');
+  }
+  const specialCharRegex = /[^a-zA-Z0-9 ]/g;
+  if (specialCharRegex.test(name) || specialCharRegex.test(description)) {
+    return res.status(400).send('No special characters allowed');
+  }
+
+  console.log(`Route POST /subcategories called with category_id: ${category_id}, name: ${name}, description: ${description}`);
+  let connection;
+  try {
+    console.log('Connecting to the database...');
+    connection = await mysql.createConnection(dbConfig);
+    console.log('Connected to the database.');
+
+    const [result] = await connection.execute(
+      'INSERT INTO SubCategories (category_id, name, description) VALUES (?, ?, ?)',
+      [category_id, name, description]
+    );
+    connection.end();
+
+    if (result.affectedRows > 0) {
+      console.log(`Sub-category ${name} added.`);
+      res.status(201).send(`Sub-category ${name} added.`);
+    } else {
+      console.log(`Failed to add sub-category ${name}.`);
+      res.status(500).send(`Failed to add sub-category ${name}.`);
     }
-    const specialCharRegex = /[^a-zA-Z0-9 ]/g;
-    if (specialCharRegex.test(name) || specialCharRegex.test(description)) {
-      return res.status(400).send('No special characters allowed');
-    }
-
-    console.log(`Route POST /categories/${categoryId}/subcategories called with name: ${name} and description: ${description}`);
-    let connection;
-    try {
-      console.log('Connecting to the database...');
-      connection = await mysql.createConnection(dbConfig);
-      console.log('Connected to the database.');
-
-      const [result] = await connection.execute(
-        'INSERT INTO SubCategories (category_id, name, description) VALUES (?, ?, ?)',
-        [categoryId, name, description]
-      );
+  } catch (error) {
+    console.error(`Error adding sub-category ${name}:`, error);
+    if (connection) {
       connection.end();
-
-      if (result.affectedRows > 0) {
-        console.log(`Sub-category ${name} added.`);
-        res.status(201).send(`Sub-category ${name} added.`);
-      } else {
-        console.log(`Failed to add sub-category ${name}.`);
-        res.status(500).send(`Failed to add sub-category ${name}.`);
-      }
-    } catch (error) {
-      console.error(`Error adding sub-category ${name}:`, error);
-      if (connection) {
-        connection.end();
-      }
-      res.status(500).send('Internal Server Error');
     }
-  });
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
   // Route pour supprimer une sous-catégorie
   router.delete('/categories/:categoryId/subcategories/:subCategoryId', async (req, res) => {
@@ -107,7 +108,8 @@ const subCategorieRoutes = (dbConfig) => {
   });
 
 // Route pour modifier une sous-catégorie
-router.put('/subcategories', async (req, res) => {
+router.put('/subcategories/:subcategory_id', async (req, res) => {
+  const subcategory_id = req.params.subcategory_id;
   const { category_id, name, description } = req.body;
 
   // Vérification des champs
@@ -120,7 +122,7 @@ router.put('/subcategories', async (req, res) => {
     return res.status(400).send('No special characters allowed');
   }
 
-  console.log(`Route PUT /subcategories called with category_id: ${category_id}, name: ${name}, description: ${description}`);
+  console.log(`Route PUT /subcategories/${subcategory_id} called with category_id: ${category_id}, name: ${name}, description: ${description}`);
   let connection;
   try {
     console.log('Connecting to the database...');
@@ -128,26 +130,27 @@ router.put('/subcategories', async (req, res) => {
     console.log('Connected to the database.');
 
     const [result] = await connection.execute(
-      'UPDATE SubCategories SET name = ?, description = ? WHERE category_id = ?',
-      [name, description, category_id]
+      'UPDATE SubCategories SET category_id = ?, name = ?, description = ? WHERE subcategory_id = ?',
+      [category_id, name, description, subcategory_id]
     );
     connection.end();
 
     if (result.affectedRows > 0) {
-      console.log(`Sub-category with category_id ${category_id} updated.`);
-      res.status(200).send(`Sub-category with category_id ${category_id} updated.`);
+      console.log(`Sub-category ${subcategory_id} updated.`);
+      res.status(200).send(`Sub-category ${subcategory_id} updated.`);
     } else {
-      console.log(`Sub-category with category_id ${category_id} not found.`);
-      res.status(404).send(`Sub-category with category_id ${category_id} not found.`);
+      console.log(`Sub-category ${subcategory_id} not found.`);
+      res.status(404).send(`Sub-category ${subcategory_id} not found.`);
     }
   } catch (error) {
-    console.error(`Error updating sub-category with category_id ${category_id}:`, error);
+    console.error(`Error updating sub-category ${subcategory_id}:`, error);
     if (connection) {
       connection.end();
     }
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 
   return router;
