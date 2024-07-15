@@ -7,6 +7,7 @@ import Navbar from './components/vues/Navbar';
 import Gaming from './components/vues/Gaming';
 import Alimentation from './components/vues/Alimentation';
 import Panier from './components/vues/Panier';
+import Subcategory from './components/vues/Subcategory';
 import Login from './components/vues/Login';
 
 
@@ -21,10 +22,11 @@ const App = () => {
         <Route path="/gaming" element={<Gaming />} />
         <Route path="/panier" element={<Panier />} />
         <Route path="/login" element={<Login />} />
-
+        <Route path="/categories/:categoryId/subcategories/:subcategoryId" element={<Subcategory />} />
         
+      
         <Route path="/alimentation" element={<Alimentation />} />
-       {/* <Route path="*" element={<Navigate to="/" />} /> */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );
