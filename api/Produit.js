@@ -51,6 +51,35 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
+  // Route pour récupérer les détails d'un produit en fonction de l'ID du produit
+    router.get('/products/:productId', async (req, res) => {
+    const { productId } = req.params;
+    console.log(`Route /products/${productId} called`);
+    let connection;
+    try {
+      console.log('Connecting to the database...');
+      connection = await mysql.createConnection(dbConfig);
+      console.log('Connected to the database.');
+  
+      const [rows] = await connection.execute('SELECT * FROM Products WHERE product_id = ?', [productId]);
+      connection.end();
+  
+      if (rows.length > 0) {
+        console.log(`Product ${productId} details retrieved:`, rows[0]);
+        res.json(rows[0]);
+      } else {
+        console.log(`Product ${productId} not found.`);
+        res.status(404).send(`Product ${productId} not found.`);
+      }
+    } catch (error) {
+      console.error(`Error fetching product ${productId}:`, error);
+      if (connection) {
+        connection.end();
+      }
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
 // Route pour créer un nouveau produit
 router.post('/products', async (req, res) => {
     const { subcategory_id, name, description, price, stock } = req.body;
@@ -168,7 +197,6 @@ router.put('/products/:productId', async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   });
-  
 
   return router;
 };
