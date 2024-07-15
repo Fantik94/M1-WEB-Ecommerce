@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import categorieRoutes from './Categorie.js';
 import subCategorieRoutes from './Subcategorie.js';
+import produitRoutes from './Produit.js';
 
 const app = express();
 const port = 3000;
@@ -34,9 +35,9 @@ app.get('/test', (req, res) => {
 // Utilisation des routes de Catégorie en passant la config de la BDD
 app.use('/', categorieRoutes(dbConfig));
 app.use('/', subCategorieRoutes(dbConfig));
+app.use('/', produitRoutes(dbConfig));
 
 // Autres routes...
-
 app.listen(port, () => {
     console.log(`Le serveur est en cours d'exécution sur le port ${port}`);
     console.log(`Routes disponibles:`);
@@ -44,4 +45,6 @@ app.listen(port, () => {
     console.log(`GET /categories/:categoryId/subcategories`);
     console.log(`POST /categories`);
     console.log(`DELETE /categories/:categoryId`);
+    console.log(`DELETE /categories/:categoryId/subcategories/:subCategoryId`);
+    console.log(`GET /categories/:categoryId/subcategories/:subCategoryId/products`);
 });
