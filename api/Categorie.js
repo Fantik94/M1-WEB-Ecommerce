@@ -94,7 +94,7 @@ const categorieRoutes = (dbConfig) => {
       }
 
       // Supprimer la catégorie si aucune sous-catégorie n'est associée
-      const [result] = await connection.execute('DELETE FROM Categories WHERE id = ?', [categoryId]);
+      const [result] = await connection.execute('DELETE FROM Categories WHERE category_id = ?', [categoryId]);
       connection.end();
 
       if (result.affectedRows > 0) {
