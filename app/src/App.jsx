@@ -1,5 +1,5 @@
 // src/App.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Produits from './components/vues/Produits';
 import Home from './components/vues/Home';
@@ -13,9 +13,20 @@ import Login from './components/vues/Login';
 
 
 const App = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   return (
     <Router>
-      <Navbar />
+    <div className={`${darkMode ? 'dark' : ''}`}>
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/produits" element={<Produits />} />
@@ -28,6 +39,8 @@ const App = () => {
         <Route path="/alimentation" element={<Alimentation />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      </div>
+
     </Router>
   );
 };

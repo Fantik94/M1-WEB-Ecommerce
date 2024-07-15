@@ -1,15 +1,14 @@
-// src/components/vues/Navbar.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu } from '@headlessui/react';
-import { ChevronDownIcon, ShoppingCartIcon, UserCircleIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, ShoppingCartIcon, UserCircleIcon, SunIcon, MoonIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 
 const Navbar = () => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
-  const [hoveredCategory, setHoveredCategory] = useState(null);
   const [openMenu, setOpenMenu] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,16 +34,39 @@ const Navbar = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      setIsDarkMode(true);
+    } else {
+      document.documentElement.classList.remove('dark');
+      setIsDarkMode(false);
+    }
+  }, []);
+
   const handleCategoryClick = (categoryName) => {
     navigate(`/${categoryName.toLowerCase()}`);
   };
 
-  const handleChevronClick = (categoryId) => {
+  const handleChevronClick = (event, categoryId) => {
+    event.stopPropagation();  // Empêche l'événement de propagation pour éviter de déclencher handleCategoryClick
     setOpenMenu(openMenu === categoryId ? null : categoryId);
   };
 
+  const toggleDarkMode = () => {
+    const newTheme = !isDarkMode ? 'dark' : 'light';
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', newTheme);
+    setIsDarkMode(!isDarkMode);
+  };
+
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+    <nav className="bg-white border-b-2 border-gray-900 dark:bg-gray-900 dark:border-gray-700 bor">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/icon.webp" className="h-14 rounded-b-full rounded-t-full" alt="Logo" />
@@ -62,7 +84,7 @@ const Navbar = () => {
                     {category.name}
                   </span>
                   <button
-                    onClick={() => handleChevronClick(category.category_id)}
+                    onClick={(event) => handleChevronClick(event, category.category_id)}
                     className="ml-2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
                     aria-label={`Toggle ${category.name} menu`}
                   >
@@ -92,11 +114,12 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="flex items-center space-x-4">
-          
+          <button onClick={toggleDarkMode} className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
+            {isDarkMode ? <SunIcon className="h-6 w-6" /> : <MoonIcon className="h-6 w-6" />}
+          </button>
           <Link to="/login" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
             <UserCircleIcon className="h-6 w-6" />
           </Link>
-
           <Link to="/panier" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
             <ShoppingCartIcon className="h-6 w-6" />
           </Link>

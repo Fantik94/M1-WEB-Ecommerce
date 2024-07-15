@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div>
       <Banner text="L'espace inspiré de gamer pour les gamer." image="../../banner.webp" />
-      <div className="p-4">
+      <div className="p-4 dark:bg-gray-900 ">
         <h1 className="text-2xl font-bold text-center text-gray-900 md:text-5xl lg:text-6xl">
           <br />
           

@@ -18,7 +18,7 @@ const Gaming = () => {
   }, []);
 
   return (
-    <div>
+    <div className='dark:bg-gray-900'>
       <Banner text="Découvrez l'univers du gaming" image="/categories/banner_gaming.webp" />
       <div className="p-4">
         <h1 className="mb-4 text-center text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
