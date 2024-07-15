@@ -23,26 +23,6 @@ const categorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour récupérer les sous-catégories d'une catégorie
-  router.get('/categories/:categoryId/subcategories', async (req, res) => {
-    const categoryId = req.params.categoryId;
-    console.log(`Route /categories/${categoryId}/subcategories called`);
-    try {
-      console.log('Connecting to the database...');
-      const connection = await mysql.createConnection(dbConfig);
-      console.log('Connected to the database.');
-
-      const [rows] = await connection.execute('SELECT * FROM SubCategories WHERE category_id = ?', [categoryId]);
-      connection.end();
-      
-      console.log(`Subcategories for category ${categoryId} retrieved:`, rows);
-      res.json(rows);
-    } catch (error) {
-      console.error(`Error fetching subcategories for category ${categoryId}:`, error);
-      res.status(500).send('Internal Server Error');
-    }
-  });
-
   // Route pour ajouter une nouvelle catégorie
   router.post('/categories', async (req, res) => {
     const { name, description } = req.body;
@@ -87,6 +67,7 @@ const categorieRoutes = (dbConfig) => {
 
       // Vérifier s'il y a des sous-catégories dans cette catégorie
       const [subcategories] = await connection.execute('SELECT * FROM SubCategories WHERE category_id = ?', [categoryId]);
+      console.log(`Subcategories for category ${categoryId}:`, subcategories);
       if (subcategories.length > 0) {
         console.log(`Cannot delete category ${categoryId} because it has associated subcategories.`);
         connection.end();
@@ -94,7 +75,7 @@ const categorieRoutes = (dbConfig) => {
       }
 
       // Supprimer la catégorie si aucune sous-catégorie n'est associée
-      const [result] = await connection.execute('DELETE FROM Categories WHERE id = ?', [categoryId]);
+      const [result] = await connection.execute('DELETE FROM Categories WHERE category_id = ?', [categoryId]);
       connection.end();
 
       if (result.affectedRows > 0) {
@@ -106,6 +87,49 @@ const categorieRoutes = (dbConfig) => {
       }
     } catch (error) {
       console.error(`Error deleting category ${categoryId}:`, error);
+      if (connection) {
+        connection.end();
+      }
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
+  // Route pour modifier une catégorie
+  router.put('/categories/:categoryId', async (req, res) => {
+    const categoryId = req.params.categoryId;
+    const { name, description } = req.body;
+
+    // Vérification des champs
+    if (!name || !description) {
+      return res.status(400).send('Name and description are required');
+    }
+    const specialCharRegex = /[^a-zA-Z0-9 ]/g;
+    if (specialCharRegex.test(name) || specialCharRegex.test(description)) {
+      return res.status(400).send('No special characters allowed');
+    }
+
+    console.log(`Route PUT /categories/${categoryId} called with name: ${name} and description: ${description}`);
+    let connection;
+    try {
+      console.log('Connecting to the database...');
+      connection = await mysql.createConnection(dbConfig);
+      console.log('Connected to the database.');
+
+      const [result] = await connection.execute(
+        'UPDATE Categories SET name = ?, description = ? WHERE category_id = ?',
+        [name, description, categoryId]
+      );
+      connection.end();
+
+      if (result.affectedRows > 0) {
+        console.log(`Category ${categoryId} updated.`);
+        res.status(200).send(`Category ${categoryId} updated.`);
+      } else {
+        console.log(`Category ${categoryId} not found.`);
+        res.status(404).send(`Category ${categoryId} not found.`);
+      }
+    } catch (error) {
+      console.error(`Error updating category ${categoryId}:`, error);
       if (connection) {
         connection.end();
       }
