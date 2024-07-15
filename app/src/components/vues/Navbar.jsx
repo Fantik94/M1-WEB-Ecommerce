@@ -7,12 +7,25 @@ import axios from 'axios';
 
 const Navbar = () => {
   const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState({});
 
   useEffect(() => {
     axios.get('http://localhost:3000/categories/')
       .then(response => {
         const filteredCategories = response.data.filter(category => category.category_id !== 3);
         setCategories(filteredCategories);
+        filteredCategories.forEach(category => {
+          axios.get(`http://localhost:3000/categories/${category.category_id}/subcategories`)
+            .then(subResponse => {
+              setSubcategories(prevSubcategories => ({
+                ...prevSubcategories,
+                [category.category_id]: subResponse.data
+              }));
+            })
+            .catch(subError => {
+              console.error(`Error fetching subcategories for category ${category.category_id}:`, subError);
+            });
+        });
       })
       .catch(error => {
         console.error("There was an error fetching the categories!", error);
@@ -31,18 +44,11 @@ const Navbar = () => {
             {categories.map(category => (
               <li key={category.category_id}>
                 <DropdownMenu title={category.name}>
-                  {category.name === 'Gaming' && (
-                    <>
-                      <DropdownItem to="/gaming/pc">PC Gaming</DropdownItem>
-                      <DropdownItem to="/gaming/console">Console Gaming</DropdownItem>
-                    </>
-                  )}
-                  {category.name === 'Alimentation' && (
-                    <>
-                      <DropdownItem to="/alimentation/vegetarienne">Végétarienne</DropdownItem>
-                      <DropdownItem to="/alimentation/vegan">Vegan</DropdownItem>
-                    </>
-                  )}
+                  {subcategories[category.category_id]?.map(subcategory => (
+                    <DropdownItem key={subcategory.subcategory_id} to={`/categories/${category.category_id}/subcategories/${subcategory.subcategory_id}`}>
+                      {subcategory.name}
+                    </DropdownItem>
+                  ))}
                 </DropdownMenu>
               </li>
             ))}
