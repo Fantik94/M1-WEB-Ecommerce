@@ -4,6 +4,9 @@ import categorieRoutes from './Categorie.js';
 const app = express();
 const port = 3000;
 
+// Ajouter le middleware pour parser le JSON
+app.use(express.json());
+
 // Configurer la connexion à la base de données
 const dbConfig = {
   host: 'localhost', // localhost
@@ -33,4 +36,6 @@ app.listen(port, () => {
     console.log(`Routes disponibles:`);
     console.log(`GET /categories`);
     console.log(`GET /categories/:categoryId/subcategories`);
+    console.log(`POST /categories`);
+    console.log(`DELETE /categories/:categoryId`);
 });
