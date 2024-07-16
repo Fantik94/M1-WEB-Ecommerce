@@ -18,7 +18,7 @@ import ProfileLayout from './components/vues/ProfileLayout';
 import PaymentMethods from './components/vues/PaymentMethods';
 import Orders from './components/vues/Orders';
 import PrivateRoute from './components/vues/PrivateRoute';
-import Backoffice from './components/backoffice/Backoffice';
+import BackofficeLayout from './components/backoffice/BackofficeLayout';
 import GestionCategorie from './components/backoffice/GestionCategorie';
 import GestionSousCategorie from './components/backoffice/GestionSousCategorie';
 import GestionCommande from './components/backoffice/GestionCommande';
@@ -62,11 +62,13 @@ const App = () => {
             </Route>
 
             <Route path="/backoffice" element={<PrivateRoute />}>
-                <Route index element={<Backoffice />} />
+              <Route element={<BackofficeLayout />}>
+                <Route index element={<GestionCategorie />} />
                 <Route path="gestion-categorie" element={<GestionCategorie />} />
                 <Route path="gestion-sous-categorie" element={<GestionSousCategorie />} />
                 <Route path="gestion-commande" element={<GestionCommande />} />
                 <Route path="gestion-utilisateur" element={<GestionUtilisateur />} />
+              </Route>
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />

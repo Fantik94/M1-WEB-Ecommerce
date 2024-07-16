@@ -33,6 +33,40 @@ const subCategorieRoutes = (dbConfig) => {
 });
 
 
+// Route pour récupérer toutes les sous-catégories avec les noms des catégories
+router.get('/allsubcategories', async (req, res) => {
+  console.log('Route /allsubcategories called');
+  
+  let connection;
+  try {
+    console.log('Connecting to the database...');
+    connection = await mysql.createConnection(dbConfig);
+    console.log('Connected to the database.');
+
+    const [subCategories] = await connection.execute('SELECT * FROM SubCategories');
+    const [categories] = await connection.execute('SELECT * FROM Categories');
+    connection.end();
+
+    const subCategoriesWithCategoryNames = subCategories.map(subCategory => {
+      const category = categories.find(category => category.id === subCategory.category_id);
+      return {
+        ...subCategory,
+        category_name: category ? category.name : 'Unknown'
+      };
+    });
+
+    console.log('All subcategories with category names retrieved:', subCategoriesWithCategoryNames);
+    res.json(subCategoriesWithCategoryNames);
+  } catch (error) {
+    console.error('Error fetching subcategories:', error);
+    if (connection) {
+      connection.end();
+    }
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 // Route pour créer une nouvelle sous-catégorie
 router.post('/subcategories', async (req, res) => {
   const { category_id, name, description } = req.body;
