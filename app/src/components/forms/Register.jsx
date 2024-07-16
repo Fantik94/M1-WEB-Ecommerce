@@ -24,6 +24,9 @@ const Register = () => {
               <input name="email" type="email" autoComplete="email" required className="bg-gray-100 dark:bg-gray-700 dark:text-gray-200 focus:bg-transparent w-full text-sm px-4 py-3.5 rounded-md outline-gray-800 dark:outline-gray-200" placeholder="Adresse e-mail" />
             </div>
             <div>
+              <input name="text" type="text"required className="bg-gray-100 dark:bg-gray-700 dark:text-gray-200 focus:bg-transparent w-full text-sm px-4 py-3.5 rounded-md outline-gray-800 dark:outline-gray-200" placeholder="Nom d'utilisateur" />
+            </div>
+            <div>
               <input name="password" type="password" autoComplete="current-password" required className="bg-gray-100 dark:bg-gray-700 dark:text-gray-200 focus:bg-transparent w-full text-sm px-4 py-3.5 rounded-md outline-gray-800 dark:outline-gray-200" placeholder="Mot de passe" />
             </div>
             <div>
