@@ -1,9 +1,8 @@
-// src/components/vues/Panier.jsx
 import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ProgressBar from './ProgressBar';
 import { PanierContext } from "../../context/PanierContext";
-import { AuthContext } from "../../context/AuthContext";
+import AuthContext from "../../context/AuthContext";
 
 const Panier = () => {
   const {
@@ -17,6 +16,7 @@ const Panier = () => {
   } = useContext(PanierContext);
 
   const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -40,6 +40,14 @@ const Panier = () => {
     2: 'Entrez votre adresse de livraison',
     3: 'Choisissez votre méthode de paiement',
     4: 'Commande terminée'
+  };
+
+  const handleCheckout = () => {
+    if (isAuthenticated) {
+      navigate('/livraison');
+    } else {
+      navigate('/login');
+    }
   };
 
   return (
@@ -143,7 +151,12 @@ const Panier = () => {
                 </dl>
               </div>
 
-              <Link to="/livraison" disabled={panier.length <= 0} className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Procéder au paiement</Link>
+              <button
+                onClick={handleCheckout}
+                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                {isAuthenticated ? "Procéder au paiement" : "Se connecter"}
+              </button>
 
               <div className="flex items-center justify-center gap-2">
                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> ou </span>
