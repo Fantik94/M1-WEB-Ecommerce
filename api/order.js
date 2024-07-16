@@ -89,6 +89,18 @@ const orderRoutes = (dbConfig) => {
         }
       });
 
+  // Route pour récupérer toutes les commandes
+  router.get('/allorders', async (req, res) => {
+    try {
+      const connection = await mysql.createConnection(dbConfig);
+      const [rows] = await connection.execute('SELECT * FROM Orders');
+      connection.end();
+      res.json(rows);
+    } catch (error) {
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
     // Endpoint pour modifier une commande
   router.put('/orders/:user_id/:order_id',
   // Validation des champs
