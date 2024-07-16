@@ -1,9 +1,20 @@
 // src/components/vues/Panier.jsx
 import React from 'react';
+import ProgressBar from './ProgressBar';
 
 const Panier = () => {
+
+  const descriptions = {
+    1: 'Vérifiez les articles dans votre panier',
+    2: 'Entrez votre adresse de livraison',
+    3: 'Choisissez votre méthode de paiement',
+    4: 'Commande terminée'
+  };
+
+
   return (
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
+      <ProgressBar currentStep={1} descriptions={descriptions} />
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Panier</h2>
 
