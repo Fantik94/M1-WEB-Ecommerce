@@ -20,6 +20,16 @@ const Product = () => {
       });
   }, [productId]);
 
+  useEffect(() => {
+    axios.get(`http://localhost:3000/rng-products`)
+      .then(response => {
+        setSimilarProducts(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the random products:', error);
+      });
+  }, []);
+
   const handleImageClick = (num) => {
     setMainImage(`/images/${product.product_id}-${num}.jpg`);
   };
@@ -100,47 +110,19 @@ const Product = () => {
         </div>
 
         <div className="mt-16 shadow-md p-6">
-          <h3 className="text-xl font-bold text-gray-800">Reviews (10)</h3>
-          <div className="grid md:grid-cols-2 gap-12 mt-4">
-            <div className="space-y-3">
-              {[5, 4, 3, 2, 1].map((rating, i) => (
-                <div key={i} className="flex items-center">
-                  <p className="text-sm text-gray-800 font-bold">{rating}.0</p>
-                  <svg className="w-5 fill-blue-600 ml-1" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
-                  </svg>
-                  <div className="bg-gray-400 rounded w-full h-2 ml-3">
-                    <div className={`w-${rating}/6 h-full rounded bg-blue-600`}></div>
-                  </div>
-                  <p className="text-sm text-gray-800 font-bold ml-3">{rating * 20}%</p>
-                </div>
-              ))}
-            </div>
+          <h3 className="text-xl font-bold text-gray-800">Autres Produits</h3>
 
-            <div>
-              <div className="flex items-start">
-                <img src="https://readymadeui.com/team-2.webp" className="w-12 h-12 rounded-full border-2 border-white" alt="Reviewer" />
-                <div className="ml-3">
-                  <h4 className="text-sm font-bold text-gray-800">John Doe</h4>
-                  <div className="flex space-x-1 mt-1">
-                    {[...Array(3)].map((_, i) => (
-                      <svg key={i} className="w-4 fill-blue-600" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
-                      </svg>
-                    ))}
-                    {[...Array(2)].map((_, i) => (
-                      <svg key={i} className="w-4 fill-[#CED5D8]" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
-                      </svg>
-                    ))}
-                    <p className="text-xs !ml-2 font-semibold text-gray-800">2 mins ago</p>
-                  </div>
-                  <p className="text-sm mt-4 text-gray-800">Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua.</p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            {similarProducts.map(similarProduct => (
+              <div key={similarProduct.product_id} className="bg-white p-4 shadow-md rounded-lg">
+                <img src={`/images/${similarProduct.product_id}-1.jpg`} alt={similarProduct.name} className="w-full h-48 object-cover rounded-md" />
+                <h3 className="mt-4 text-lg font-bold text-gray-900">{similarProduct.name}</h3>
+                <p className="mt-2 text-gray-600">{similarProduct.price}€</p>
+                <a href={`/produit/${similarProduct.product_id}`} className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                  Voir le produit
+                </a>
               </div>
-
-              <button type="button" className="w-full mt-10 px-4 py-2.5 bg-transparent hover:bg-gray-50 border border-blue-600 text-gray-800 font-bold rounded">Read all reviews</button>
-            </div>
+            ))}
           </div>
         </div>
       </div>
