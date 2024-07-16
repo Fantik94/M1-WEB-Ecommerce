@@ -19,6 +19,7 @@ import PaymentMethods from './components/vues/PaymentMethods';
 import Orders from './components/vues/Orders';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/vues/PrivateRoute';
+import Footer from './components/vues/Footer';
 
 const App = () => {
   const { theme } = useContext(ThemeContext);
@@ -59,6 +60,7 @@ const App = () => {
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
+         
         </div>
       </Router>
     </AuthProvider>
