@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import ProgressBar from './ProgressBar';
 
 const Livraison = () => {
@@ -9,6 +10,14 @@ const Livraison = () => {
     4: 'Commande terminée'
   };
 
+  const navigate = useNavigate();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Ajoutez ici la logique de traitement du formulaire si nécessaire
+    navigate('/paiement');
+  };
+
   return (
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
       <ProgressBar currentStep={2} descriptions={descriptions} />
@@ -16,7 +25,7 @@ const Livraison = () => {
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Livraison</h2>
         <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
           <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="rounded-lg border border-gray-300 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
                 <div className="space-y-4">
                   <div>
