@@ -4,85 +4,85 @@ import bcrypt from 'bcrypt';
 import { body, validationResult } from 'express-validator';
 
 const BackofficeRoutes = (dbConfig) => {
-    const router = express.Router();
+  const router = express.Router();
 
-      // Route pour modifier un utilisateur et son profil
-router.put('/users/:userId',
-// Validation des champs
-body('username').isLength({ min: 5 }).withMessage('Username must be at least 5 characters long')
-  .matches(/^[a-zA-Z0-9 ]+$/).withMessage('Username must not contain special characters'),
-body('email').isEmail().withMessage('Invalid email address')
-  .matches(/^[a-zA-Z0-9@.]+$/).withMessage('Email must not contain special characters'),
-body('password').optional().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-  .matches(/^[a-zA-Z0-9]+$/).withMessage('Password must not contain special characters'),
-body('firstName').isLength({ min: 1 }).withMessage('First name is required')
-  .matches(/^[a-zA-Z]+$/).withMessage('First name must not contain special characters'),
-body('lastName').isLength({ min: 1 }).withMessage('Last name is required')
-  .matches(/^[a-zA-Z]+$/).withMessage('Last name must not contain special characters'),
-body('phoneNumber').optional().matches(/^[0-9]+$/).withMessage('Phone number must be numeric'),
-async (req, res) => {
-  const { userId } = req.params;
-  const { username, email, password, firstName, lastName, phoneNumber } = req.body;
+  // Route to update a user and their profile
+  router.patch('/users/:userId',
+    // Field validations
+    body('username').isLength({ min: 5 }).withMessage('Username must be at least 5 characters long')
+      .matches(/^[a-zA-Z0-9 ]+$/).withMessage('Username must not contain special characters'),
+    body('email').isEmail().withMessage('Invalid email address')
+      .matches(/^[a-zA-Z0-9@.]+$/).withMessage('Email must not contain special characters'),
+    body('password').optional().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+      .matches(/^[a-zA-Z0-9]+$/).withMessage('Password must not contain special characters'),
+    body('first_name').isLength({ min: 1 }).withMessage('First name is required')
+      .matches(/^[a-zA-Z]+$/).withMessage('First name must not contain special characters'),
+    body('last_name').isLength({ min: 1 }).withMessage('Last name is required')
+      .matches(/^[a-zA-Z]+$/).withMessage('Last name must not contain special characters'),
+    body('phone_number').optional().matches(/^[0-9]+$/).withMessage('Phone number must be numeric'),
+    async (req, res) => {
+      const { userId } = req.params;
+      const { username, email, password, first_name, last_name, phone_number } = req.body;
 
-  // Validation des champs
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+      // Validate fields
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-  let hashedPassword;
-  if (password) {
-    hashedPassword = await bcrypt.hash(password, 10);
-  }
+      let hashedPassword;
+      if (password) {
+        hashedPassword = await bcrypt.hash(password, 10);
+      }
 
-  console.log(`Route PUT /users/${userId} called with username: ${username}, email: ${email}, password: ${password ? '******' : 'not provided'}`);
-  let connection;
-  try {
-    console.log('Connecting to the database...');
-    connection = await mysql.createConnection(dbConfig);
-    console.log('Connected to the database.');
+      console.log(`Route PATCH /users/${userId} called with username: ${username}, email: ${email}, password: ${password ? '******' : 'not provided'}`);
+      let connection;
+      try {
+        console.log('Connecting to the database...');
+        connection = await mysql.createConnection(dbConfig);
+        console.log('Connected to the database.');
 
-    // Commencer une transaction
-    await connection.beginTransaction();
+        // Start a transaction
+        await connection.beginTransaction();
 
-    // Mettre à jour l'utilisateur dans la base de données
-    let userQuery = 'UPDATE Users SET username = ?, email = ?';
-    const userParams = [username, email];
+        // Update user in the database
+        let userQuery = 'UPDATE Users SET username = ?, email = ?';
+        const userParams = [username, email];
 
-    if (password) {
-      userQuery += ', password = ?';
-      userParams.push(hashedPassword);
+        if (password) {
+          userQuery += ', password = ?';
+          userParams.push(hashedPassword);
+        }
+
+        userQuery += ' WHERE user_id = ?';
+        userParams.push(userId);
+
+        await connection.execute(userQuery, userParams);
+
+        // Update user profile in the database
+        await connection.execute(
+          'UPDATE UserProfiles SET first_name = ?, last_name = ?, phone_number = ? WHERE user_id = ?',
+          [first_name, last_name, phone_number, userId]
+        );
+
+        // Commit the transaction
+        await connection.commit();
+        connection.end();
+
+        console.log(`User ${userId} updated successfully with profile.`);
+        res.status(200).send(`User ${userId} updated successfully with profile.`);
+      } catch (error) {
+        console.error(`Error updating user ${userId}:`, error);
+        if (connection) {
+          await connection.rollback();
+          connection.end();
+        }
+        res.status(500).send('Internal Server Error');
+      }
     }
+  );
 
-    userQuery += ' WHERE user_id = ?';
-    userParams.push(userId);
-
-    await connection.execute(userQuery, userParams);
-
-    // Mettre à jour le profil utilisateur dans la base de données
-    await connection.execute(
-      'UPDATE UserProfiles SET first_name = ?, last_name = ?, phone_number = ? WHERE user_id = ?',
-      [firstName, lastName, phoneNumber, userId]
-    );
-
-    // Valider la transaction
-    await connection.commit();
-    connection.end();
-
-    console.log(`User ${userId} updated successfully with profile.`);
-    res.status(200).send(`User ${userId} updated successfully with profile.`);
-  } catch (error) {
-    console.error(`Error updating user ${userId}:`, error);
-    if (connection) {
-      await connection.rollback();
-      connection.end();
-    }
-    res.status(500).send('Internal Server Error');
-  }
-}
-);
-
-  // Route pour récupérer les informations de tous les utilisateurs
+  // Route to get all users
   router.get('/users', async (req, res) => {
     console.log('Route GET /users called');
     let connection;
@@ -105,38 +105,38 @@ async (req, res) => {
     }
   });
 
-    // Route pour récupérer les informations d'un utilisateur et de son profil
-    router.get('/users/:userId', async (req, res) => {
-        const { userId } = req.params;
-        let connection;
-        try {
-          console.log('Connecting to the database...');
-          connection = await mysql.createConnection(dbConfig);
-          console.log('Connected to the database.');
-    
-          const [userRows] = await connection.execute('SELECT * FROM Users WHERE user_id = ?', [userId]);
-          const [profileRows] = await connection.execute('SELECT * FROM UserProfiles WHERE user_id = ?', [userId]);
-          connection.end();
-    
-          if (userRows.length > 0) {
-            const user = userRows[0];
-            const profile = profileRows[0] || {};
-            console.log(`User ${userId} details retrieved:`, { ...user, ...profile });
-            res.json({ ...user, ...profile });
-          } else {
-            console.log(`User ${userId} not found.`);
-            res.status(404).send(`User ${userId} not found.`);
-          }
-        } catch (error) {
-          console.error(`Error fetching user ${userId}:`, error);
-          if (connection) {
-            connection.end();
-          }
-          res.status(500).send('Internal Server Error');
-        }
-      });
+  // Route to get a user and their profile
+  router.get('/users/:userId', async (req, res) => {
+    const { userId } = req.params;
+    let connection;
+    try {
+      console.log('Connecting to the database...');
+      connection = await mysql.createConnection(dbConfig);
+      console.log('Connected to the database.');
 
-      // Route pour supprimer un utilisateur et son profil
+      const [userRows] = await connection.execute('SELECT * FROM Users WHERE user_id = ?', [userId]);
+      const [profileRows] = await connection.execute('SELECT * FROM UserProfiles WHERE user_id = ?', [userId]);
+      connection.end();
+
+      if (userRows.length > 0) {
+        const user = userRows[0];
+        const profile = profileRows[0] || {};
+        console.log(`User ${userId} details retrieved:`, { ...user, ...profile });
+        res.json({ ...user, ...profile });
+      } else {
+        console.log(`User ${userId} not found.`);
+        res.status(404).send(`User ${userId} not found.`);
+      }
+    } catch (error) {
+      console.error(`Error fetching user ${userId}:`, error);
+      if (connection) {
+        connection.end();
+      }
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
+  // Route to delete a user and their profile
   router.delete('/users/:userId', async (req, res) => {
     const { userId } = req.params;
     console.log(`Route DELETE /users/${userId} called`);
@@ -146,16 +146,16 @@ async (req, res) => {
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to the database.');
 
-      // Commencer une transaction
+      // Start a transaction
       await connection.beginTransaction();
 
-      // Supprimer le profil utilisateur
+      // Delete user profile
       await connection.execute('DELETE FROM UserProfiles WHERE user_id = ?', [userId]);
 
-      // Supprimer l'utilisateur
+      // Delete user
       const [result] = await connection.execute('DELETE FROM Users WHERE user_id = ?', [userId]);
 
-      // Valider la transaction
+      // Commit the transaction
       await connection.commit();
       connection.end();
 
@@ -176,7 +176,7 @@ async (req, res) => {
     }
   });
 
-    return router;
+  return router;
 };
 
 export default BackofficeRoutes;

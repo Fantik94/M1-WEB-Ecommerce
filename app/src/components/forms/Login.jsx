@@ -17,14 +17,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    removeNotification(); 
+    removeNotification(); // Clear existing notifications
     try {
       const response = await axios.post('http://localhost:3000/login', formData);
       if (response.status === 200) {
         const { token, userId } = response.data;
-        login(token, userId); 
+        login(token, userId); // Use context to log in
         addNotification('Connexion réussie!', 'success');
-        navigate('/'); 
+        navigate('/'); // Redirect to the homepage or another page
       }
     } catch (error) {
       if (error.response && error.response.data.errors) {
