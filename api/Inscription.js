@@ -60,12 +60,19 @@ const inscriptionRoutes = (dbConfig) => {
           [userId, firstName, lastName, phoneNumber]
         );
 
+        // Assigner le rôle 'user' par défaut à l'utilisateur
+        const defaultRoleId = 1; // Assumant que l'ID du rôle 'user' est 1
+        await connection.execute(
+          'INSERT INTO UserRolesMapping (user_id, role_id) VALUES (?, ?)',
+          [userId, defaultRoleId]
+        );
+
         // Valider la transaction
         await connection.commit();
         connection.end();
 
-        console.log(`User ${username} registered successfully with profile.`);
-        res.status(201).send(`User ${username} registered successfully with profile.`);
+        console.log(`User ${username} registered successfully with profile and assigned default role 'user'.`);
+        res.status(201).send(`User ${username} registered successfully with profile and assigned default role 'user'.`);
       } catch (error) {
         console.error(`Error registering user ${username}:`, error);
         if (connection) {
