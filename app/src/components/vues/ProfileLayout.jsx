@@ -5,7 +5,7 @@ const ProfileLayout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex">
       <Sidebar />
-      <div className="pt-20 ml-64 w-full">
+      <div className="pt-24 ml-64 w-full">
         {children}
       </div>
     </div>
