@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import ProgressBar from './ProgressBar';
 import { PanierContext } from "../../context/PanierContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Panier = () => {
   const {
@@ -14,6 +15,8 @@ const Panier = () => {
     getTotalProduit,
     getTotalPanier,
   } = useContext(PanierContext);
+
+  const { isAuthenticated } = useContext(AuthContext);
 
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -144,12 +147,12 @@ const Panier = () => {
 
               <div className="flex items-center justify-center gap-2">
                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> ou </span>
-                <a href="/" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
+                <Link to="/rechercher" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
                   Continuer vos achats
                   <svg className="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
                   </svg>
-                </a>
+                </Link>
               </div>
             </div>
 
