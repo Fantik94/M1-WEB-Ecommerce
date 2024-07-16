@@ -81,6 +81,30 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
+  // Route pour récupérer 3 produits au hasard
+router.get('/rng-products', async (req, res) => {
+    console.log('Route /products called');
+    let connection;
+    try {
+      console.log('Connecting to the database...');
+      connection = await mysql.createConnection(dbConfig);
+      console.log('Connected to the database.');
+      
+      const [rows] = await connection.execute('SELECT * FROM Products ORDER BY RAND() LIMIT 3');
+      connection.end();
+      
+      console.log('Random products retrieved:', rows);
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching random products:', error);
+      if (connection) {
+        connection.end();
+      }
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
+
 // Route pour créer un nouveau produit
 router.post('/products', async (req, res) => {
     const { subcategory_id, name, description, price, stock } = req.body;
