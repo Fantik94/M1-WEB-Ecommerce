@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ProductForm from '../forms/Produit';
 
 const GestionProduits = () => {
   const [products, setProducts] = useState([]);
@@ -78,6 +79,7 @@ const GestionProduits = () => {
             <th className="py-2 px-4 border-b dark:border-gray-700">Nom</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Description</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Prix</th>
+            <th className="py-2 px-4 border-b dark:border-gray-700">Stock</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Actions</th>
           </tr>
         </thead>
@@ -86,11 +88,12 @@ const GestionProduits = () => {
             <tr key={product.product_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.product_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                <img src={`/products/${product.image}`} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
+                <img src={`/images/${product.product_id}-1.jpg`} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.description}</td>
-              <td className="py-2 px-4 border-b dark:border-gray-700">{product.price} €</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{product.price}€</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{product.stock}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
                 <button
                   onClick={() => handleEdit(product)}
