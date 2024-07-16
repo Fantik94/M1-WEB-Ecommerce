@@ -1,8 +1,10 @@
 // src/components/vues/Addresses.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNotification } from '../../context/NotificationContext';
 
 const Addresses = () => {
+  const { addNotification } = useNotification();
   const [addresses, setAddresses] = useState([]);
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
@@ -42,9 +44,11 @@ const Addresses = () => {
         setState('');
         setPostalCode('');
         setCountry('');
+        addNotification('Adresse ajoutée avec succès', 'success');
       }
     } catch (error) {
       console.error('Erreur lors de l\'ajout de l\'adresse:', error);
+      addNotification('Erreur lors de l\'ajout de l\'adresse', 'error');
     }
   };
 
@@ -53,9 +57,11 @@ const Addresses = () => {
       const response = await axios.delete(`http://localhost:3000/addresses/${userId}/${addressId}`);
       if (response.status === 200) {
         fetchAddresses(); // Refresh the address list
+        addNotification('Adresse supprimée avec succès', 'success');
       }
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'adresse:', error);
+      addNotification('Erreur lors de la suppression de l\'adresse', 'error');
     }
   };
 
@@ -86,9 +92,11 @@ const Addresses = () => {
         setPostalCode('');
         setCountry('');
         setEditingAddressId(null);
+        addNotification('Adresse mise à jour avec succès', 'success');
       }
     } catch (error) {
       console.error('Erreur lors de la mise à jour de l\'adresse:', error);
+      addNotification('Erreur lors de la mise à jour de l\'adresse', 'error');
     }
   };
 
