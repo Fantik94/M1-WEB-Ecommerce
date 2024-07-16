@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -38,7 +37,8 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${token}`
         }
       });
-      setUserInfo({ ...response.data, roles: parseJwt(token).roles });
+      const roles = parseJwt(token).roles;
+      setUserInfo({ ...response.data, roles });
     } catch (error) {
       console.error('Error fetching user info:', error);
     }
