@@ -28,9 +28,10 @@ const inscriptionRoutes = (dbConfig) => {
 
       const { username, email, password, firstName, lastName, phoneNumber } = req.body;
 
+      let connection;
       try {
         console.log('Connecting to the database...');
-        const connection = await mysql.createConnection(dbConfig);
+        connection = await mysql.createConnection(dbConfig);
         console.log('Connected to the database.');
 
         // Vérifier si l'utilisateur existe déjà
@@ -58,6 +59,17 @@ const inscriptionRoutes = (dbConfig) => {
         await connection.execute(
           'INSERT INTO UserProfiles (user_id, first_name, last_name, phone_number) VALUES (?, ?, ?, ?)',
           [userId, firstName, lastName, phoneNumber]
+        );
+
+        // Assigner le rôle user à l'utilisateur
+        const [roleResult] = await connection.execute(
+          'SELECT role_id FROM UserRoles WHERE role_name = ?',
+          ['user']
+        );
+        const roleId = roleResult[0].role_id;
+        await connection.execute(
+          'INSERT INTO UserRolesMapping (user_id, role_id) VALUES (?, ?)',
+          [userId, roleId]
         );
 
         // Valider la transaction
