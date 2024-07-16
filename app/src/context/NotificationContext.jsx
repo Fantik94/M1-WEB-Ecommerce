@@ -1,38 +1,37 @@
-// src/context/NotificationContext.js
 import React, { createContext, useState, useContext, useCallback } from 'react';
 import Notification from '../components/vues/Notification';
 
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
-  const [notifications, setNotifications] = useState([]);
+  const [notification, setNotification] = useState(null);
 
   const addNotification = useCallback((message, type) => {
     const id = new Date().getTime();
-    setNotifications((prevNotifications) => [...prevNotifications, { id, message, type }]);
+    setNotification({ id, message, type });
 
     setTimeout(() => {
-      setNotifications((prevNotifications) => prevNotifications.filter((notif) => notif.id !== id));
+      setNotification((prevNotification) => (prevNotification && prevNotification.id === id ? null : prevNotification));
     }, 5000);
   }, []);
 
-  const removeNotification = useCallback((id) => {
-    setNotifications((prevNotifications) => prevNotifications.filter((notif) => notif.id !== id));
+  const removeNotification = useCallback(() => {
+    setNotification(null);
   }, []);
 
   return (
-    <NotificationContext.Provider value={addNotification}>
+    <NotificationContext.Provider value={{ addNotification, removeNotification }}>
       {children}
-      <div className="fixed top-0 right-0 p-4 z-50">
-        {notifications.map((notification) => (
+      {notification && (
+        <div className="fixed top-0 right-0 p-4 z-50">
           <Notification
             key={notification.id}
             message={notification.message}
             type={notification.type}
-            onClose={() => removeNotification(notification.id)}
+            onClose={removeNotification}
           />
-        ))}
-      </div>
+        </div>
+      )}
     </NotificationContext.Provider>
   );
 };
