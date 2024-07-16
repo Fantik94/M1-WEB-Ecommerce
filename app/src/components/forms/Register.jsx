@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNotification } from '../../context/NotificationContext';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +14,8 @@ const Register = () => {
     phoneNumber: '',
   });
 
-  const addNotification = useNotification();
+  const navigate = useNavigate();
+  const { addNotification, removeNotification } = useNotification();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,6 +27,9 @@ const Register = () => {
       const response = await axios.post('http://localhost:3000/register', formData);
       if (response.status === 201) {
         addNotification('Inscription réussie!', 'success');
+        setTimeout(() => {
+          navigate('/login');
+        }, 1000); // Redirect after 1 second
       }
     } catch (error) {
       if (error.response && error.response.data.errors) {

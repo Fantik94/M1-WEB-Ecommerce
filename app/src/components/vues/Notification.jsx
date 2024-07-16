@@ -1,3 +1,4 @@
+// src/components/Notification.jsx
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
