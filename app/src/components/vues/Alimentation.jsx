@@ -8,7 +8,7 @@ const Alimentation = () => {
   const [subcategories, setSubcategories] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/categories/2/subcategories')
+    axios.get('http://localhost:3000/subcategories?category_id=2')
       .then(response => {
         setSubcategories(response.data);
       })
