@@ -62,15 +62,16 @@ const App = () => {
             </Route>
           </Route>
 
-          <Route path="/backoffice" element={<AdminRoute />}>
-            <Route element={<BackofficeLayout />}>
-              <Route index element={<GestionCategorie />} />
-              <Route path="gestion-categorie" element={<GestionCategorie />} />
-              <Route path="gestion-sous-categorie" element={<GestionSousCategorie />} />
-              <Route path="gestion-commande" element={<GestionCommande />} />
-              <Route path="gestion-utilisateur" element={<GestionUtilisateur />} />
+            <Route path="/backoffice" element={<PrivateRoute />}>
+              <Route element={<BackofficeLayout />}>
+                <Route index element={<GestionCategorie />} />
+                <Route path="gestion-categorie" element={<GestionCategorie />} />
+                <Route path="gestion-sous-categorie" element={<GestionSousCategorie />} />
+                <Route path="gestion-commande" element={<GestionCommande />} />
+                <Route path="gestion-utilisateur" element={<GestionUtilisateur />} />
+                <Route path="gestion-produit" element={<GestionProduit />} />
+              </Route>
             </Route>
-          </Route>
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
