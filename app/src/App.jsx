@@ -7,8 +7,9 @@ import Gaming from './components/vues/Gaming';
 import Alimentation from './components/vues/Alimentation';
 import Panier from './components/vues/Panier';
 import Subcategory from './components/vues/Subcategory';
-import Login from './components/vues/Login';
+import Login from './components/forms/Login';
 import ThemeContext from './context/ThemeContext';
+import Register from './components/forms/Register';
 
 const App = () => {
   const { theme } = useContext(ThemeContext);
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="/gaming" element={<Gaming />} />
           <Route path="/panier" element={<Panier />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/categories/:categoryId/subcategories/:subcategoryId/products" element={<Subcategory />} />
           <Route path="/produit/:productId" element={<Produits />} />
           <Route path="/alimentation" element={<Alimentation />} />
