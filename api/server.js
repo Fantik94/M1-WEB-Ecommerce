@@ -3,6 +3,9 @@ import cors from 'cors';
 import categorieRoutes from './Categorie.js';
 import subCategorieRoutes from './Subcategorie.js';
 import produitRoutes from './Produit.js';
+import inscriptionRoutes from './Inscription.js';
+import BackofficeRoutes from './Backoffice.js';
+import connexionRoutes from './Connexion.js';
 
 const app = express();
 const port = 3000;
@@ -36,6 +39,9 @@ app.get('/test', (req, res) => {
 app.use('/', categorieRoutes(dbConfig));
 app.use('/', subCategorieRoutes(dbConfig));
 app.use('/', produitRoutes(dbConfig));
+app.use('/', inscriptionRoutes(dbConfig));
+app.use('/', BackofficeRoutes(dbConfig));
+app.use('/', connexionRoutes(dbConfig));
 
 // Autres routes...
 app.listen(port, () => {
