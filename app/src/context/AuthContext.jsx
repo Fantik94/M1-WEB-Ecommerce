@@ -1,27 +1,44 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';  
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     if (token && userId) {
-      setIsAuthenticated(true);
-      fetchUserInfo(userId);
+      try {
+        const decoded = jwt_decode(token);  // Utiliser l'importation corrigée
+        setIsAuthenticated(true);
+        setUserInfo(decoded);
+        setRoles(decoded.roles);
+        fetchUserInfo(userId);
+      } catch (error) {
+        console.error('Invalid token:', error);
+        logout();
+      }
     }
   }, []);
 
   const login = (token, userId) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('userId', userId);
-    setIsAuthenticated(true);
-    fetchUserInfo(userId);
+    try {
+      localStorage.setItem('token', token);
+      localStorage.setItem('userId', userId);
+      const decoded = jwt_decode(token);  // Utiliser l'importation corrigée
+      setIsAuthenticated(true);
+      setUserInfo(decoded);
+      setRoles(decoded.roles);
+      fetchUserInfo(userId);
+    } catch (error) {
+      console.error('Invalid token:', error);
+    }
   };
 
   const logout = () => {
@@ -29,6 +46,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('userId');
     setIsAuthenticated(false);
     setUserInfo(null);
+    setRoles([]);
   };
 
   const fetchUserInfo = async (userId) => {
@@ -41,7 +59,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userInfo, login, logout, fetchUserInfo }}>
+    <AuthContext.Provider value={{ isAuthenticated, userInfo, roles, login, logout, fetchUserInfo }}>
       {children}
     </AuthContext.Provider>
   );

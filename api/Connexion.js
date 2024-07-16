@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 
-const connexionRoutes = (dbConfig) => {
+const connexionRoutes = (dbConfig, jwtSecret) => {
   const router = express.Router();
 
   // Endpoint pour la connexion d'un utilisateur
@@ -29,10 +29,8 @@ const connexionRoutes = (dbConfig) => {
 
         // Vérifier si l'utilisateur existe
         const [userRows] = await connection.execute('SELECT * FROM Users WHERE email = ?', [email]);
-        connection.end();
-
         if (userRows.length === 0) {
-          console.log('User not found');
+          connection.end();
           return res.status(401).send('Invalid email or password');
         }
 
@@ -41,12 +39,26 @@ const connexionRoutes = (dbConfig) => {
         // Vérifier le mot de passe
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
-          console.log('Invalid password');
+          connection.end();
           return res.status(401).send('Invalid email or password');
         }
 
-        // Générer un jeton JWT
-        const token = jwt.sign({ userId: user.user_id }, 'your_secret_key', { expiresIn: '1h' });
+        // Récupérer le rôle de l'utilisateur
+        const [roleRows] = await connection.execute('SELECT role_name FROM UserRoles ur INNER JOIN UserRolesMapping urm ON ur.role_id = urm.role_id WHERE urm.user_id = ?', [user.user_id]);
+        connection.end();
+
+        if (roleRows.length === 0) {
+          return res.status(401).send('No roles assigned to this user');
+        }
+
+        const roles = roleRows.map(row => row.role_name);
+
+        // Générer le token JWT
+        const token = jwt.sign({
+          userId: user.user_id,
+          email: user.email,
+          roles: roles
+        }, jwtSecret, { expiresIn: '1h' });
 
         console.log(`User ${user.username} logged in successfully`);
         res.status(200).json({ token, userId: user.user_id });
