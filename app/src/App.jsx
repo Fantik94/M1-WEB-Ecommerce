@@ -26,6 +26,7 @@ import GestionCommande from './components/backoffice/GestionCommande';
 import GestionUtilisateur from './components/backoffice/GestionUtilisateur';
 import GestionProduit from './components/backoffice/GestionProduit';
 
+
 const App = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -68,6 +69,7 @@ const App = () => {
               <Route path="gestion-categorie" element={<GestionCategorie />} />
               <Route path="gestion-sous-categorie" element={<GestionSousCategorie />} />
               <Route path="gestion-commande" element={<GestionCommande />} />
+              <Route path="gestion-produit" element={<GestionProduit />} />
               <Route path="gestion-utilisateur" element={<GestionUtilisateur />} />
             </Route>
           </Route>

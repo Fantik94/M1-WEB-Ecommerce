@@ -7,16 +7,16 @@ const GestionSousCategorie = () => {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    const fetchSubCategories = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/allsubcategories');
-        setCategories(response.data);
-      } catch (error) {
-        console.error('Error fetching subcategories:', error);
-      }
-    };
+  const fetchSubCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/allsubcategories');
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchSubCategories();
   }, []);
 
@@ -45,14 +45,13 @@ const GestionSousCategorie = () => {
         // Update subcategory
         console.log('Updating subcategory:', form);
         await axios.put(`http://localhost:3000/subcategories/${currentCategory.subcategory_id}`, form);
-        setCategories(categories.map(category => (category.subcategory_id === currentCategory.subcategory_id ? { ...category, ...form } : category)));
       } else {
         // Add new subcategory
         console.log('Adding subcategory:', form);
-        const response = await axios.post('http://localhost:3000/subcategories', form);
-        setCategories([...categories, response.data]);
+        await axios.post('http://localhost:3000/subcategories', form);
       }
       setShowForm(false);
+      fetchSubCategories(); // Refresh the subcategories list
     } catch (error) {
       console.error('Error saving subcategory:', error);
     }
@@ -88,7 +87,7 @@ const GestionSousCategorie = () => {
             <tr key={category.subcategory_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.subcategory_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                  <img src={`/subcategories/${category.name}.webp`} alt={category.name} className="w-16 h-16 object-cover rounded-md"/>
+                  <img src={`/subcategories/${category.name}.webp`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.category_name}</td>
