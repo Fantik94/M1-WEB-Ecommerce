@@ -4,9 +4,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 
-const connexionRoutes = (dbConfig, jwtSecret) => {
+const connexionRoutes = (dbConfig) => {
   const router = express.Router();
-
   // Endpoint pour la connexion d'un utilisateur
   router.post('/login',
     // Validation des champs
@@ -19,46 +18,28 @@ const connexionRoutes = (dbConfig, jwtSecret) => {
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-
       const { email, password } = req.body;
-
       try {
         console.log('Connecting to the database...');
         const connection = await mysql.createConnection(dbConfig);
         console.log('Connected to the database.');
-
         // Vérifier si l'utilisateur existe
         const [userRows] = await connection.execute('SELECT * FROM Users WHERE email = ?', [email]);
+        connection.end();
         if (userRows.length === 0) {
-          connection.end();
+          console.log('User not found');
           return res.status(401).send('Invalid email or password');
         }
-
         const user = userRows[0];
-
         // Vérifier le mot de passe
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
-          connection.end();
+          console.log('Invalid password');
           return res.status(401).send('Invalid email or password');
         }
 
-        // Récupérer le rôle de l'utilisateur
-        const [roleRows] = await connection.execute('SELECT role_name FROM UserRoles ur INNER JOIN UserRolesMapping urm ON ur.role_id = urm.role_id WHERE urm.user_id = ?', [user.user_id]);
-        connection.end();
-
-        if (roleRows.length === 0) {
-          return res.status(401).send('No roles assigned to this user');
-        }
-
-        const roles = roleRows.map(row => row.role_name);
-
-        // Générer le token JWT
-        const token = jwt.sign({
-          userId: user.user_id,
-          email: user.email,
-          roles: roles
-        }, jwtSecret, { expiresIn: '1h' });
+        // Générer un jeton JWT
+        const token = jwt.sign({ userId: user.user_id }, 'your_secret_key', { expiresIn: '1h' });
 
         console.log(`User ${user.username} logged in successfully`);
         res.status(200).json({ token, userId: user.user_id });
@@ -68,8 +49,6 @@ const connexionRoutes = (dbConfig, jwtSecret) => {
       }
     }
   );
-
   return router;
 };
-
-export default connexionRoutes;
+export default connexionRoutes; 
