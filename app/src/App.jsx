@@ -17,9 +17,12 @@ import Addresses from './components/vues/Adresses';
 import ProfileLayout from './components/vues/ProfileLayout';
 import PaymentMethods from './components/vues/PaymentMethods';
 import Orders from './components/vues/Orders';
-import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/vues/PrivateRoute';
-import Footer from './components/vues/Footer';
+import Backoffice from './components/backoffice/Backoffice';
+import GestionCategorie from './components/backoffice/GestionCategorie';
+import GestionSousCategorie from './components/backoffice/GestionSousCategorie';
+import GestionCommande from './components/backoffice/GestionCommande';
+import GestionUtilisateur from './components/backoffice/GestionUtilisateur';
 
 const App = () => {
   const { theme } = useContext(ThemeContext);
@@ -33,7 +36,7 @@ const App = () => {
   }, [theme]);
 
   return (
-    <AuthProvider>
+
       <Router>
         <div className={`${theme === 'dark' ? 'dark' : ''} font-inter`}>
           <Navbar />
@@ -58,12 +61,20 @@ const App = () => {
               </Route>
             </Route>
 
+            <Route path="/backoffice" element={<PrivateRoute />}>
+                <Route index element={<Backoffice />} />
+                <Route path="gestion-categorie" element={<GestionCategorie />} />
+                <Route path="gestion-sous-categorie" element={<GestionSousCategorie />} />
+                <Route path="gestion-commande" element={<GestionCommande />} />
+                <Route path="gestion-utilisateur" element={<GestionUtilisateur />} />
+            </Route>
+
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
          
         </div>
       </Router>
-    </AuthProvider>
+
   );
 };
 

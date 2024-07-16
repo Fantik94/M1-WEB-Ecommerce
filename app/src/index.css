@@ -57,3 +57,16 @@
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
 }
+
+/* src/index.css ou un autre fichier CSS global */
+body {
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+body.dark {
+  background-color: #1a202c; /* correspond à gray-900 dans Tailwind CSS */
+  color: #e2e8f0; /* correspond à gray-200 dans Tailwind CSS */
+}
+
