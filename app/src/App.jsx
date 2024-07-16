@@ -12,6 +12,7 @@ import ThemeContext from './context/ThemeContext';
 import Register from './components/forms/Register';
 import Paiement from './components/vues/Paiement';
 import Livraison from './components/vues/Livraison';
+import Profil from './components/vues/Profil';
 
 const App = () => {
   const { theme } = useContext(ThemeContext);
@@ -31,6 +32,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/gaming" element={<Gaming />} />
+          <Route path="/profil" element={<Profil />} />
           <Route path="/panier" element={<Panier />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
