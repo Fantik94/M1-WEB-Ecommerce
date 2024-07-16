@@ -131,3 +131,7 @@ dist
 
 # Exclude Docker data folder
 Docker/data/*
+
+Docker/data/#innodb_redo/*
+Docker/data/#innodb_redo/
+Docker/data/#innodb_redo/#ib_redo10
