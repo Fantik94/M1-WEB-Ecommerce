@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 15 juil. 2024 à 15:55
--- Version du serveur : 10.4.28-MariaDB
--- Version de PHP : 8.2.4
+-- Généré le : mar. 16 juil. 2024 à 15:47
+-- Version du serveur : 10.4.32-MariaDB
+-- Version de PHP : 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -100,12 +100,13 @@ CREATE TABLE `orders` (
 --
 
 CREATE TABLE `payments` (
-  `payment_id` int(11) NOT NULL,
-  `order_id` int(11) DEFAULT NULL,
-  `payment_method` varchar(50) NOT NULL,
-  `payment_amount` decimal(10,2) NOT NULL,
-  `payment_status` varchar(50) NOT NULL,
-  `payment_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `payments_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `numero_carte` varchar(20) NOT NULL,
+  `date_expiration_carte` date NOT NULL,
+  `cvc_carte` varchar(4) NOT NULL,
+  `nom_carte` varchar(50) NOT NULL,
+  `date_ajout` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -135,7 +136,7 @@ INSERT INTO `products` (`product_id`, `subcategory_id`, `name`, `description`, `
 (2, 8, 'MSI Katana 15', 'Les GPU NVIDIA® GeForce RTX™ série 40 offrent une rapidité extrême aux gamers et aux créateurs. Basés sur l\'architecture NVIDIA Ada Lovelace à haut degré d’efficacité, ces GPU constituent une avancée décisive en matière de performances grâce au DLSS 3 basé sur l\'IA et au ray tracing qui assure des images ultraréalistes. De plus, la suite de technologies Max-Q optimise les performances du système, l\'alimentation, l\'autonomie de la batterie et le niveau de bruit, pour une efficacité plus élevée.', 1499.99, 15, NULL, '2024-07-15 12:00:19', '2024-07-15 12:16:36'),
 (3, 8, 'OMEN TRANSCEND 14', 'Transcende ton gameplay avec la nouvelle architecture GPU NVIDIA Ada Lovelace, le DLSS 3.5 et le Ray Tracing amélioré par l’IA. Repousse les limites des applications de création grâce à RTX et aux outils NVIDIA Studio accélérés par l’IA, dédiés aux créateurs', 2499.99, 10, NULL, '2024-07-15 12:04:11', '2024-07-15 12:13:38'),
 (4, 9, 'ASUS ROG STRIX GT15', 'Conçu tout particulièrement pour les gamers adeptes de LAN party, le PC Gamer ASUS ROG STRIX GT15 allie puissance, praticité et élégance au service du divertissement numérique. Facile à transporter, grâce à sa poignée intégrée, ce PC Gamer ASUS offre aussi l\'avantage d\'une mise à niveau simplifiée. Avec un processeur Intel Core i5-12400F, 16 Go de mémoire DDR4, un SSD M.2 PCIe de 512 Go une carte graphique NVIDIA GeForce RTX 3060 Ti, ce PC Gamer ASUS ROG STRIX GT15 G15CF vous offre la puissance et la vitesse dont vous avez besoin pour jouer dans d\'excellentes conditions.', 1799.99, 10, NULL, '2024-07-15 12:13:23', '2024-07-15 12:13:34'),
-(5, 9, 'MSI MAG Infinite S3', 'Le PC Gamer MSI MAG Infinite S3 14NUC5 est taillé pour le gaming non-stop. Grâce à ses composants ultra-performants et ses fonctionnalités avancées, il offre de hautes performances et une excellente qualité audio/vidéo, pour une expérience de jeu vraiment confortable. Le MSI MAG Infinite S3 14NUC5-1437EU offre de hautes performances grâce à son processeur Intel Core i5-14400F, ses 16 Go de mémoire et sa carte graphique MSI GeForce RTX 4060. De plus, avec son SSD M.2 PCIe de 1 To, vous profitez à la fois d\'un fonctionnement ultra-rapide et d\'une grande capacité de stockage.', 1099.99, 5, NULL, '2024-07-15 12:43:24', '2024-07-15 12:43:51'),
+(5, 9, 'MSI MAG Infinite S3', 'Le PC Gamer MSI MAG Infinite S3 14NUC5 est taillé pour le gaming non-stop. Grâce à ses composants ultra-performants et ses fonctionnalités avancées, il offre de hautes performances et une excellente qualité audio/vidéo, pour une expérience de jeu vraiment confortable. Le MSI MAG Infinite S3 14NUC5-1437EU offre de hautes performances grâce à son processeur Intel Core i5-14400F, ses 16 Go de mémoire et sa carte graphique MSI GeForce RTX 4060. De plus, avec son SSD M.2 PCIe de 1 To, vous profitez à la fois d\'un fonctionnement ultra-rapide et d\'une grande capacité de stockage.', 1099.99, 0, NULL, '2024-07-15 12:43:24', '2024-07-16 08:33:45'),
 (6, 10, 'ASUS 27\" LED - VG27AQ', 'Performances, immersion et émotions. Le moniteur ASUS TUF Gaming VG27AQ est prêt à vous faire passer au niveau supérieur du gaming et a, dans cette optique, été doté d\'un formidable arsenal technologique. Profitez d\'une dalle IPS de 27\" en résolution WQHD (2560 x 1440) pour redécouvrir vos jeux favoris et frayez-vous un chemin vers la victoire à l\'aide d\'un taux de rafraîchissement poussé à 165 Hz, épaulé par 1 ms de temps de réponse ! Ce moniteur dispose également d\'une arme secrète, l\'ELMB-Sync, qui permet d\'activer à la fois la technologie G-Sync (avec laquelle il est compatible) et la technologie ULMB (Ultra Low Motion Blur). De cette manière, vous n\'aurez plus à choisir entre fluidité parfaite sans déchirements ou la diminution du ghosting lors des phases d\'action rapides.', 259.00, 20, NULL, '2024-07-15 12:48:48', '2024-07-15 12:49:28'),
 (7, 10, 'BenQ 27\" LED - MOBIUZ EX2710Q', 'Prenez part à une expérience gaming immersive avec l\'écran QHD BenQ Mobiuz EX2710Q ! Ce modèle à dalle IPS de 27 pouces propose un environnement de jeu optimal avec une grande fluidité, une qualité visuelle supérieure et un rendu des couleurs et des contrastes saisissants. Lancez votre jeu préféré et profitez de conditions rêvées pour tenter de décrocher la victoire !', 389.00, 15, NULL, '2024-07-15 12:52:00', '2024-07-15 12:52:07'),
 (8, 10, 'iiyama 27\" LED - G-Master GB2770QSU-B5', 'Préparez-vous pour la bataille à venir avec un équipement paré pour la victoire. Le moniteur iiyama GB2770QSU-B5 combine avec efficacité une qualité d\'image supérieure avec des performances gaming élevées (temps de réponse de 0.5 ms, fréquence de 165 Hz, FreeSync Premium Pro). Profitez d\'un divertissement agréable et confortable avec une dalle Fast IPS, une résolution QHD et une conception ergonomique.', 259.00, 25, NULL, '2024-07-15 12:55:58', '2024-07-15 12:56:29'),
@@ -192,6 +193,14 @@ CREATE TABLE `userprofiles` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `userprofiles`
+--
+
+INSERT INTO `userprofiles` (`profile_id`, `user_id`, `first_name`, `last_name`, `address`, `phone_number`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Damien', 'Raunier', NULL, '0683324880', '2024-07-16 12:50:44', '2024-07-16 12:50:44'),
+(2, 2, 'Damien', 'Raunier', NULL, '0683324880', '2024-07-16 12:52:01', '2024-07-16 12:52:01');
+
 -- --------------------------------------------------------
 
 --
@@ -231,6 +240,14 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Déchargement des données de la table `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `updated_at`) VALUES
+(1, 'Damien', 'damienraunier@gmail.com', '$2b$10$XAFEIIwoM53A4n8tWJocBOGpef3R81w8Hc1ikkVzndcN3PdWu5m2.', '2024-07-16 12:50:44', '2024-07-16 12:50:44'),
+(2, 'Damien2', 'damienraunier2@gmail.com', '$2b$10$0L9STkpt3gGzyIwu8BsPTOlyk5xnPAWPMjYclxakBhsq1KW59xY8u', '2024-07-16 12:52:01', '2024-07-16 12:52:01');
+
+--
 -- Index pour les tables déchargées
 --
 
@@ -266,8 +283,8 @@ ALTER TABLE `orders`
 -- Index pour la table `payments`
 --
 ALTER TABLE `payments`
-  ADD PRIMARY KEY (`payment_id`),
-  ADD KEY `order_id` (`order_id`);
+  ADD PRIMARY KEY (`payments_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Index pour la table `products`
@@ -345,7 +362,7 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT pour la table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `payments_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `products`
@@ -363,7 +380,7 @@ ALTER TABLE `subcategories`
 -- AUTO_INCREMENT pour la table `userprofiles`
 --
 ALTER TABLE `userprofiles`
-  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `userroles`
@@ -381,7 +398,7 @@ ALTER TABLE `userrolesmapping`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Contraintes pour les tables déchargées
@@ -410,7 +427,7 @@ ALTER TABLE `orders`
 -- Contraintes pour la table `payments`
 --
 ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`);
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Contraintes pour la table `products`

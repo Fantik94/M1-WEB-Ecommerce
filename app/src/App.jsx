@@ -12,6 +12,12 @@ import ThemeContext from './context/ThemeContext';
 import Register from './components/forms/Register';
 import Paiement from './components/vues/Paiement';
 import Livraison from './components/vues/Livraison';
+import Profile from './components/vues/Profile';
+import Addresses from './components/vues/Adresses';
+import ProfileLayout from './components/vues/ProfileLayout';
+import PaymentMethods from './components/vues/PaymentMethods';
+import Orders from './components/vues/Orders';
+import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   const { theme } = useContext(ThemeContext);
@@ -25,26 +31,35 @@ const App = () => {
   }, [theme]);
 
   return (
-    <Router>
-      <div className={`${theme === 'dark' ? 'dark' : ''} font-inter`}>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/gaming" element={<Gaming />} />
-          <Route path="/panier" element={<Panier />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/categories/:categoryId/subcategories/:subcategoryId/products" element={<Subcategory />} />
-          <Route path="/produit/:productId" element={<Produits />} />
-          <Route path="/alimentation" element={<Alimentation />} />
-          <Route path="/paiement" element={<Paiement />} />
-          <Route path="/livraison" element={<Livraison />} />
+    <AuthProvider>
+      <Router>
+        <div className={`${theme === 'dark' ? 'dark' : ''} font-inter`}>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/gaming" element={<Gaming />} />
+            <Route path="/panier" element={<Panier />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/categories/:categoryId/subcategories/:subcategoryId/products" element={<Subcategory />} />
+            <Route path="/produit/:productId" element={<Produits />} />
+            <Route path="/alimentation" element={<Alimentation />} />
+            <Route path="/paiement" element={<Paiement />} />
+            <Route path="/livraison" element={<Livraison />} />
 
 
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </div>
-    </Router>
+            <Route path="/profil" element={<ProfileLayout />}>
+              <Route index element={<Profile />} />
+              <Route path="addresses" element={<Addresses />} />
+              <Route path="payment-methods" element={<PaymentMethods />} />
+              <Route path="orders" element={<Orders />} />
+            </Route>
+
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 };
 

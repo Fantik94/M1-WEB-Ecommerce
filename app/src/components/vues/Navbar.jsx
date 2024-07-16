@@ -5,10 +5,12 @@ import { ChevronDownIcon, ShoppingCartIcon, UserCircleIcon, MoonIcon, SunIcon } 
 import axios from 'axios';
 import ThemeContext from '../../context/ThemeContext';
 import { PanierContext } from "../../context/PanierContext";
+import AuthContext from '../../context/AuthContext';
 
 const Navbar = () => {
   const { nombreProduits } = useContext(PanierContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { isAuthenticated } = useContext(AuthContext);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
   const [openMenu, setOpenMenu] = useState(null);
@@ -39,7 +41,7 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    // Fermer le menu déroulant lorsque la route change
+    // Close the dropdown menu when the route changes
     setOpenMenu(null);
   }, [location.pathname]);
 
@@ -52,7 +54,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white border-b-2 border-gray-300 dark:bg-gray-900 dark:border-gray-700">
+    <nav className="bg-white border-b-2 border-gray-300 dark:bg-gray-900 dark:border-gray-700 z-50">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/icon.webp" className="h-14 rounded-b-full rounded-t-full" alt="Logo" />
@@ -108,7 +110,7 @@ const Navbar = () => {
               <SunIcon className="h-6 w-6" />
             )}
           </button>
-          <Link to="/login" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
+          <Link to={isAuthenticated ? "/profil" : "/login"} className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
             <UserCircleIcon className="h-6 w-6" />
           </Link>
           <Link to="/panier" className="relative text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
