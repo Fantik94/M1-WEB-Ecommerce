@@ -1,63 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import CategoryForm from '../forms/Categorie';
 
 const GestionCategorie = () => {
   const [categories, setCategories] = useState([]);
-  const [currentCategory, setCurrentCategory] = useState(null);
-  const [showForm, setShowForm] = useState(false);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/categories');
-      setCategories(response.data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
 
   useEffect(() => {
+    // Fetch categories from the API
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
     fetchCategories();
   }, []);
 
-  const handleEdit = (category) => {
-    setCurrentCategory(category);
-    setShowForm(true);
+  const handleEdit = (id) => {
+    console.log('Edit category with id:', id);
+    // Handle edit functionality here
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/categories/${id}`);
-      setCategories(categories.filter(category => category.category_id !== id));
-    } catch (error) {
-      console.error('Error deleting category:', error);
-    }
+  const handleDelete = (id) => {
+    console.log('Delete category with id:', id);
+    // Handle delete functionality here
   };
 
   const handleAdd = () => {
-    setCurrentCategory(null);
-    setShowForm(true);
-  };
-
-  const handleSave = async (form) => {
-    try {
-      if (currentCategory) {
-        // Update category
-        await axios.put(`http://localhost:3000/categories/${currentCategory.category_id}`, form);
-        setCategories(categories.map(category => (category.category_id === currentCategory.category_id ? { ...category, ...form } : category)));
-      } else {
-        // Add new category
-        const response = await axios.post('http://localhost:3000/categories', form);
-        setCategories([...categories, response.data]);
-      }
-      setShowForm(false);
-    } catch (error) {
-      console.error('Error saving category:', error);
-    }
-  };
-
-  const handleCancel = () => {
-    setShowForm(false);
+    console.log('Add new category');
+    // Handle add functionality here
   };
 
   return (
@@ -69,35 +42,28 @@ const GestionCategorie = () => {
       >
         Ajouter une catégorie
       </button>
-      {showForm && <CategoryForm currentCategory={currentCategory} onSave={handleSave} onCancel={handleCancel} />}
       <table className="min-w-full bg-white dark:bg-gray-800 shadow-md rounded-lg">
         <thead>
           <tr>
             <th className="py-2 px-4 border-b dark:border-gray-700">ID</th>
-            <th className="py-2 px-4 border-b dark:border-gray-700">Image</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Nom</th>
-            <th className="py-2 px-4 border-b dark:border-gray-700">Description</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Actions</th>
           </tr>
         </thead>
         <tbody>
           {categories.map((category) => (
-            <tr key={category.category_id}>
+            <tr key={category.id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.category_id}</td>
-              <td className="py-2 px-4 border-b dark:border-gray-700">
-                <img src={`/categories/${category.name}.webp`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
-              </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.name}</td>
-              <td className="py-2 px-4 border-b dark:border-gray-700">{category.description}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
                 <button
-                  onClick={() => handleEdit(category)}
+                  onClick={() => handleEdit(category.id)}
                   className="px-2 py-1 bg-yellow-500 text-white rounded-lg mr-2 hover:bg-yellow-600 focus:outline-none"
                 >
                   Modifier
                 </button>
                 <button
-                  onClick={() => handleDelete(category.category_id)}
+                  onClick={() => handleDelete(category.id)}
                   className="px-2 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none"
                 >
                   Supprimer

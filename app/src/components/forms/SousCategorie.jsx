@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
   const [form, setForm] = useState({ name: '', category_id: '', description: '' });
+  const [image, setImage] = useState(null);  // State for image file
   const [allCategories, setAllCategories] = useState([]);
 
   useEffect(() => {
@@ -12,6 +13,7 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
         category_id: currentCategory.category_id,
         description: currentCategory.description,
       });
+      setImage(currentCategory.image);  // Load current image if available
     }
   }, [currentCategory]);
 
@@ -28,15 +30,27 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
     fetchCategories();
   }, []);
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', form.name);
+    formData.append('category_id', form.category_id);
+    formData.append('description', form.description);
+    if (image) {
+      formData.append('image', image);
+    }
     console.log('Form data submitted:', form);
-    onSave(form);
+    onSave(formData);
     setForm({ name: '', category_id: '', description: '' });
+    setImage(null);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+    <form onSubmit={handleSubmit} className="mb-6 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg" encType="multipart/form-data">
       <div className="mb-4">
         <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="name">
           Nom de la sous-catégorie
@@ -79,6 +93,17 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
           required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="image">
+          Image
+        </label>
+        <input
+          type="file"
+          id="image"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={handleImageChange}
         />
       </div>
       <div className="flex justify-between">
