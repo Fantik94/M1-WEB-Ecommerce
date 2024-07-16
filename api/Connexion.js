@@ -1,6 +1,7 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 
 const connexionRoutes = (dbConfig) => {
@@ -44,8 +45,11 @@ const connexionRoutes = (dbConfig) => {
           return res.status(401).send('Invalid email or password');
         }
 
+        // Générer un jeton JWT
+        const token = jwt.sign({ userId: user.user_id }, 'your_secret_key', { expiresIn: '1h' });
+
         console.log(`User ${user.username} logged in successfully`);
-        res.status(200).send(`User ${user.username} logged in successfully`);
+        res.status(200).json({ token, userId: user.user_id });
       } catch (error) {
         console.error('Error during login:', error);
         res.status(500).send('Internal Server Error');

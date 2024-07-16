@@ -6,3 +6,7 @@
 
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+.Min-heightConteiner-footer{
+  min-height: calc(50vh - 66px - 220px);
+}

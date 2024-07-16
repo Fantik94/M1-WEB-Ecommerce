@@ -7,6 +7,7 @@ import inscriptionRoutes from './Inscription.js';
 import BackofficeRoutes from './Backoffice.js';
 import connexionRoutes from './Connexion.js';
 import adresseRoutes from './Adresse.js';
+import orderRoutes from './order.js';
 
 const app = express();
 const port = 3000;
@@ -44,6 +45,7 @@ app.use('/', inscriptionRoutes(dbConfig));
 app.use('/', BackofficeRoutes(dbConfig));
 app.use('/', connexionRoutes(dbConfig));
 app.use('/', adresseRoutes(dbConfig));
+app.use('/', orderRoutes(dbConfig));
 
 // Autres routes...
 app.listen(port, () => {
