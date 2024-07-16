@@ -10,6 +10,8 @@ import Subcategory from './components/vues/Subcategory';
 import Login from './components/forms/Login';
 import ThemeContext from './context/ThemeContext';
 import Register from './components/forms/Register';
+import Paiement from './components/vues/Paiement';
+import Livraison from './components/vues/Livraison';
 
 const App = () => {
   const { theme } = useContext(ThemeContext);
@@ -35,6 +37,10 @@ const App = () => {
           <Route path="/categories/:categoryId/subcategories/:subcategoryId/products" element={<Subcategory />} />
           <Route path="/produit/:productId" element={<Produits />} />
           <Route path="/alimentation" element={<Alimentation />} />
+          <Route path="/paiement" element={<Paiement />} />
+          <Route path="/livraison" element={<Livraison />} />
+
+
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
