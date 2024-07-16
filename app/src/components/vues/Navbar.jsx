@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon, ShoppingCartIcon, UserCircleIcon, MoonIcon, SunIcon } from '@heroicons/react/solid';
 import axios from 'axios';
@@ -11,6 +11,7 @@ const Navbar = () => {
   const [subcategories, setSubcategories] = useState({});
   const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     axios.get('http://localhost:3000/categories/')
@@ -34,6 +35,11 @@ const Navbar = () => {
         console.error("There was an error fetching the categories!", error);
       });
   }, []);
+
+  useEffect(() => {
+    // Fermer le menu déroulant lorsque la route change
+    setOpenMenu(null);
+  }, [location.pathname]);
 
   const handleCategoryClick = (categoryName) => {
     navigate(`/${categoryName.toLowerCase()}`);
@@ -75,7 +81,7 @@ const Navbar = () => {
                       {subcategories[category.category_id]?.map(subcategory => (
                         <Link
                           key={subcategory.subcategory_id}
-                          to={`/categories/${category.category_id}/subcategories/${subcategory.subcategory_id}`}
+                          to={`/categories/${category.category_id}/subcategories/${subcategory.subcategory_id}/products`}
                           className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                         >
                           {subcategory.name}
