@@ -4,8 +4,10 @@ import { Menu } from '@headlessui/react';
 import { ChevronDownIcon, ShoppingCartIcon, UserCircleIcon, MoonIcon, SunIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import ThemeContext from '../../context/ThemeContext';
+import { PanierContext } from "../../context/PanierContext";
 
 const Navbar = () => {
+  const { nombreProduits } = useContext(PanierContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
@@ -92,9 +94,6 @@ const Navbar = () => {
                 )}
               </li>
             ))}
-            <li>
-              <Link to="/produits" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Produits</Link>
-            </li>
           </ul>
         </div>
         <div className="flex items-center space-x-4">
@@ -112,8 +111,13 @@ const Navbar = () => {
           <Link to="/login" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
             <UserCircleIcon className="h-6 w-6" />
           </Link>
-          <Link to="/panier" className="text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
+          <Link to="/panier" className="relative text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">
             <ShoppingCartIcon className="h-6 w-6" />
+            {nombreProduits > 0 && (
+              <div className="absolute top-[-8px] right-[-8px] bg-red-600 text-white rounded-full w-5 h-5 flex justify-center items-center text-xs">
+                {nombreProduits}
+              </div>
+            )}
           </Link>
         </div>
       </div>

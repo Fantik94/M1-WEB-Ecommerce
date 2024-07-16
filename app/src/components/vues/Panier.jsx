@@ -1,8 +1,20 @@
 // src/components/vues/Panier.jsx
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ProgressBar from './ProgressBar';
+import { PanierContext } from "../../context/PanierContext";
 
 const Panier = () => {
+
+  const {
+    ajouter,
+    panier,
+    retirer,
+    supprimer,
+    nombreProduits,
+    getTotalProduit,
+    getTotalPanier,
+  } = useContext(PanierContext);
 
   const descriptions = {
     1: 'Vérifiez les articles dans votre panier',
@@ -21,7 +33,19 @@ const Panier = () => {
         <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
           <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
             <div className="space-y-6">
-              {/* Example Product in Cart */}
+              
+              {panier.length === 0 ? (
+                <div className="rounded-lg border border-gray-300 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
+                  <center>
+                    <p className="text-base font-medium text-gray-900 hover:underline dark:text-white">Votre panier est vide. ☹️</p>
+                    <br />
+                    <Link to="/recherche" className="flex w-[200px] items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                      Voir notre catalogue
+                    </Link>
+                  </center>
+                </div>
+              ) : null}
+
               <div className="rounded-lg border border-gray-300 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
                 <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                   <a href="#" className="shrink-0 md:order-1">

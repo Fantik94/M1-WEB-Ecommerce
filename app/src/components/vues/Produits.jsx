@@ -1,13 +1,16 @@
 // src/components/vues/ProductDetail.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { PanierContext } from "../../context/PanierContext";
 
 const Product = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState([]);
   const [mainImage, setMainImage] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const { ajouter } = useContext(PanierContext);
 
   useEffect(() => {
     axios.get(`http://localhost:3000/products/${productId}`)
@@ -32,6 +35,18 @@ const Product = () => {
 
   const handleImageClick = (num) => {
     setMainImage(`/images/${product.product_id}-${num}.jpg`);
+  };
+
+  const handleAddToCart = () => {
+    ajouter(product, quantity);
+  };
+
+  const handleIncrement = () => {
+    setQuantity(prev => Math.min(prev + 1, product.stock));
+  };
+
+  const handleDecrement = () => {
+    setQuantity(prev => Math.max(prev - 1, 1));
   };
 
   if (!product) {
@@ -81,18 +96,31 @@ const Product = () => {
 
             <div className="flex flex-wrap gap-4 mt-8">
               <div className="flex items-center">
-                      <button type="button" id="decrement-button" className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                        <svg className="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h16" />
-                        </svg>
-                      </button>
-                      <input type="text" id="counter-input" className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" value="2" readOnly />
-                      <button type="button" id="increment-button" className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                        <svg className="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                        </svg>
-                      </button>
-                    </div>
+                <button
+                  type="button"
+                  className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                  onClick={handleDecrement}
+                >
+                  <svg className="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h16" />
+                  </svg>
+                </button>
+                <input
+                  type="text"
+                  className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+                  value={quantity}
+                  readOnly
+                />
+                <button
+                  type="button"
+                  className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                  onClick={handleIncrement}
+                >
+                  <svg className="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-4 mt-8">
@@ -113,6 +141,7 @@ const Product = () => {
                 type="button"
                 className={`min-w-[200px] px-4 py-2.5 ${product.stock < 1 ? 'border-gray-400 bg-gray-200 text-gray-400 cursor-not-allowed' : 'border-primary-700 bg-transparent hover:bg-gray-50 text-primary-700'} border text-sm font-semibold rounded`}
                 disabled={product.stock < 1}
+                onClick={handleAddToCart}
               >
                 Ajouter au panier
               </button>
