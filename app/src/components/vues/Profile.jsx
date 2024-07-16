@@ -116,7 +116,7 @@ const Profile = () => {
           <div className="flex items-center space-x-4">
             <button
               type="submit"
-              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
               Save
             </button>
@@ -137,7 +137,7 @@ const Profile = () => {
           <p><strong>Last Name:</strong> {userInfo.last_name}</p>
           <p><strong>Phone Number:</strong> {userInfo.phone_number}</p>
           <button
-            className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             onClick={handleEdit}
           >
             Edit
