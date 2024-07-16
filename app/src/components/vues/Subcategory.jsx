@@ -48,7 +48,7 @@ const Subcategory = () => {
             image={`/images/${product.product_id}-1.jpg`}
             title={product.name}
             price={product.price}
-            link={`/products/${product.product_id}`}
+            link={`/produit/${product.product_id}`}
           />
         ))}
       </div>

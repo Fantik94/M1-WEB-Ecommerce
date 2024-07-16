@@ -27,11 +27,11 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/produits" element={<Produits />} />
           <Route path="/gaming" element={<Gaming />} />
           <Route path="/panier" element={<Panier />} />
           <Route path="/login" element={<Login />} />
           <Route path="/categories/:categoryId/subcategories/:subcategoryId/products" element={<Subcategory />} />
+          <Route path="/produit/:productId" element={<Produits />} />
           <Route path="/alimentation" element={<Alimentation />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
