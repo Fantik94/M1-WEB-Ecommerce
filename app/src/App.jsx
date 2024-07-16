@@ -68,6 +68,7 @@ const App = () => {
                 <Route path="gestion-sous-categorie" element={<GestionSousCategorie />} />
                 <Route path="gestion-commande" element={<GestionCommande />} />
                 <Route path="gestion-utilisateur" element={<GestionUtilisateur />} />
+                <Route path="gestion-produit" element={<GestionProduit />} />
               </Route>
             </Route>
 
