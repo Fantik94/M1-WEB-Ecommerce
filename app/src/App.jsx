@@ -18,6 +18,7 @@ import ProfileLayout from './components/vues/ProfileLayout';
 import PaymentMethods from './components/vues/PaymentMethods';
 import Orders from './components/vues/Orders';
 import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './components/vues/PrivateRoute';
 
 const App = () => {
   const { theme } = useContext(ThemeContext);
@@ -47,12 +48,13 @@ const App = () => {
             <Route path="/paiement" element={<Paiement />} />
             <Route path="/livraison" element={<Livraison />} />
 
-
-            <Route path="/profil" element={<ProfileLayout />}>
-              <Route index element={<Profile />} />
-              <Route path="addresses" element={<Addresses />} />
-              <Route path="payment-methods" element={<PaymentMethods />} />
-              <Route path="orders" element={<Orders />} />
+            <Route path="/profil" element={<PrivateRoute />}>
+              <Route element={<ProfileLayout />}>
+                <Route index element={<Profile />} />
+                <Route path="addresses" element={<Addresses />} />
+                <Route path="payment-methods" element={<PaymentMethods />} />
+                <Route path="orders" element={<Orders />} />
+              </Route>
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />
