@@ -48,7 +48,7 @@ router.get('/allsubcategories', async (req, res) => {
     connection.end();
 
     const subCategoriesWithCategoryNames = subCategories.map(subCategory => {
-      const category = categories.find(category => category.id === subCategory.category_id);
+      const category = categories.find(category => category.category_id === subCategory.category_id);
       return {
         ...subCategory,
         category_name: category ? category.name : 'Unknown'
