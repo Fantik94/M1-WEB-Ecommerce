@@ -29,6 +29,7 @@ const Alimentation = () => {
         <p className="text-lg text-center font-normal text-gray-500 lg:text-xl dark:text-gray-400">
           Explorez notre sélection de produits alimentaires.
         </p>
+        <br />
         <div className="flex flex-wrap justify-center">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {subcategories.map(subcategory => (
