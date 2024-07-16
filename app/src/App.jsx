@@ -18,6 +18,7 @@ import ProfileLayout from './components/vues/ProfileLayout';
 import PaymentMethods from './components/vues/PaymentMethods';
 import Orders from './components/vues/Orders';
 import PrivateRoute from './components/vues/PrivateRoute';
+import AdminRoute from './components/vues/AdminRoute';
 import BackofficeLayout from './components/backoffice/BackofficeLayout';
 import GestionCategorie from './components/backoffice/GestionCategorie';
 import GestionSousCategorie from './components/backoffice/GestionSousCategorie';
@@ -36,30 +37,29 @@ const App = () => {
   }, [theme]);
 
   return (
+    <Router>
+      <div className={`${theme === 'dark' ? 'dark' : ''} font-inter`}>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/gaming" element={<Gaming />} />
+          <Route path="/panier" element={<Panier />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/categories/:categoryId/subcategories/:subcategoryId/products" element={<Subcategory />} />
+          <Route path="/produit/:productId" element={<Produits />} />
+          <Route path="/alimentation" element={<Alimentation />} />
+          <Route path="/paiement" element={<Paiement />} />
+          <Route path="/livraison" element={<Livraison />} />
 
-      <Router>
-        <div className={`${theme === 'dark' ? 'dark' : ''} font-inter`}>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/gaming" element={<Gaming />} />
-            <Route path="/panier" element={<Panier />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/categories/:categoryId/subcategories/:subcategoryId/products" element={<Subcategory />} />
-            <Route path="/produit/:productId" element={<Produits />} />
-            <Route path="/alimentation" element={<Alimentation />} />
-            <Route path="/paiement" element={<Paiement />} />
-            <Route path="/livraison" element={<Livraison />} />
-
-            <Route path="/profil" element={<PrivateRoute />}>
-              <Route element={<ProfileLayout />}>
-                <Route index element={<Profile />} />
-                <Route path="addresses" element={<Addresses />} />
-                <Route path="payment-methods" element={<PaymentMethods />} />
-                <Route path="orders" element={<Orders />} />
-              </Route>
+          <Route path="/profil" element={<PrivateRoute />}>
+            <Route element={<ProfileLayout />}>
+              <Route index element={<Profile />} />
+              <Route path="addresses" element={<Addresses />} />
+              <Route path="payment-methods" element={<PaymentMethods />} />
+              <Route path="orders" element={<Orders />} />
             </Route>
+          </Route>
 
             <Route path="/backoffice" element={<PrivateRoute />}>
               <Route element={<BackofficeLayout />}>
@@ -72,12 +72,10 @@ const App = () => {
               </Route>
             </Route>
 
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-         
-        </div>
-      </Router>
-
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 
