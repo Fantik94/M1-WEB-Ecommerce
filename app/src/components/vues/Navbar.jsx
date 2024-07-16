@@ -18,7 +18,7 @@ const Navbar = () => {
         const filteredCategories = response.data.filter(category => category.category_id !== 3);
         setCategories(filteredCategories);
         filteredCategories.forEach(category => {
-          axios.get(`http://localhost:3000/categories/${category.category_id}/subcategories`)
+          axios.get(`http://localhost:3000/subcategories?category_id=${category.category_id}`)
             .then(subResponse => {
               setSubcategories(prevSubcategories => ({
                 ...prevSubcategories,

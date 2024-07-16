@@ -8,7 +8,7 @@ const Gaming = () => {
   const [subcategories, setSubcategories] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/categories/1/subcategories')
+    axios.get('http://localhost:3000/subcategories?category_id=1')
       .then(response => {
         setSubcategories(response.data);
       })
