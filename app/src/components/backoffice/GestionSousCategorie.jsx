@@ -1,36 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import SousCategorieForm from '../forms/SousCategorie';
 
 const GestionSousCategorie = () => {
   const [categories, setCategories] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    // Fetch categories from the API
-    const fetchCategories = async () => {
+    const fetchSubCategories = async () => {
       try {
         const response = await axios.get('http://localhost:3000/allsubcategories');
         setCategories(response.data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Error fetching subcategories:', error);
       }
     };
 
-    fetchCategories();
+    fetchSubCategories();
   }, []);
 
-  const handleEdit = (id) => {
-    console.log('Edit category with id:', id);
-    // Handle edit functionality here
+  const handleEdit = (category) => {
+    setCurrentCategory(category);
+    setShowForm(true);
   };
 
-  const handleDelete = (id) => {
-    console.log('Delete category with id:', id);
-    // Handle delete functionality here
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/subcategories/${id}`);
+      setCategories(categories.filter(category => category.subcategory_id !== id));
+    } catch (error) {
+      console.error('Error deleting subcategory:', error);
+    }
   };
 
   const handleAdd = () => {
-    console.log('Add new category');
-    // Handle add functionality here
+    setCurrentCategory(null);
+    setShowForm(true);
+  };
+
+  const handleSave = async (form) => {
+    try {
+      if (currentCategory) {
+        // Update subcategory
+        console.log('Updating subcategory:', form);
+        await axios.put(`http://localhost:3000/subcategories/${currentCategory.subcategory_id}`, form);
+        setCategories(categories.map(category => (category.subcategory_id === currentCategory.subcategory_id ? { ...category, ...form } : category)));
+      } else {
+        // Add new subcategory
+        console.log('Adding subcategory:', form);
+        const response = await axios.post('http://localhost:3000/subcategories', form);
+        setCategories([...categories, response.data]);
+      }
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error saving subcategory:', error);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
   };
 
   return (
@@ -42,12 +71,15 @@ const GestionSousCategorie = () => {
       >
         Ajouter une sous-catégorie
       </button>
+      {showForm && <SousCategorieForm currentCategory={currentCategory} onSave={handleSave} onCancel={handleCancel} />}
       <table className="min-w-full bg-white dark:bg-gray-800 shadow-md rounded-lg">
         <thead>
           <tr>
             <th className="py-2 px-4 border-b dark:border-gray-700">ID</th>
+            <th className="py-2 px-4 border-b dark:border-gray-700">Image</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Nom de la sous-catégorie</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Nom de la catégorie</th>
+            <th className="py-2 px-4 border-b dark:border-gray-700">Description</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Actions</th>
           </tr>
         </thead>
@@ -55,11 +87,15 @@ const GestionSousCategorie = () => {
           {categories.map((category) => (
             <tr key={category.subcategory_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.subcategory_id}</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">
+                  <img src={`/subcategories/${category.name}.webp`} alt={category.name} className="w-16 h-16 object-cover rounded-md"/>
+              </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.category_name}</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{category.description}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
                 <button
-                  onClick={() => handleEdit(category.subcategory_id)}
+                  onClick={() => handleEdit(category)}
                   className="px-2 py-1 bg-yellow-500 text-white rounded-lg mr-2 hover:bg-yellow-600 focus:outline-none"
                 >
                   Modifier
