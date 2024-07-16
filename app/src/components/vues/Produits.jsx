@@ -1,6 +1,6 @@
 // src/components/vues/ProductDetail.jsx
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { PanierContext } from "../../context/PanierContext";
 
@@ -13,25 +13,31 @@ const Product = () => {
   const { ajouter } = useContext(PanierContext);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/products/${productId}`)
-      .then(response => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/products/${productId}`);
         setProduct(response.data);
         setMainImage(`/images/${response.data.product_id}-1.jpg`);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error(`There was an error fetching the product ${productId}:`, error);
-      });
+      }
+    };
+
+    fetchProduct();
   }, [productId]);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/rng-products`)
-      .then(response => {
+    const fetchSimilarProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/rng-products');
         setSimilarProducts(response.data);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('There was an error fetching the random products:', error);
-      });
-  }, []);
+      }
+    };
+
+    fetchSimilarProducts();
+  }, [productId]);
 
   const handleImageClick = (num) => {
     setMainImage(`/images/${product.product_id}-${num}.jpg`);
@@ -163,9 +169,9 @@ const Product = () => {
                 <img src={`/images/${similarProduct.product_id}-1.jpg`} alt={similarProduct.name} className="w-full h-48 object-cover rounded-md" />
                 <h3 className="mt-4 text-lg font-bold text-gray-900 dark:text-white">{similarProduct.name}</h3>
                 <p className="mt-2 text-gray-600 dark:text-gray-400">{similarProduct.price}€</p>
-                <a href={`/produit/${similarProduct.product_id}`} className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                <Link to={`/produit/${similarProduct.product_id}`} className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
                   Voir le produit
-                </a>
+                </Link>
               </div>
             ))}
           </div>
