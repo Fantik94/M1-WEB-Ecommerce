@@ -6,9 +6,10 @@ import axios from 'axios';
 
 const Gaming = () => {
   const [subcategories, setSubcategories] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    axios.get('http://localhost:3000/subcategories?category_id=1')
+    axios.get(`${apiUrl}/subcategories?category_id=1`)
       .then(response => {
         setSubcategories(response.data);
       })

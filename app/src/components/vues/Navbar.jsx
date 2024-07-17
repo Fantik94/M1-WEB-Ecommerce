@@ -16,14 +16,15 @@ const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    axios.get('http://localhost:3000/categories/')
+    axios.get(`${apiUrl}/categories/`)
       .then(response => {
         const filteredCategories = response.data.filter(category => category.category_id !== 3);
         setCategories(filteredCategories);
         filteredCategories.forEach(category => {
-          axios.get(`http://localhost:3000/subcategories?category_id=${category.category_id}`)
+          axios.get(`${apiUrl}/subcategories?category_id=${category.category_id}`)
             .then(subResponse => {
               setSubcategories(prevSubcategories => ({
                 ...prevSubcategories,

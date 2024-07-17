@@ -4,6 +4,7 @@ import axios from 'axios';
 const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
   const [form, setForm] = useState({ name: '', category_id: '', description: '' });
   const [allCategories, setAllCategories] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (currentCategory) {
@@ -18,7 +19,7 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/categories');
+        const response = await axios.get(`${apiUrl}/categories`);
         setAllCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);

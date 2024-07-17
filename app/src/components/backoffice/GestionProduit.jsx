@@ -6,10 +6,11 @@ const GestionProduits = () => {
   const [products, setProducts] = useState([]);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/products');
+      const response = await axios.get(`${apiUrl}/products`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -27,7 +28,7 @@ const GestionProduits = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/products/${id}`);
+      await axios.delete(`${apiUrl}/products/${id}`);
       setProducts(products.filter(product => product.product_id !== id));
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -44,11 +45,11 @@ const GestionProduits = () => {
       if (currentProduct) {
         // Update product
         console.log('Updating product:', form);
-        await axios.put(`http://localhost:3000/products/${currentProduct.product_id}`, form);
+        await axios.put(`${apiUrl}/products/${currentProduct.product_id}`, form);
       } else {
         // Add new product
         console.log('Adding product:', form);
-        await axios.post('http://localhost:3000/products', form);
+        await axios.post(`${apiUrl}/products`, form);
       }
       setShowForm(false);
       fetchProducts(); // Refresh the products list

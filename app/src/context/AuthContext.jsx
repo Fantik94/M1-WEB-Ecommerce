@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserInfo = async (userId, token) => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/${userId}`, {
+      const response = await axios.get(`${apiUrl}/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

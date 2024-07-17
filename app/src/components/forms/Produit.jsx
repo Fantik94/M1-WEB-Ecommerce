@@ -12,6 +12,7 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
     stock: '',
   });
   const [subcategories, setSubcategories] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (currentProduct) {
@@ -28,7 +29,7 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
   useEffect(() => {
     const fetchSubcategories = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/allsubcategories');
+        const response = await axios.get(`${apiUrl}/allsubcategories`);
         setSubcategories(response.data);
       } catch (error) {
         console.error('Error fetching subcategories:', error);

@@ -11,11 +11,12 @@ const Product = () => {
   const [mainImage, setMainImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { ajouter } = useContext(PanierContext);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/products/${productId}`);
+        const response = await axios.get(`${apiUrl}/products/${productId}`);
         setProduct(response.data);
         setMainImage(`/images/${response.data.product_id}-1.jpg`);
       } catch (error) {
@@ -29,7 +30,7 @@ const Product = () => {
   useEffect(() => {
     const fetchSimilarProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/rng-products');
+        const response = await axios.get(`${apiUrl}/rng-products`);
         setSimilarProducts(response.data);
       } catch (error) {
         console.error('There was an error fetching the random products:', error);

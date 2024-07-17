@@ -23,8 +23,8 @@ const categorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour ajouter une nouvelle catégorie
-  router.post('/categories', async (req, res) => {
+// Route pour ajouter une nouvelle catégorie
+router.post('/categories', async (req, res) => {
   const { name, description } = req.body;
 
   // Vérification des champs
@@ -44,13 +44,15 @@ const categorieRoutes = (dbConfig) => {
     console.log('Connected to the database.');
 
     const [result] = await connection.execute('INSERT INTO Categories (name, description) VALUES (?, ?)', [name, description]);
-    connection.end();
 
     if (result.affectedRows > 0) {
+      const [newCategory] = await connection.execute('SELECT * FROM Categories WHERE category_id = ?', [result.insertId]);
+      connection.end();
       console.log(`Category ${name} added.`);
-      res.status(201).send(`Category ${name} added.`);
+      res.status(201).json(newCategory[0]);
     } else {
       console.log(`Failed to add category ${name}.`);
+      connection.end();
       res.status(500).send(`Failed to add category ${name}.`);
     }
   } catch (error) {
@@ -60,7 +62,7 @@ const categorieRoutes = (dbConfig) => {
     }
     res.status(500).send('Internal Server Error');
   }
-  });
+});
 
 
   // Route pour supprimer une catégorie

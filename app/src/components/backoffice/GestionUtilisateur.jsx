@@ -3,11 +3,12 @@ import axios from 'axios';
 
 const GestionUtilisateur = () => {
   const [users, setUsers] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/users');
+        const response = await axios.get(`${apiUrl}/users`);
         setUsers(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -24,7 +25,7 @@ const GestionUtilisateur = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/users/${id}`);
+      await axios.delete(`${apiUrl}/users/${id}`);
       setUsers(users.filter(user => user.user_id !== id));
     } catch (error) {
       console.error('Error deleting user:', error);
