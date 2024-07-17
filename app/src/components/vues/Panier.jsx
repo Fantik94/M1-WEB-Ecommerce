@@ -15,6 +15,7 @@ const Panier = () => {
     getTotalPanier,
   } = useContext(PanierContext);
 
+  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -77,8 +78,8 @@ const Panier = () => {
                   <div key={produit.product_id} className="rounded-lg border border-gray-300 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
                     <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                       <Link to={`/produit/${produit.product_id}`} className="shrink-0 md:order-1">
-                        <img className="h-20 w-20 dark:hidden" src={`/images/${produit.product_id}-1.jpg`} alt={produit.name} />
-                        <img className="hidden h-20 w-20 dark:block" src={`/images/${produit.product_id}-1.jpg`} alt={produit.name} />
+                        <img className="h-20 w-20 dark:hidden" src={`${imageUrl}/images/${produit.product_id}-1.jpg`} alt={produit.name} />
+                        <img className="hidden h-20 w-20 dark:block" src={`${imageUrl}/images/${produit.product_id}-1.jpg`} alt={produit.name} />
                       </Link>
 
                       <label htmlFor="counter-input" className="sr-only">Choose quantity:</label>
