@@ -41,16 +41,24 @@ const GestionSousCategorie = () => {
     setShowForm(true);
   };
 
-  const handleSave = async (form) => {
+  const handleSave = async (formData) => {
     try {
       if (currentCategory) {
         // Update subcategory
-        console.log('Updating subcategory:', form);
-        await axios.put(`${apiUrl}/subcategories/${currentCategory.subcategory_id}`, form);
+        console.log('Updating subcategory:', formData);
+        await axios.patch(`${apiUrl}/subcategories/${currentCategory.subcategory_id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
       } else {
         // Add new subcategory
-        console.log('Adding subcategory:', form);
-        await axios.post(`${apiUrl}/subcategories`, form);
+        console.log('Adding subcategory:', formData);
+        await axios.post(`${apiUrl}/subcategories`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
       }
       setShowForm(false);
       fetchSubCategories(); // Refresh the subcategories list
@@ -89,7 +97,7 @@ const GestionSousCategorie = () => {
             <tr key={category.subcategory_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.subcategory_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                  <img src={`${imageUrl}/subcategories/${category.subcategory_id}.jpg`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
+                  <img src={`${category.image}`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.category_name}</td>

@@ -40,7 +40,8 @@ const GestionCommande = () => {
           <tr>
             <th className="py-2 px-4 border-b dark:border-gray-700">ID</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Client</th>
-            <th className="py-2 px-4 border-b dark:border-gray-700">Date</th>
+            <th className="py-2 px-4 border-b dark:border-gray-700">Date de création</th>
+            <th className="py-2 px-4 border-b dark:border-gray-700">Date de modification</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Total</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Statut</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Actions</th>
@@ -49,11 +50,12 @@ const GestionCommande = () => {
         <tbody>
           {commandes.map((commande) => (
             <tr key={commande.commande_id}>
-              <td className="py-2 px-4 border-b dark:border-gray-700">{commande.commande_id}</td>
-              <td className="py-2 px-4 border-b dark:border-gray-700">{commande.client_name}</td>
-              <td className="py-2 px-4 border-b dark:border-gray-700">{new Date(commande.date).toLocaleDateString()}</td>
-              <td className="py-2 px-4 border-b dark:border-gray-700">{commande.total.toFixed(2)}€</td>
-              <td className="py-2 px-4 border-b dark:border-gray-700">{commande.status}</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{commande.order_id}</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{commande.user_id}</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{new Date(commande.created_at).toLocaleDateString()}</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{new Date(commande.updated_at).toLocaleDateString()}</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{commande.total_amount}€</td>
+              <td className="py-2 px-4 border-b dark:border-gray-700">{commande.order_status}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
                 <button
                   onClick={() => handleEdit(commande)}

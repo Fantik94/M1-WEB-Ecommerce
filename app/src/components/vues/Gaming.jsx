@@ -37,7 +37,7 @@ const Gaming = () => {
             {subcategories.map(subcategory => (
               <Card
                 key={subcategory.subcategory_id}
-                image={`${imageUrl}/subcategories/${subcategory.subcategory_id}.jpg`}
+                image={`${subcategory.image}`}
                 title={subcategory.name}
                 description={subcategory.description}
                 link={`/categories/1/subcategories/${subcategory.subcategory_id}/products`}

@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
-  const [form, setForm] = useState({ name: '', category_id: '', description: '' });
+  const [form, setForm] = useState({
+    name: '',
+    category_id: '',
+    description: '',
+    image: null,
+  });
   const [allCategories, setAllCategories] = useState([]);
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (currentCategory) {
@@ -12,6 +16,7 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
         name: currentCategory.name,
         category_id: currentCategory.category_id,
         description: currentCategory.description,
+        image: null, // No need to pre-fill the image
       });
     }
   }, [currentCategory]);
@@ -19,7 +24,7 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/categories`);
+        const response = await axios.get('http://localhost:3000/categories');
         setAllCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -29,11 +34,39 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
     fetchCategories();
   }, []);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      image: e.target.files[0],
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form data submitted:', form);
-    onSave(form);
-    setForm({ name: '', category_id: '', description: '' });
+
+    const formData = new FormData();
+    formData.append('name', form.name);
+    formData.append('category_id', form.category_id);
+    formData.append('description', form.description);
+    if (form.image) {
+      formData.append('image', form.image);
+    }
+
+    onSave(formData);
+    setForm({
+      name: '',
+      category_id: '',
+      description: '',
+      image: null,
+    });
   };
 
   return (
@@ -45,9 +78,10 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
         <input
           type="text"
           id="name"
+          name="name"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onChange={handleChange}
           required
         />
       </div>
@@ -57,9 +91,10 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
         </label>
         <select
           id="category_id"
+          name="category_id"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.category_id}
-          onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+          onChange={handleChange}
           required
         >
           <option value="">Sélectionnez une catégorie</option>
@@ -76,10 +111,24 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
         </label>
         <textarea
           id="description"
+          name="description"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
+          onChange={handleChange}
           required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="image">
+          Image
+        </label>
+        <input
+          type="file"
+          id="image"
+          name="image"
+          accept="image/*"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={handleImageChange}
         />
       </div>
       <div className="flex justify-between">
