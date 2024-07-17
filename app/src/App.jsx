@@ -63,7 +63,7 @@ const App = () => {
             </Route>
           </Route>
 
-            <Route path="/backoffice" element={<PrivateRoute />}>
+            <Route path="/backoffice" element={<AdminRoute />}>
               <Route element={<BackofficeLayout />}>
                 <Route index element={<GestionCategorie />} />
                 <Route path="gestion-categorie" element={<GestionCategorie />} />

@@ -10,7 +10,7 @@ import AuthContext from '../../context/AuthContext';
 const Navbar = () => {
   const { nombreProduits } = useContext(PanierContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, userInfo } = useContext(AuthContext);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
   const [openMenu, setOpenMenu] = useState(null);
@@ -122,9 +122,9 @@ const Navbar = () => {
               </div>
             )}
           </Link>
-
-
-          <Link to="/backoffice" className="relative text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">BackOffice</Link>
+          {isAuthenticated && userInfo?.roles.includes('admin') && (
+            <Link to="/backoffice" className="relative text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500">BackOffice</Link>
+          )}
         </div>
       </div>
     </nav>
