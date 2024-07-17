@@ -76,6 +76,14 @@ const Livraison = () => {
     }
   };
 
+  const handleCheckout = () => {
+    if (isAuthenticated) {
+      navigate('/paiement');
+    } else {
+      navigate('/login');
+    }
+  };
+
   const handleAddOrUpdateAddress = async (e) => {
     e.preventDefault();
     const url = selectedAddress
@@ -231,13 +239,12 @@ const Livraison = () => {
                   <dd className="text-base font-bold text-gray-900 dark:text-white">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(discountedTotal)}</dd>
                 </dl>
               </div>
-
               <button
+                onClick={handleCheckout}
                 className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                {isAuthenticated ? "Procéder au paiement" : "Se connecter"}
+                {isAuthenticated ? "Étape suivante" : "Se connecter"}
               </button>
-
               <div className="flex items-center justify-center gap-2">
                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> ou </span>
                 <Link to="/rechercher" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
