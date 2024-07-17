@@ -10,6 +10,7 @@ import connexionRoutes from './Connexion.js';
 import adresseRoutes from './Adresse.js';
 import orderRoutes from './order.js';
 import imageRoutes from './gestion_image.js'; // Importer les routes de gestion des images
+import paymentRoutes from './Payement.js';
 
 dotenv.config();
 
@@ -53,6 +54,7 @@ app.use('/', BackofficeRoutes(dbConfig));
 app.use('/', connexionRoutes(dbConfig));
 app.use('/', adresseRoutes(dbConfig));
 app.use('/', orderRoutes(dbConfig));
+app.use('/', paymentRoutes(dbConfig));
 
 // Autres routes...
 app.listen(port, () => {
