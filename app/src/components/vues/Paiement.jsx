@@ -3,12 +3,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import ProgressBar from './ProgressBar';
 import { PanierContext } from "../../context/PanierContext";
 import AuthContext from "../../context/AuthContext";
+import CommandeContext from "../../context/CommandeContext";
 import axios from 'axios';
 import { useNotification } from '../../context/NotificationContext';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline';
 
 const Paiement = () => {
   const { panier, getTotalPanier } = useContext(PanierContext);
+  const { adresseLivraison } = useContext(CommandeContext);
   const descriptions = {
     1: 'Vérifiez les articles dans votre panier',
     2: 'Entrez votre adresse de livraison',
@@ -138,13 +140,37 @@ const Paiement = () => {
     setSelectedPayment(paymentId);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (selectedPayment) {
-      console.log('Méthode de paiement sélectionnée:', selectedPayment);
-      navigate('/confirmation');
-    } else {
+    if (!selectedPayment) {
       addNotification('Veuillez sélectionner ou ajouter une méthode de paiement.', 'error');
+      return;
+    }
+
+    if (!adresseLivraison) {
+      addNotification('Veuillez sélectionner ou ajouter une adresse de livraison.', 'error');
+      navigate('/livraison');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${apiUrl}/orders`, {
+        user_id: userId,
+        total_amount: totalTTC,
+        shipping_address: `${adresseLivraison.street}, ${adresseLivraison.city}, ${adresseLivraison.state}, ${adresseLivraison.postal_code}, ${adresseLivraison.country}`,
+        payment_status: 'Paid',
+        order_status: 'Processing'
+      });
+
+      if (response.status === 201) {
+        addNotification('Commande créée avec succès', 'success');
+        navigate('/thanks');
+      } else {
+        addNotification('Erreur lors de la création de la commande', 'error');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création de la commande:', error);
+      addNotification('Erreur lors de la création de la commande', 'error');
     }
   };
 
@@ -288,6 +314,7 @@ const Paiement = () => {
               </div>
 
               <button
+                onClick={handleSubmit}
                 className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 {isAuthenticated ? "Procéder au paiement" : "Se connecter"}

@@ -21,9 +21,9 @@ const ProgressBar = ({ currentStep, descriptions }) => {
     switch (icon) {
       case 'cart':
         return (
-          <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M6 2a1 1 0 1 1 0 2H4v2h12V4h-2a1 1 0 1 1 0-2h3a1 1 0 0 1 1 1v3h1a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2h1V3a1 1 0 0 1 1-1h1Zm3 7.5V7a1 1 0 1 1 2 0v2.5l1.3 1.3a1 1 0 0 1-1.4 1.4l-1.3-1.3V14a1 1 0 1 1-2 0v-2.5l-1.3-1.3a1 1 0 1 1 1.4-1.4L9 9.5Z"/>
-          </svg>
+          <svg className="w-5 h-5 text-green-500 dark:text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M6 2a1 1 0 1 1 0 2H4v2h12V4h-2a1 1 0 1 1 0-2h3a1 1 0 0 1 1 1v3h1a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2h1V3a1 1 0 0 1 1-1h1Zm3 7.5V7a1 1 0 1 1 2 0v2.5l1.3 1.3a1 1 0 0 1-1.4 1.4l-1.3-1.3V14a1 1 0 1 1-2 0v-2.5l-1.3-1.3a1 1 0 1 1 1.4-1.4L9 9.5Z"/>
+        </svg>
         );
       case 'truck':
         return (
