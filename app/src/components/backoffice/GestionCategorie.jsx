@@ -41,18 +41,17 @@ const GestionCategorie = () => {
     setShowForm(true);
   };
 
-  const handleSave = async (form) => {
+  const handleSave = async (formData) => {
     try {
       if (currentCategory) {
         // Modifier une catégorie
-        await axios.put(`${apiUrl}/categories/${currentCategory.category_id}`, form);
-        setCategories(categories.map(category => (category.category_id === currentCategory.category_id ? { ...category, ...form } : category)));
+        await axios.patch(`${apiUrl}/categories/${currentCategory.category_id}`, formData);
       } else {
-        // Sinon Ajout d'une catégorie
-        const response = await axios.post(`${apiUrl}/categories`, form);
-        setCategories([...categories, response.data]);
+        // Ajouter une nouvelle catégorie
+        await axios.post(`${apiUrl}/categories`, formData);
       }
       setShowForm(false);
+      fetchCategories(); // Actualiser la liste des catégories
     } catch (error) {
       console.error('Error saving category:', error);
     }
@@ -87,7 +86,7 @@ const GestionCategorie = () => {
             <tr key={category.category_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.category_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                <img src={`${imageUrl}/categories/${category.category_id}.jpg`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
+                <img src={category.image} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.description}</td>

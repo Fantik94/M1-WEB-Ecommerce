@@ -11,14 +11,13 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const { ajouter } = useContext(PanierContext);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
-  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`${apiUrl}/products/${productId}`);
         setProduct(response.data);
-        setMainImage(`${imageUrl}/images/${response.data.product_id}-1.jpg`);
+        setMainImage(response.data.image1); // Set the main image to the first image by default
         window.scrollTo(0, 0); // Scroll to the top when the product changes
       } catch (error) {
         console.error(`There was an error fetching the product ${productId}:`, error);
@@ -39,10 +38,10 @@ const Product = () => {
     };
 
     fetchSimilarProducts();
-  }, [productId]);
+  }, []);
 
-  const handleImageClick = (num) => {
-    setMainImage(`${imageUrl}/images/${product.product_id}-${num}.jpg`);
+  const handleImageClick = (imageUrl) => {
+    setMainImage(imageUrl);
   };
 
   const handleAddToCart = () => {
@@ -71,15 +70,30 @@ const Product = () => {
             </div>
 
             <div className="mt-6 flex flex-wrap justify-center gap-6 mx-auto">
-              {['1', '2', '3'].map(num => (
+              {product.image1 && (
                 <div
-                  key={num}
                   className="w-24 h-20 flex items-center justify-center rounded-lg p-4 shadow-md cursor-pointer dark:shadow-gray-700 dark:bg-gray-700"
-                  onClick={() => handleImageClick(num)}
+                  onClick={() => handleImageClick(product.image1)}
                 >
-                  <img src={`${imageUrl}/images/${product.product_id}-${num}.jpg`} alt={`${product.name} ${num}`} className="w-full" />
+                  <img src={product.image1} alt={product.name} className="w-full h-full object-cover" />
                 </div>
-              ))}
+              )}
+              {product.image2 && (
+                <div
+                  className="w-24 h-20 flex items-center justify-center rounded-lg p-4 shadow-md cursor-pointer dark:shadow-gray-700 dark:bg-gray-700"
+                  onClick={() => handleImageClick(product.image2)}
+                >
+                  <img src={product.image2} alt={product.name} className="w-full h-full object-cover" />
+                </div>
+              )}
+              {product.image3 && (
+                <div
+                  className="w-24 h-20 flex items-center justify-center rounded-lg p-4 shadow-md cursor-pointer dark:shadow-gray-700 dark:bg-gray-700"
+                  onClick={() => handleImageClick(product.image3)}
+                >
+                  <img src={product.image3} alt={product.name} className="w-full h-full object-cover" />
+                </div>
+              )}
             </div>
           </div>
 
@@ -170,7 +184,7 @@ const Product = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             {similarProducts.map(similarProduct => (
               <div key={similarProduct.product_id} className="bg-white p-4 shadow-md rounded-lg dark:bg-gray-700 dark:shadow-gray-700">
-                <img src={`${imageUrl}/images/${similarProduct.product_id}-1.jpg`} alt={similarProduct.name} className="w-full h-48 object-cover rounded-md" />
+                <img src={similarProduct.image1} alt={similarProduct.name} className="w-full h-48 object-cover rounded-md" />
                 <h3 className="mt-4 text-lg font-bold text-gray-900 dark:text-white">{similarProduct.name}</h3>
                 <p className="mt-2 text-gray-600 dark:text-gray-400">{similarProduct.price}€</p>
                 <Link to={`/produit/${similarProduct.product_id}`} className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">

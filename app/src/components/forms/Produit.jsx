@@ -1,5 +1,3 @@
-// src/forms/ProductForm.jsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,7 +8,11 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
     description: '',
     price: '',
     stock: '',
+    image1: null,
+    image2: null,
+    image3: null,
   });
+
   const [subcategories, setSubcategories] = useState([]);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -22,6 +24,9 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
         description: currentProduct.description,
         price: currentProduct.price,
         stock: currentProduct.stock,
+        image1: null,
+        image2: null,
+        image3: null,
       });
     }
   }, [currentProduct]);
@@ -39,9 +44,29 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
     fetchSubcategories();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setForm({ ...form, [name]: files[0] });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(form);
+    const formData = new FormData();
+    formData.append('subcategory_id', form.subcategory_id);
+    formData.append('name', form.name);
+    formData.append('description', form.description);
+    formData.append('price', form.price);
+    formData.append('stock', form.stock);
+    if (form.image1) formData.append('image1', form.image1);
+    if (form.image2) formData.append('image2', form.image2);
+    if (form.image3) formData.append('image3', form.image3);
+    
+    onSave(formData);
   };
 
   return (
@@ -52,9 +77,10 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
         </label>
         <select
           id="subcategory_id"
+          name="subcategory_id"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.subcategory_id}
-          onChange={(e) => setForm({ ...form, subcategory_id: e.target.value })}
+          onChange={handleChange}
           required
         >
           <option value="">Sélectionnez une sous-catégorie</option>
@@ -72,9 +98,10 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
         <input
           type="text"
           id="name"
+          name="name"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onChange={handleChange}
           required
         />
       </div>
@@ -84,9 +111,10 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
         </label>
         <textarea
           id="description"
+          name="description"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
+          onChange={handleChange}
           required
         />
       </div>
@@ -97,9 +125,10 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
         <input
           type="number"
           id="price"
+          name="price"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.price}
-          onChange={(e) => setForm({ ...form, price: e.target.value })}
+          onChange={handleChange}
           required
         />
       </div>
@@ -110,10 +139,47 @@ const ProductForm = ({ currentProduct, onSave, onCancel }) => {
         <input
           type="number"
           id="stock"
+          name="stock"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.stock}
-          onChange={(e) => setForm({ ...form, stock: e.target.value })}
+          onChange={handleChange}
           required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="image1">
+          Image 1
+        </label>
+        <input
+          type="file"
+          id="image1"
+          name="image1"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={handleFileChange}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="image2">
+          Image 2
+        </label>
+        <input
+          type="file"
+          id="image2"
+          name="image2"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={handleFileChange}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="image3">
+          Image 3
+        </label>
+        <input
+          type="file"
+          id="image3"
+          name="image3"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={handleFileChange}
         />
       </div>
       <div className="flex justify-between">

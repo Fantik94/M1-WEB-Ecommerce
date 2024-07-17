@@ -1,11 +1,36 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
+import multer from 'multer';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from 'cloudinary';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+// Configurer Cloudinary
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configurer Multer avec Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary.v2,
+  params: async (req, file) => {
+    return {
+      folder: 'Gaming_avenue_images/images',
+      format: 'jpg',
+      public_id: `${req.body.name}_${file.fieldname}_${Date.now()}`
+    };
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const produitRoutes = (dbConfig) => {
   const router = express.Router();
 
-  // Route pour récupérer les produits d'une sous-catégorie spécifique
-  // A MODIF SI JAMAIS 
   router.get('/categories/:categoryId/subcategories/:subCategoryId/products', async (req, res) => {
     const { subCategoryId } = req.params;
     console.log(`Route /categories/${req.params.categoryId}/subcategories/${subCategoryId}/products called`);
@@ -29,8 +54,7 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour récupérer tous les produits
-    router.get('/products', async (req, res) => {
+  router.get('/products', async (req, res) => {
     console.log('Route /products called');
     let connection;
     try {
@@ -52,8 +76,7 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour récupérer les détails d'un produit en fonction de l'ID du produit
-    router.get('/products/:productId', async (req, res) => {
+  router.get('/products/:productId', async (req, res) => {
     const { productId } = req.params;
     console.log(`Route /products/${productId} called`);
     let connection;
@@ -81,32 +104,31 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour récupérer 3 produits au hasard
-router.get('/rng-products', async (req, res) => {
-  console.log('Route /products called');
-  let connection;
-  try {
-    console.log('Connecting to the database...');
-    connection = await mysql.createConnection(dbConfig);
-    console.log('Connected to the database.');
-    
-    const [rows] = await connection.execute('SELECT * FROM Products ORDER BY RAND() LIMIT 3');
-    connection.end();
-    
-    console.log('Random products retrieved:', rows);
-    res.json(rows);
-  } catch (error) {
-    console.error('Error fetching random products:', error);
-    if (connection) {
+  router.get('/rng-products', async (req, res) => {
+    console.log('Route /products called');
+    let connection;
+    try {
+      console.log('Connecting to the database...');
+      connection = await mysql.createConnection(dbConfig);
+      console.log('Connected to the database.');
+      
+      const [rows] = await connection.execute('SELECT * FROM Products ORDER BY RAND() LIMIT 3');
       connection.end();
+      
+      console.log('Random products retrieved:', rows);
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching random products:', error);
+      if (connection) {
+        connection.end();
+      }
+      res.status(500).send('Internal Server Error');
     }
-    res.status(500).send('Internal Server Error');
-  }
-});
+  });
 
-// Route pour créer un nouveau produit
-router.post('/products', async (req, res) => {
+  router.post('/products', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }]), async (req, res) => {
     const { subcategory_id, name, description, price, stock } = req.body;
+    console.log(`Route POST /products called with subcategory_id: ${subcategory_id}, name: ${name}, description: ${description}, price: ${price}, stock: ${stock}`);
   
     // Vérification des champs
     if (!subcategory_id || !name || !description || price === undefined || stock === undefined) {
@@ -118,7 +140,6 @@ router.post('/products', async (req, res) => {
       return res.status(400).send('No special characters allowed');
     }
   
-    console.log(`Route POST /products called with subcategory_id: ${subcategory_id}, name: ${name}, description: ${description}, price: ${price}, stock: ${stock}`);
     let connection;
     try {
       console.log('Connecting to the database...');
@@ -130,15 +151,28 @@ router.post('/products', async (req, res) => {
         'INSERT INTO Products (subcategory_id, name, description, price, stock) VALUES (?, ?, ?, ?, ?)',
         [subcategory_id, name, description, price, stock]
       );
-      connection.end();
   
       if (result.affectedRows > 0) {
-        console.log(`Product ${name} added.`);
+        const product_id = result.insertId;
+        const imageUrls = {
+          image1: req.files.image1 ? req.files.image1[0].path : null,
+          image2: req.files.image2 ? req.files.image2[0].path : null,
+          image3: req.files.image3 ? req.files.image3[0].path : null
+        };
+  
+        // Mettre à jour les URL des images dans la base de données
+        await connection.execute(
+          'UPDATE Products SET image1 = ?, image2 = ?, image3 = ? WHERE product_id = ?',
+          [imageUrls.image1, imageUrls.image2, imageUrls.image3, product_id]
+        );
+  
+        console.log(`Product ${name} added with images.`);
         res.status(201).send(`Product ${name} added.`);
       } else {
         console.log(`Failed to add product ${name}.`);
         res.status(500).send(`Failed to add product ${name}.`);
       }
+      connection.end();
     } catch (error) {
       console.error(`Error adding product ${name}:`, error);
       if (connection) {
@@ -148,48 +182,54 @@ router.post('/products', async (req, res) => {
     }
   });
   
-  // Endpoint pour modifier un produit
-  router.patch('/products/:productId', async (req, res) => {
+  router.patch('/products/:productId', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }]), async (req, res) => {
     const { productId } = req.params;
     const { subcategory_id, name, description, price, stock } = req.body;
-
+    console.log(`Route PATCH /products/${productId} called with subcategory_id: ${subcategory_id}, name: ${name}, description: ${description}, price: ${price}, stock: ${stock}`);
+  
     // Vérification des champs
     if (!subcategory_id || !name || !description || price === undefined || stock === undefined) {
       console.log('Missing fields:', { subcategory_id, name, description, price, stock });
       return res.status(400).send('All fields are required');
     }
-
-    const specialCharRegexName = /[^a-zA-Z0-9 ]/g;
-    const specialCharRegexDescription = /[^a-zA-Z0-9 éà.'â,ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýÿ-]/g;
-
-    if (specialCharRegexName.test(name)) {
-      return res.status(400).send('No special characters allowed in name');
+  
+    const specialCharRegex = /[^a-zA-Z0-9 ]/g;
+    if (specialCharRegex.test(name) || specialCharRegex.test(description)) {
+      return res.status(400).send('No special characters allowed');
     }
-    if (specialCharRegexDescription.test(description)) {
-      return res.status(400).send('No special characters allowed in description except specified ones');
-    }
-
-    console.log(`Route PATCH /products/${productId} called with subcategory_id: ${subcategory_id}, name: ${name}, description: ${description}, price: ${price}, stock: ${stock}`);
+  
     let connection;
     try {
       console.log('Connecting to the database...');
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to the database.');
-
+  
       // Mettre à jour le produit dans la base de données
       const [result] = await connection.execute(
         'UPDATE Products SET subcategory_id = ?, name = ?, description = ?, price = ?, stock = ? WHERE product_id = ?',
         [subcategory_id, name, description, price, stock, productId]
       );
-      connection.end();
-
+  
       if (result.affectedRows > 0) {
-        console.log(`Product ${productId} updated.`);
+        const imageUrls = {
+          image1: req.files.image1 ? req.files.image1[0].path : null,
+          image2: req.files.image2 ? req.files.image2[0].path : null,
+          image3: req.files.image3 ? req.files.image3[0].path : null
+        };
+  
+        // Mettre à jour les URL des images dans la base de données
+        await connection.execute(
+          'UPDATE Products SET image1 = ?, image2 = ?, image3 = ? WHERE product_id = ?',
+          [imageUrls.image1, imageUrls.image2, imageUrls.image3, productId]
+        );
+  
+        console.log(`Product ${productId} updated with images.`);
         res.status(200).send(`Product ${productId} updated.`);
       } else {
         console.log(`Product ${productId} not found.`);
         res.status(404).send(`Product ${productId} not found.`);
       }
+      connection.end();
     } catch (error) {
       console.error(`Error updating product ${productId}:`, error);
       if (connection) {
@@ -198,9 +238,8 @@ router.post('/products', async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   });
-
-    // Route pour supprimer un produit
-    router.delete('/products/:productId', async (req, res) => {
+  
+  router.delete('/products/:productId', async (req, res) => {
     const { productId } = req.params;
     console.log(`Route DELETE /products/${productId} called`);
     let connection;
@@ -213,7 +252,12 @@ router.post('/products', async (req, res) => {
       connection.end();
   
       if (result.affectedRows > 0) {
-        console.log(`Product ${productId} deleted.`);
+        // Supprimer les images associées du cloud
+        await cloudinary.v2.uploader.destroy(`products/${productId}-image1`);
+        await cloudinary.v2.uploader.destroy(`products/${productId}-image2`);
+        await cloudinary.v2.uploader.destroy(`products/${productId}-image3`);
+  
+        console.log(`Product ${productId} deleted along with images.`);
         res.status(200).send(`Product ${productId} deleted.`);
       } else {
         console.log(`Product ${productId} not found.`);
@@ -227,7 +271,7 @@ router.post('/products', async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   });
-
+  
   return router;
 };
 

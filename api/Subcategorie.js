@@ -148,7 +148,7 @@ const subCategorieRoutes = (dbConfig) => {
 
       // Récupérer l'URL de l'image
       const [subCategory] = await connection.execute('SELECT image FROM SubCategories WHERE subcategory_id = ?', [subCategoryId]);
-      const imageUrl = subCategory[0]?.image_url;
+      const imageUrl = subCategory[0]?.image;
 
       // Supprimer la sous-catégorie
       const [result] = await connection.execute('DELETE FROM SubCategories WHERE subcategory_id = ?', [subCategoryId]);

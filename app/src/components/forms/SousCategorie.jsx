@@ -129,6 +129,7 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
           accept="image/*"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           onChange={handleImageChange}
+          required
         />
       </div>
       <div className="flex justify-between">

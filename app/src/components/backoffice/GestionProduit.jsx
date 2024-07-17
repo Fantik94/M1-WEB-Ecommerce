@@ -46,11 +46,19 @@ const GestionProduits = () => {
       if (currentProduct) {
         // Modifier un produit
         console.log('Updating product:', form);
-        await axios.put(`${apiUrl}/products/${currentProduct.product_id}`, form);
+        await axios.patch(`${apiUrl}/products/${currentProduct.product_id}`, form, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
       } else {
         // Ajouter un produit
         console.log('Adding product:', form);
-        await axios.post(`${apiUrl}/products`, form);
+        await axios.post(`${apiUrl}/products`, form, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
       }
       setShowForm(false);
       fetchProducts();
@@ -90,7 +98,7 @@ const GestionProduits = () => {
             <tr key={product.product_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.product_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                <img src={`${imageUrl}/images/${product.product_id}-1.jpg`} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
+                <img src={`${product.image1}`} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.description}</td>

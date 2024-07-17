@@ -47,7 +47,7 @@ const Subcategory = () => {
         {products.map(product => (
           <Card2
             key={product.product_id}
-            image={`${imageUrl}/images/${product.product_id}-1.jpg`}
+            image={`${product.image1}`}
             title={product.name}
             price={product.price}
             link={`/produit/${product.product_id}`}

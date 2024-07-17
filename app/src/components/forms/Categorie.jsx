@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const CategoryForm = ({ currentCategory, onSave, onCancel }) => {
   const [form, setForm] = useState({ name: '', description: '' });
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     if (currentCategory) {
@@ -10,14 +11,27 @@ const CategoryForm = ({ currentCategory, onSave, onCancel }) => {
         name: currentCategory.name,
         description: currentCategory.description,
       });
+      setImage(null); // Reset image state when editing existing category
     }
   }, [currentCategory]);
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', form.name);
+    formData.append('description', form.description);
+    if (image) {
+      formData.append('image', image);
+    }
+
     console.log('Form data submitted:', form);
-    onSave(form);
+    onSave(formData);
     setForm({ name: '', description: '' });
+    setImage(null);
   };
 
   return (
@@ -44,6 +58,18 @@ const CategoryForm = ({ currentCategory, onSave, onCancel }) => {
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="image">
+          Image de la catégorie
+        </label>
+        <input
+          type="file"
+          id="image"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={handleImageChange}
           required
         />
       </div>
