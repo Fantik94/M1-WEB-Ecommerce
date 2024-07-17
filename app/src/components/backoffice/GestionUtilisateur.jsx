@@ -41,7 +41,6 @@ const GestionUtilisateur = () => {
             <th className="py-2 px-4 border-b dark:border-gray-700">ID</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Nom</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Email</th>
-            <th className="py-2 px-4 border-b dark:border-gray-700">Rôle</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Date de création</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Date de modification</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Actions</th>
@@ -53,7 +52,6 @@ const GestionUtilisateur = () => {
               <td className="py-2 px-4 border-b dark:border-gray-700">{user.user_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{user.username}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{user.email}</td>
-              <td className="py-2 px-4 border-b dark:border-gray-700">{user.role}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{user.created_at}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{user.updated_at}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
