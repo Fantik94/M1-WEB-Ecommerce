@@ -42,6 +42,7 @@ const Livraison = () => {
   const totalTTC = totalHT * 1.20;
   const discountedTotal = totalHT * (1 - discount) * 1.20;
   const savings = totalHT * discount * 1.20;
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const navigate = useNavigate();
 
@@ -51,7 +52,7 @@ const Livraison = () => {
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/addresses/${userId}`);
+      const response = await axios.get(`${apiUrl}/addresses/${userId}`);
       setAddresses(response.data);
       if (response.data.length > 0) {
         setSelectedAddress(response.data[0].address_id); // Sélectionner la première adresse par défaut
@@ -78,8 +79,8 @@ const Livraison = () => {
   const handleAddOrUpdateAddress = async (e) => {
     e.preventDefault();
     const url = selectedAddress
-      ? `http://localhost:3000/addresses/${userId}/${selectedAddress}`
-      : `http://localhost:3000/addresses/${userId}`;
+      ? `${apiUrl}/addresses/${userId}/${selectedAddress}`
+      : `${apiUrl}/addresses/${userId}`;
     const method = selectedAddress ? 'put' : 'post';
     try {
       const response = await axios[method](url, {

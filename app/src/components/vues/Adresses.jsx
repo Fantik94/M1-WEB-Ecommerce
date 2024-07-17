@@ -13,6 +13,7 @@
     const [country, setCountry] = useState('');
     const [editingAddressId, setEditingAddressId] = useState(null);
     const [userId] = useState(localStorage.getItem('userId'));
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
       fetchAddresses();
@@ -20,7 +21,7 @@
 
     const fetchAddresses = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/addresses/${userId}`);
+        const response = await axios.get(`${apiUrl}/addresses/${userId}`);
         setAddresses(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des adresses:', error);
@@ -30,7 +31,7 @@
     const addAddress = async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.post(`http://localhost:3000/addresses/${userId}`, {
+        const response = await axios.post(`${apiUrl}/addresses/${userId}`, {
           street,
           city,
           state,
@@ -54,7 +55,7 @@
 
     const deleteAddress = async (addressId) => {
       try {
-        const response = await axios.delete(`http://localhost:3000/addresses/${userId}/${addressId}`);
+        const response = await axios.delete(`${apiUrl}/addresses/${userId}/${addressId}`);
         if (response.status === 200) {
           fetchAddresses(); // Refresh the address list
           addNotification('Adresse supprimée avec succès', 'success');
@@ -77,7 +78,7 @@
     const updateAddress = async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.put(`http://localhost:3000/addresses/${userId}/${editingAddressId}`, {
+        const response = await axios.put(`${apiUrl}/addresses/${userId}/${editingAddressId}`, {
           street,
           city,
           state,
