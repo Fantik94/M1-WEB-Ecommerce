@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+    const token = sessionStorage.getItem('token');
+    const userId = sessionStorage.getItem('userId');
     if (token && userId) {
       setIsAuthenticated(true);
       fetchUserInfo(userId, token);
@@ -18,15 +18,15 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (token, userId) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('userId', userId);
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('userId', userId);
     setIsAuthenticated(true);
     fetchUserInfo(userId, token);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('userId');
     setIsAuthenticated(false);
     setUserInfo(null);
   };

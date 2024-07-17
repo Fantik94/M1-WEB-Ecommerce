@@ -20,7 +20,7 @@ root.render(
         <CommandeProvider>
           <NotificationProvider>
             <div className="flex flex-col min-h-screen">
-              <div className="flex-grow">
+              <div className="flex-grow dark:bg-gray-900">
                 <App />
               </div>
               <Footer />
