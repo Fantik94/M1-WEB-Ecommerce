@@ -7,6 +7,7 @@ const GestionCategorie = () => {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
 
   const fetchCategories = async () => {
     try {
@@ -43,11 +44,11 @@ const GestionCategorie = () => {
   const handleSave = async (form) => {
     try {
       if (currentCategory) {
-        // Update category
+        // Modifier une catégorie
         await axios.put(`${apiUrl}/categories/${currentCategory.category_id}`, form);
         setCategories(categories.map(category => (category.category_id === currentCategory.category_id ? { ...category, ...form } : category)));
       } else {
-        // Add new category
+        // Sinon Ajout d'une catégorie
         const response = await axios.post(`${apiUrl}/categories`, form);
         setCategories([...categories, response.data]);
       }
@@ -75,7 +76,7 @@ const GestionCategorie = () => {
         <thead>
           <tr>
             <th className="py-2 px-4 border-b dark:border-gray-700">ID</th>
-            <th className="py-2 px-4 border-b dark:border-gray-700">Image</th>
+            <th className="py-2 px-4 border-b dark:border-gray-700">Image de bannière</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Nom</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Description</th>
             <th className="py-2 px-4 border-b dark:border-gray-700">Actions</th>
@@ -86,7 +87,7 @@ const GestionCategorie = () => {
             <tr key={category.category_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.category_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                <img src={`/categories/${category.name}.webp`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
+                <img src={`${imageUrl}/categories/${category.category_id}.jpg`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.description}</td>

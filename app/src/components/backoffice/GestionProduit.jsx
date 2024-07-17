@@ -7,6 +7,7 @@ const GestionProduits = () => {
   const [currentProduct, setCurrentProduct] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
 
   const fetchProducts = async () => {
     try {
@@ -43,16 +44,16 @@ const GestionProduits = () => {
   const handleSave = async (form) => {
     try {
       if (currentProduct) {
-        // Update product
+        // Modifier un produit
         console.log('Updating product:', form);
         await axios.put(`${apiUrl}/products/${currentProduct.product_id}`, form);
       } else {
-        // Add new product
+        // Ajouter un produit
         console.log('Adding product:', form);
         await axios.post(`${apiUrl}/products`, form);
       }
       setShowForm(false);
-      fetchProducts(); // Refresh the products list
+      fetchProducts();
     } catch (error) {
       console.error('Error saving product:', error);
     }
@@ -89,7 +90,7 @@ const GestionProduits = () => {
             <tr key={product.product_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.product_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                <img src={`/images/${product.product_id}-1.jpg`} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
+                <img src={`${imageUrl}/images/${product.product_id}-1.jpg`} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{product.description}</td>

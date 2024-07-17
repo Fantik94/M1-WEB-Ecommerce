@@ -7,6 +7,7 @@ const GestionSousCategorie = () => {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
 
   const fetchSubCategories = async () => {
     try {
@@ -88,7 +89,7 @@ const GestionSousCategorie = () => {
             <tr key={category.subcategory_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.subcategory_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                  <img src={`/subcategories/${category.name}.webp`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
+                  <img src={`${imageUrl}/subcategories/${category.subcategory_id}.jpg`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.category_name}</td>
