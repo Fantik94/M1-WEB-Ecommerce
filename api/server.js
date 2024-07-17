@@ -1,9 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import multer from 'multer';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import cloudinary from 'cloudinary';
 import categorieRoutes from './Categorie.js';
 import subCategorieRoutes from './Subcategorie.js';
 import produitRoutes from './Produit.js';
@@ -12,6 +9,7 @@ import BackofficeRoutes from './Backoffice.js';
 import connexionRoutes from './Connexion.js';
 import adresseRoutes from './Adresse.js';
 import orderRoutes from './order.js';
+import imageRoutes from './gestion_image.js'; // Importer les routes de gestion des images
 
 dotenv.config();
 
@@ -23,24 +21,6 @@ app.use(cors());
 
 // Ajouter le middleware pour parser le JSON
 app.use(express.json());
-
-// Configurer Cloudinary
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-// Configurer Multer avec Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary.v2,
-  params: {
-    folder: 'Gaming_avenue_images', // dossier où les images seront stockées
-    allowedFormats: ['jpg', 'jpeg', 'png']
-  }
-});
-
-const upload = multer({ storage: storage });
 
 // Configurer la connexion à la base de données
 const dbConfig = {
@@ -61,21 +41,8 @@ app.get('/test', (req, res) => {
   res.send('Ceci est une route de test');
 });
 
-// Route pour télécharger une image
-app.post('/upload', upload.single('image'), (req, res) => {
-  res.json({ url: req.file.path, id: req.file.filename });
-});
-
-// Route pour supprimer une image
-app.delete('/delete/:id', (req, res) => {
-  cloudinary.v2.uploader.destroy(req.params.id, (error, result) => {
-    if (error) {
-      res.status(500).send('Error deleting image');
-    } else {
-      res.send('Image deleted successfully');
-    }
-  });
-});
+// Utiliser les routes de gestion des images
+app.use('/', imageRoutes);
 
 // Utilisation des routes de Catégorie en passant la config de la BDD
 app.use('/', categorieRoutes(dbConfig));
