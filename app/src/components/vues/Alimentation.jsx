@@ -7,6 +7,7 @@ import axios from 'axios';
 const Alimentation = () => {
   const [subcategories, setSubcategories] = useState([]);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
 
   useEffect(() => {
     axios.get(`${apiUrl}/subcategories?category_id=2`)
@@ -20,7 +21,7 @@ const Alimentation = () => {
 
   return (
     <div className='dark:bg-gray-900'>
-      <Banner text="Découvrez notre sélection d'aliments" image="/categories/banner_food.webp" />
+      <Banner text="Découvrez notre sélection d'aliments" image={`${imageUrl}/categories/2.jpg`} />
       <div className="p-4">
         <h1 className="mb-4 text-center text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
           <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
@@ -36,7 +37,7 @@ const Alimentation = () => {
             {subcategories.map(subcategory => (
               <Card
                 key={subcategory.subcategory_id}
-                image={`/subcategories/${subcategory.name}.webp`}
+                image={`${imageUrl}/subcategories/${subcategory.subcategory_id}.jpg`}
                 title={subcategory.name}
                 description={subcategory.description}
                 link={`/categories/2/subcategories/${subcategory.subcategory_id}`}
