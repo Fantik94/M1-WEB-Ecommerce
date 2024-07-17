@@ -148,35 +148,41 @@ router.post('/products', async (req, res) => {
     }
   });
   
-// Route pour modifier un produit
-router.put('/products/:productId', async (req, res) => {
+  // Endpoint pour modifier un produit
+  router.patch('/products/:productId', async (req, res) => {
     const { productId } = req.params;
     const { subcategory_id, name, description, price, stock } = req.body;
-  
+
     // Vérification des champs
     if (!subcategory_id || !name || !description || price === undefined || stock === undefined) {
       console.log('Missing fields:', { subcategory_id, name, description, price, stock });
       return res.status(400).send('All fields are required');
     }
-    const specialCharRegex = /[^a-zA-Z0-9 ]/g;
-    if (specialCharRegex.test(name) || specialCharRegex.test(description)) {
-      return res.status(400).send('No special characters allowed');
+
+    const specialCharRegexName = /[^a-zA-Z0-9 ]/g;
+    const specialCharRegexDescription = /[^a-zA-Z0-9 éà.'â,ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýÿ-]/g;
+
+    if (specialCharRegexName.test(name)) {
+      return res.status(400).send('No special characters allowed in name');
     }
-  
-    console.log(`Route PUT /products/${productId} called with subcategory_id: ${subcategory_id}, name: ${name}, description: ${description}, price: ${price}, stock: ${stock}`);
+    if (specialCharRegexDescription.test(description)) {
+      return res.status(400).send('No special characters allowed in description except specified ones');
+    }
+
+    console.log(`Route PATCH /products/${productId} called with subcategory_id: ${subcategory_id}, name: ${name}, description: ${description}, price: ${price}, stock: ${stock}`);
     let connection;
     try {
       console.log('Connecting to the database...');
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to the database.');
-  
+
       // Mettre à jour le produit dans la base de données
       const [result] = await connection.execute(
         'UPDATE Products SET subcategory_id = ?, name = ?, description = ?, price = ?, stock = ? WHERE product_id = ?',
         [subcategory_id, name, description, price, stock, productId]
       );
       connection.end();
-  
+
       if (result.affectedRows > 0) {
         console.log(`Product ${productId} updated.`);
         res.status(200).send(`Product ${productId} updated.`);

@@ -110,7 +110,7 @@ const adresseRoutes = (dbConfig) => {
   });
 
   // Endpoint pour modifier une adresse
-  router.put('/addresses/:user_id/:address_id',
+  router.patch('/addresses/:user_id/:address_id',
     // Validation des champs
     body('street').isLength({ min: 1 }).withMessage('Street is required'),
     body('city').isLength({ min: 1 }).withMessage('City is required'),

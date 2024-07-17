@@ -25,6 +25,7 @@ import GestionSousCategorie from './components/backoffice/GestionSousCategorie';
 import GestionCommande from './components/backoffice/GestionCommande';
 import GestionUtilisateur from './components/backoffice/GestionUtilisateur';
 import GestionProduit from './components/backoffice/GestionProduit';
+import Thanks from './components/vues/Thanks';
 
 
 const App = () => {
@@ -53,6 +54,9 @@ const App = () => {
           <Route path="/alimentation" element={<Alimentation />} />
           <Route path="/paiement" element={<Paiement />} />
           <Route path="/livraison" element={<Livraison />} />
+          <Route path="/thanks" element={<Thanks />} />
+
+
 
           <Route path="/profil" element={<PrivateRoute />}>
             <Route element={<ProfileLayout />}>
@@ -63,7 +67,7 @@ const App = () => {
             </Route>
           </Route>
 
-            <Route path="/backoffice" element={<PrivateRoute />}>
+            <Route path="/backoffice" element={<AdminRoute />}>
               <Route element={<BackofficeLayout />}>
                 <Route index element={<GestionCategorie />} />
                 <Route path="gestion-categorie" element={<GestionCategorie />} />

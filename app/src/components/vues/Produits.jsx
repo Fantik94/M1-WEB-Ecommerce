@@ -1,4 +1,3 @@
-// src/components/vues/ProductDetail.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -20,6 +19,7 @@ const Product = () => {
         const response = await axios.get(`${apiUrl}/products/${productId}`);
         setProduct(response.data);
         setMainImage(`${imageUrl}/images/${response.data.product_id}-1.jpg`);
+        window.scrollTo(0, 0); // Scroll to the top when the product changes
       } catch (error) {
         console.error(`There was an error fetching the product ${productId}:`, error);
       }
@@ -138,13 +138,15 @@ const Product = () => {
             </div>
 
             <div className="flex flex-wrap gap-4 mt-8">
-              <button
-                type="button"
-                className={`min-w-[200px] px-4 py-3 ${product.stock < 1 ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-700 hover:bg-blue-700'} text-white text-sm font-semibold rounded dark:bg-primary-600 dark:hover:bg-primary-500`}
-                disabled={product.stock < 1}
-              >
-                Acheter maintenant
-              </button>
+              <Link to={"/panier"}>
+                <button
+                  type="button"
+                  className={`min-w-[200px] px-4 py-3 ${product.stock < 1 ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-700 hover:bg-blue-700'} text-white text-sm font-semibold rounded dark:bg-primary-600 dark:hover:bg-primary-500`}
+                  disabled={product.stock < 1}
+                >
+                  Voir mon panier
+                </button>
+              </Link>
               <button
                 type="button"
                 className={`min-w-[200px] px-4 py-2.5 ${product.stock < 1 ? 'border-gray-400 bg-gray-200 text-gray-400 cursor-not-allowed' : 'border-primary-700 bg-transparent hover:bg-gray-50 text-primary-700'} border text-sm font-semibold rounded dark:border-primary-600 dark:text-primary-500 dark:hover:bg-gray-600 dark:hover:text-white`}

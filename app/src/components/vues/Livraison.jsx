@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import ProgressBar from './ProgressBar';
 import { PanierContext } from "../../context/PanierContext";
 import AuthContext from "../../context/AuthContext";
+import { CommandeContext } from "../../context/CommandeContext"; 
 import axios from 'axios';
 import { useNotification } from '../../context/NotificationContext';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline';
@@ -27,6 +28,7 @@ const Livraison = () => {
 
   const { isAuthenticated } = useContext(AuthContext);
   const { addNotification } = useNotification();
+  const { setAdresseLivraison } = useContext(CommandeContext);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [street, setStreet] = useState('');
@@ -76,12 +78,26 @@ const Livraison = () => {
     }
   };
 
+  const handleCheckout = () => {
+    if (isAuthenticated) {
+      const address = addresses.find(addr => addr.address_id === selectedAddress);
+      if (address) {
+        setAdresseLivraison(address);
+        navigate('/paiement');
+      } else {
+        addNotification('Veuillez sélectionner ou ajouter une adresse de livraison.', 'error');
+      }
+    } else {
+      navigate('/login');
+    }
+  };
+
   const handleAddOrUpdateAddress = async (e) => {
     e.preventDefault();
     const url = selectedAddress
       ? `${apiUrl}/addresses/${userId}/${selectedAddress}`
       : `${apiUrl}/addresses/${userId}`;
-    const method = selectedAddress ? 'put' : 'post';
+    const method = selectedAddress ? 'patch' : 'post';
     try {
       const response = await axios[method](url, {
         street,
@@ -103,16 +119,6 @@ const Livraison = () => {
     } catch (error) {
       console.error(`Erreur lors de ${selectedAddress ? 'la mise à jour' : 'l\'ajout'} de l\'adresse:`, error);
       addNotification(`Erreur lors de ${selectedAddress ? 'la mise à jour' : 'l\'ajout'} de l\'adresse`, 'error');
-    }
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (selectedAddress) {
-      console.log('Adresse de livraison sélectionnée:', selectedAddress);
-      navigate('/paiement');
-    } else {
-      addNotification('Veuillez sélectionner ou ajouter une adresse de livraison.', 'error');
     }
   };
 
@@ -199,7 +205,7 @@ const Livraison = () => {
             )}
 
             {addresses.length > 0 && (
-              <form className="space-y-6 mt-4" onSubmit={handleSubmit}>
+              <form className="space-y-6 mt-4" onSubmit={handleCheckout}>
                 <button type="submit" className="w-full py-3 px-6 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Suivant</button>
               </form>
             )}
@@ -233,9 +239,10 @@ const Livraison = () => {
               </div>
 
               <button
+                onClick={handleCheckout}
                 className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                {isAuthenticated ? "Procéder au paiement" : "Se connecter"}
+                {isAuthenticated ? "Étape suivante" : "Se connecter"}
               </button>
 
               <div className="flex items-center justify-center gap-2">
