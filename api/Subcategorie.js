@@ -149,8 +149,8 @@ router.delete('/subcategories/:subCategoryId', async (req, res) => {
   }
 });
 
-// Route pour modifier une sous-catégorie
-router.put('/subcategories/:subcategory_id', async (req, res) => {
+// Endpoint pour modifier une sous-catégorie
+router.patch('/subcategories/:subcategory_id', async (req, res) => {
   const subcategory_id = req.params.subcategory_id;
   const { category_id, name, description } = req.body;
 
@@ -164,7 +164,7 @@ router.put('/subcategories/:subcategory_id', async (req, res) => {
     return res.status(400).send('No special characters allowed');
   }
 
-  console.log(`Route PUT /subcategories/${subcategory_id} called with category_id: ${category_id}, name: ${name}, description: ${description}`);
+  console.log(`Route PATCH /subcategories/${subcategory_id} called with category_id: ${category_id}, name: ${name}, description: ${description}`);
   let connection;
   try {
     console.log('Connecting to the database...');

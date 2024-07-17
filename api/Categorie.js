@@ -102,8 +102,8 @@ const categorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour modifier une catégorie
-  router.put('/categories/:categoryId', async (req, res) => {
+  // Endpoint pour modifier une catégorie
+  router.patch('/categories/:categoryId', async (req, res) => {
     const categoryId = req.params.categoryId;
     const { name, description } = req.body;
 
@@ -116,7 +116,7 @@ const categorieRoutes = (dbConfig) => {
       return res.status(400).send('No special characters allowed');
     }
 
-    console.log(`Route PUT /categories/${categoryId} called with name: ${name} and description: ${description}`);
+    console.log(`Route PATCH /categories/${categoryId} called with name: ${name} and description: ${description}`);
     let connection;
     try {
       console.log('Connecting to the database...');
@@ -144,7 +144,7 @@ const categorieRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
-
+  
   return router;
 };
 

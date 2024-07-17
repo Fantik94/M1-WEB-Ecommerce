@@ -89,56 +89,56 @@ const orderRoutes = (dbConfig) => {
         }
       });
 
-    // Endpoint pour modifier une commande
-  router.put('/orders/:user_id/:order_id',
-  // Validation des champs
-  body('order_status').isLength({ min: 1 }).withMessage('Order status is required'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  // Endpoint pour modifier une commande
+  router.patch('/orders/:user_id/:order_id',
+    // Validation des champs
+    body('order_status').isLength({ min: 1 }).withMessage('Order status is required'),
+    async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-    const { user_id, order_id } = req.params;
-    const { total_amount, shipping_address, payment_status, order_status } = req.body;
+      const { user_id, order_id } = req.params;
+      const { total_amount, shipping_address, payment_status, order_status } = req.body;
 
-    let connection;
-    try {
-      console.log('Connecting to the database...');
-      connection = await mysql.createConnection(dbConfig);
-      console.log('Connected to the database.');
+      let connection;
+      try {
+        console.log('Connecting to the database...');
+        connection = await mysql.createConnection(dbConfig);
+        console.log('Connected to the database.');
 
-      // Vérifier si la commande existe
-      const [orderRows] = await connection.execute('SELECT * FROM Orders WHERE order_id = ? AND user_id = ?', [order_id, user_id]);
-      if (orderRows.length === 0) {
+        // Vérifier si la commande existe
+        const [orderRows] = await connection.execute('SELECT * FROM Orders WHERE order_id = ? AND user_id = ?', [order_id, user_id]);
+        if (orderRows.length === 0) {
+          connection.end();
+          console.log(`Order ID ${order_id} for user ID ${user_id} does not exist.`);
+          return res.status(404).send(`Order ID ${order_id} for user ID ${user_id} does not exist.`);
+        }
+
+        // Mettre à jour la commande dans la base de données
+        const [result] = await connection.execute(
+          'UPDATE Orders SET total_amount = ?, shipping_address = ?, payment_status = ?, order_status = ? WHERE order_id = ? AND user_id = ?',
+          [total_amount, shipping_address, payment_status, order_status, order_id, user_id]
+        );
         connection.end();
-        console.log(`Order ID ${order_id} for user ID ${user_id} does not exist.`);
-        return res.status(404).send(`Order ID ${order_id} for user ID ${user_id} does not exist.`);
-      }
 
-      // Mettre à jour la commande dans la base de données
-      const [result] = await connection.execute(
-        'UPDATE Orders SET total_amount = ?, shipping_address = ?, payment_status = ?, order_status = ? WHERE order_id = ? AND user_id = ?',
-        [total_amount, shipping_address, payment_status, order_status, order_id, user_id]
-      );
-      connection.end();
-
-      if (result.affectedRows > 0) {
-        console.log(`Order ${order_id} for user ${user_id} updated successfully.`);
-        res.status(200).send(`Order ${order_id} for user ${user_id} updated successfully.`);
-      } else {
-        console.log(`Failed to update order ${order_id} for user ${user_id}.`);
-        res.status(500).send(`Failed to update order ${order_id} for user ${user_id}.`);
+        if (result.affectedRows > 0) {
+          console.log(`Order ${order_id} for user ${user_id} updated successfully.`);
+          res.status(200).send(`Order ${order_id} for user ${user_id} updated successfully.`);
+        } else {
+          console.log(`Failed to update order ${order_id} for user ${user_id}.`);
+          res.status(500).send(`Failed to update order ${order_id} for user ${user_id}.`);
+        }
+      } catch (error) {
+        console.error(`Error updating order ${order_id} for user ${user_id}:`, error);
+        if (connection) {
+          connection.end();
+        }
+        res.status(500).send('Internal Server Error');
       }
-    } catch (error) {
-      console.error(`Error updating order ${order_id} for user ${user_id}:`, error);
-      if (connection) {
-        connection.end();
-      }
-      res.status(500).send('Internal Server Error');
     }
-  }
-);
+  );
 
   return router;
 };
