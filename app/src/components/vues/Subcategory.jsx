@@ -9,6 +9,7 @@ const Subcategory = () => {
   const [subcategory, setSubcategory] = useState(null);
   const [products, setProducts] = useState([]);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
 
   useEffect(() => {
     // Récupérer les détails de la sous-catégorie
@@ -46,7 +47,7 @@ const Subcategory = () => {
         {products.map(product => (
           <Card2
             key={product.product_id}
-            image={`/images/${product.product_id}-1.jpg`}
+            image={`${imageUrl}/images/${product.product_id}-1.jpg`}
             title={product.name}
             price={product.price}
             link={`/produit/${product.product_id}`}
