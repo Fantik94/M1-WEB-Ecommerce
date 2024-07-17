@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 16 juil. 2024 à 15:47
+-- Généré le : mer. 17 juil. 2024 à 11:14
 -- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Version de PHP : 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -38,6 +38,13 @@ CREATE TABLE `addresses` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `addresses`
+--
+
+INSERT INTO `addresses` (`address_id`, `user_id`, `street`, `city`, `state`, `postal_code`, `country`, `created_at`, `updated_at`) VALUES
+(1, 1, 'rue des Bourcacac', 'cacsdc', 'csdsqdd', '91230', 'sdsqdsd', '2024-07-17 08:46:38', '2024-07-17 08:46:38');
 
 -- --------------------------------------------------------
 
@@ -198,8 +205,11 @@ CREATE TABLE `userprofiles` (
 --
 
 INSERT INTO `userprofiles` (`profile_id`, `user_id`, `first_name`, `last_name`, `address`, `phone_number`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Damien', 'Raunier', NULL, '0683324880', '2024-07-16 12:50:44', '2024-07-16 12:50:44'),
-(2, 2, 'Damien', 'Raunier', NULL, '0683324880', '2024-07-16 12:52:01', '2024-07-16 12:52:01');
+(1, 1, 'Damien', 'Raunier', NULL, '0683324880', '2024-07-16 10:50:44', '2024-07-16 10:50:44'),
+(2, 2, 'Damien', 'Raunier', NULL, '0683324880', '2024-07-16 10:52:01', '2024-07-16 10:52:01'),
+(3, 3, 'Baptiste', 'RINGLER', NULL, '0783475206', '2024-07-16 16:00:44', '2024-07-16 16:00:44'),
+(5, 5, 'test', 'test', NULL, '0783475206', '2024-07-16 17:37:55', '2024-07-16 17:37:55'),
+(6, 6, 'adminadmin', 'adminadmin', NULL, '0000000000', '2024-07-16 17:40:56', '2024-07-16 17:40:56');
 
 -- --------------------------------------------------------
 
@@ -212,6 +222,14 @@ CREATE TABLE `userroles` (
   `role_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `userroles`
+--
+
+INSERT INTO `userroles` (`role_id`, `role_name`) VALUES
+(2, 'admin'),
+(1, 'user');
+
 -- --------------------------------------------------------
 
 --
@@ -223,6 +241,14 @@ CREATE TABLE `userrolesmapping` (
   `user_id` int(11) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `userrolesmapping`
+--
+
+INSERT INTO `userrolesmapping` (`user_role_id`, `user_id`, `role_id`) VALUES
+(1, 5, 1),
+(2, 6, 2);
 
 -- --------------------------------------------------------
 
@@ -244,8 +270,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'Damien', 'damienraunier@gmail.com', '$2b$10$XAFEIIwoM53A4n8tWJocBOGpef3R81w8Hc1ikkVzndcN3PdWu5m2.', '2024-07-16 12:50:44', '2024-07-16 12:50:44'),
-(2, 'Damien2', 'damienraunier2@gmail.com', '$2b$10$0L9STkpt3gGzyIwu8BsPTOlyk5xnPAWPMjYclxakBhsq1KW59xY8u', '2024-07-16 12:52:01', '2024-07-16 12:52:01');
+(1, 'Damien', 'damienraunier@gmail.com', '$2b$10$0L9STkpt3gGzyIwu8BsPTOlyk5xnPAWPMjYclxakBhsq1KW59xY8u', '2024-07-16 12:50:44', '2024-07-17 08:17:58'),
+(2, 'Damien2', 'damienraunier2@gmail.com', '$2b$10$0L9STkpt3gGzyIwu8BsPTOlyk5xnPAWPMjYclxakBhsq1KW59xY8u', '2024-07-16 10:52:01', '2024-07-16 10:52:01'),
+(3, 'baptistee', 'ringlerbaptiste@gmail.com', '$2b$10$MmF2j1RBpkkoR/Vql1ikquE2rZu7KLOsFEtn44c5CarlQ/HgY6I3K', '2024-07-16 16:00:44', '2024-07-16 16:18:20'),
+(5, 'test12', 'test12@test.fr', '$2b$10$IcxXB7r/UBnadbDlYBnTK.nnhcRlNvRkwk.LYwdEAmOeAct8l.iUW', '2024-07-16 17:37:55', '2024-07-16 17:37:55'),
+(6, 'admin', 'admin@gmail.com', '$2b$10$ycLwFmSdAyR0XSLeydrWVOcgA1cbJqE5QOIe.L43CREMGQU0MI8ca', '2024-07-16 17:40:56', '2024-07-16 17:40:56');
 
 --
 -- Index pour les tables déchargées
@@ -338,7 +367,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `categories`
@@ -368,7 +397,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT pour la table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT pour la table `subcategories`
@@ -380,25 +409,25 @@ ALTER TABLE `subcategories`
 -- AUTO_INCREMENT pour la table `userprofiles`
 --
 ALTER TABLE `userprofiles`
-  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `userroles`
 --
 ALTER TABLE `userroles`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `userrolesmapping`
 --
 ALTER TABLE `userrolesmapping`
-  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Contraintes pour les tables déchargées
