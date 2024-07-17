@@ -16,6 +16,7 @@ const Register = () => {
 
   const navigate = useNavigate();
   const { addNotification, removeNotification } = useNotification();
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,7 +25,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/register', formData);
+      const response = await axios.post(`${apiUrl}/register`, formData);
       if (response.status === 201) {
         addNotification('Inscription réussie!', 'success');
         setTimeout(() => {

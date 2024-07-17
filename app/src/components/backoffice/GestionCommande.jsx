@@ -3,11 +3,12 @@ import axios from 'axios';
 
 const GestionCommande = () => {
   const [commandes, setCommandes] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchCommandes = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/allorders');
+        const response = await axios.get(`${apiUrl}/allorders`);
         setCommandes(response.data);
       } catch (error) {
         console.error('Error fetching commandes:', error);
@@ -24,7 +25,7 @@ const GestionCommande = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/commandes/${id}`);
+      await axios.delete(`${apiUrl}/commandes/${id}`);
       setCommandes(commandes.filter(commande => commande.commande_id !== id));
     } catch (error) {
       console.error('Error deleting commande:', error);

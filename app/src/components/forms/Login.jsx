@@ -10,6 +10,7 @@ const Login = () => {
   const { addNotification, removeNotification } = useNotification();
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,7 +20,7 @@ const Login = () => {
     e.preventDefault();
     removeNotification(); // Clear existing notifications
     try {
-      const response = await axios.post('http://localhost:3000/login', formData);
+      const response = await axios.post(`${apiUrl}/login`, formData);
       if (response.status === 200) {
         const { token, userId } = response.data;
         login(token, userId); // Use context to log in

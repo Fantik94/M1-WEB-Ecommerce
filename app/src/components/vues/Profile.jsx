@@ -9,6 +9,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(userInfo);
   const [errors, setErrors] = useState({});
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,7 +18,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.patch(`http://localhost:3000/users/${userInfo.user_id}`, formData);
+      const response = await axios.patch(`${apiUrl}/users/${userInfo.user_id}`, formData);
       addNotification('Profile updated successfully!', 'success');
       setIsEditing(false);
       fetchUserInfo(userInfo.user_id);

@@ -6,10 +6,11 @@ const GestionCategorie = () => {
   const [categories, setCategories] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/categories');
+      const response = await axios.get(`${apiUrl}/categories`);
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -27,7 +28,7 @@ const GestionCategorie = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/categories/${id}`);
+      await axios.delete(`${apiUrl}/categories/${id}`);
       setCategories(categories.filter(category => category.category_id !== id));
     } catch (error) {
       console.error('Error deleting category:', error);
@@ -43,11 +44,11 @@ const GestionCategorie = () => {
     try {
       if (currentCategory) {
         // Update category
-        await axios.put(`http://localhost:3000/categories/${currentCategory.category_id}`, form);
+        await axios.put(`${apiUrl}/categories/${currentCategory.category_id}`, form);
         setCategories(categories.map(category => (category.category_id === currentCategory.category_id ? { ...category, ...form } : category)));
       } else {
         // Add new category
-        const response = await axios.post('http://localhost:3000/categories', form);
+        const response = await axios.post(`${apiUrl}/categories`, form);
         setCategories([...categories, response.data]);
       }
       setShowForm(false);

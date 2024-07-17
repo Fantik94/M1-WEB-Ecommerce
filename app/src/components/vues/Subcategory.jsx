@@ -8,10 +8,11 @@ const Subcategory = () => {
   const { categoryId, subcategoryId } = useParams();
   const [subcategory, setSubcategory] = useState(null);
   const [products, setProducts] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     // Récupérer les détails de la sous-catégorie
-    axios.get(`http://localhost:3000/categories/${categoryId}/subcategories/${subcategoryId}/products`)
+    axios.get(`${apiUrl}/categories/${categoryId}/subcategories/${subcategoryId}/products`)
       .then(response => {
         setSubcategory(response.data);
       })
@@ -20,7 +21,7 @@ const Subcategory = () => {
       });
 
     // Récupérer les produits de la sous-catégorie
-    axios.get(`http://localhost:3000/categories/${categoryId}/subcategories/${subcategoryId}/products`)
+    axios.get(`${apiUrl}/categories/${categoryId}/subcategories/${subcategoryId}/products`)
       .then(response => {
         setProducts(response.data);
       })

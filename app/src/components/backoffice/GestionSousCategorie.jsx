@@ -6,10 +6,11 @@ const GestionSousCategorie = () => {
   const [categories, setCategories] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const fetchSubCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/allsubcategories');
+      const response = await axios.get(`${apiUrl}/allsubcategories`);
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching subcategories:', error);
@@ -27,7 +28,7 @@ const GestionSousCategorie = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/subcategories/${id}`);
+      await axios.delete(`${apiUrl}/subcategories/${id}`);
       setCategories(categories.filter(category => category.subcategory_id !== id));
     } catch (error) {
       console.error('Error deleting subcategory:', error);
@@ -44,11 +45,11 @@ const GestionSousCategorie = () => {
       if (currentCategory) {
         // Update subcategory
         console.log('Updating subcategory:', form);
-        await axios.put(`http://localhost:3000/subcategories/${currentCategory.subcategory_id}`, form);
+        await axios.put(`${apiUrl}/subcategories/${currentCategory.subcategory_id}`, form);
       } else {
         // Add new subcategory
         console.log('Adding subcategory:', form);
-        await axios.post('http://localhost:3000/subcategories', form);
+        await axios.post(`${apiUrl}/subcategories`, form);
       }
       setShowForm(false);
       fetchSubCategories(); // Refresh the subcategories list
