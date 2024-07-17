@@ -8,6 +8,14 @@ const Orders = () => {
   const [error, setError] = useState(null);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
+  const statusColors = {
+    'Processing': 'text-yellow-500',
+    'Validée': 'text-blue-500',
+    'En cours d\'acheminement': 'text-purple-500',
+    'Livrée': 'text-green-500',
+    'Annulée': 'text-red-500',
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
       if (!userInfo || !userInfo.user_id) {
@@ -45,7 +53,9 @@ const Orders = () => {
               <li key={index} className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Commande #{order.order_id}</h3>
                 <p className="text-gray-700 dark:text-gray-300">Total: {new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(order.total_amount)}</p>
-                <p className="text-gray-700 dark:text-gray-300">Status: {order.order_status}</p>
+                <p className={`${statusColors[order.order_status] || ''} rounded`}>
+                  Status: {order.order_status}
+                </p>
                 <p className="text-gray-700 dark:text-gray-300">Adresse de livraison: {order.shipping_address}</p>
               </li>
             ))}
