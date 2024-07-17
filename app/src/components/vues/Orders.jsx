@@ -53,7 +53,7 @@ const Orders = () => {
               <li key={index} className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Commande #{order.order_id}</h3>
                 <p className="text-gray-700 dark:text-gray-300">Total: {new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(order.total_amount)}</p>
-                <p className={`${statusColors[order.order_status] || ''} rounded`}>
+                <p className={`${statusColors[order.order_status]  || ''} rounded`}>
                   Status: {order.order_status}
                 </p>
                 <p className="text-gray-700 dark:text-gray-300">Adresse de livraison: {order.shipping_address}</p>
