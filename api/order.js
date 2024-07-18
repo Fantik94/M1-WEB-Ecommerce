@@ -1,9 +1,20 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
 import { body, validationResult } from 'express-validator';
+import nodemailer from 'nodemailer';
+
 
 const orderRoutes = (dbConfig) => {
   const router = express.Router();
+  const transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, 
+    auth: {
+      user: "maddison53@ethereal.email",
+      pass: "jn7jnAPss4f63QBp6D",
+    },
+  });
 
   // Endpoint pour créer une nouvelle commande
   router.post('/orders',
@@ -44,6 +55,19 @@ const orderRoutes = (dbConfig) => {
 
         if (result.affectedRows > 0) {
           console.log(`Order for user ${user_id} added successfully.`);
+
+          // Récupérez l'e-mail de l'utilisateur à partir de la base de données
+          const [userRows] = await connection.execute('SELECT email FROM Users WHERE user_id = ?', [user_id]);
+          const userEmail = userRows[0].email;
+
+          // Envoyez l'e-mail de confirmation
+          await transporter.sendMail({
+            from: 'maddison53@ethereal.email',
+            to: userEmail,
+            subject: 'Commande confirmée',
+            text: `Bonjour,\n\nVotre commande a été confirmée. Le montant total est de ${total_amount}.\n\nCordialement,\nL'équipe de Gaming Avenue`,
+          });
+
           res.status(201).send(`Order for user ${user_id} added successfully.`);
         } else {
           console.log(`Failed to add order for user ${user_id}.`);
