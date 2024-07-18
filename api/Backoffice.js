@@ -105,7 +105,7 @@ const BackofficeRoutes = (dbConfig) => {
   });
 
   // Endpoint pour avoir un user
-  router.get('/users/:userId', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
+  router.get('/users/:userId', authenticateJWT, authorizeRoles(['admin','user']), async (req, res) => {
     const { userId } = req.params;
     let connection;
     try {
