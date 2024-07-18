@@ -32,7 +32,7 @@ const GestionUtilisateur = () => {
       console.error('Error deleting user:', error);
       addNotification('Erreur lors de la suppression de l\'utilisateur', 'error');
     }
-    setShowConfirmModal(false); // Close the modal after deletion
+    setShowConfirmModal(false); // Fermer la boite de dialoge
   };
 
   const confirmDelete = (id) => {

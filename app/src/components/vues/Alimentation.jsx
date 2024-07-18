@@ -40,7 +40,7 @@ const Alimentation = () => {
                 image={`${subcategory.image}`}
                 title={subcategory.name}
                 description={subcategory.description}
-                link={`/categories/2/subcategories/${subcategory.subcategory_id}`}
+                link={`/categories/2/subcategories/${subcategory.subcategory_id}/products`}
               />
             ))}
           </div>
