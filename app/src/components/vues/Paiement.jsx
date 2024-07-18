@@ -4,7 +4,7 @@ import ProgressBar from './ProgressBar';
 import { PanierContext } from "../../context/PanierContext";
 import AuthContext from "../../context/AuthContext";
 import CommandeContext from "../../context/CommandeContext";
-import axios from 'axios';
+import axiosInstance from '../../utils/AxiosInstance'; // Importez l'instance Axios personnalisée
 import { useNotification } from '../../context/NotificationContext';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline';
 
@@ -31,7 +31,6 @@ const Paiement = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const totalHT = getTotalPanier();
   const totalTTC = totalHT * 1.20;
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const navigate = useNavigate();
 
@@ -41,7 +40,7 @@ const Paiement = () => {
 
   const fetchPayments = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/payments/${userId}`);
+      const response = await axiosInstance.get(`/payments/${userId}`);
       setPayments(response.data);
       if (response.data.length > 0) {
         setSelectedPayment(response.data[0].payments_id); // Sélectionner la première méthode de paiement par défaut
@@ -85,12 +84,12 @@ const Paiement = () => {
     }
 
     const url = editingPaymentId
-      ? `${apiUrl}/payments/${userId}/${editingPaymentId}`
-      : `${apiUrl}/payments/${userId}`;
+      ? `/payments/${userId}/${editingPaymentId}`
+      : `/payments/${userId}`;
     const method = editingPaymentId ? 'patch' : 'post';
 
     try {
-      const response = await axios[method](url, {
+      const response = await axiosInstance[method](url, {
         numero_carte: numeroCarte.replace(/\s/g, ''),
         date_expiration_carte: dateExpirationCarte,
         cvc_carte: cvcCarte,
@@ -132,7 +131,7 @@ const Paiement = () => {
     }
 
     try {
-      const response = await axios.post(`${apiUrl}/orders`, {
+      const response = await axiosInstance.post('/orders', {
         user_id: userId,
         total_amount: totalTTC,
         shipping_address: `${adresseLivraison.street}, ${adresseLivraison.city}, ${adresseLivraison.state}, ${adresseLivraison.postal_code}, ${adresseLivraison.country}`,

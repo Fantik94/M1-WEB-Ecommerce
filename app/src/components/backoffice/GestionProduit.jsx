@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/AxiosInstance'; // Importez l'instance Axios personnalisée
 import ProductForm from '../forms/Produit';
 import ConfirmModal from '../vues/Confirm';
 import { useNotification } from '../../context/NotificationContext';
@@ -16,7 +16,7 @@ const GestionProduits = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/products`);
+      const response = await axiosInstance.get('/products');
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -34,7 +34,7 @@ const GestionProduits = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/products/${id}`);
+      await axiosInstance.delete(`/products/${id}`);
       setProducts(products.filter(product => product.product_id !== id));
       addNotification('Produit supprimé avec succès', 'success');
     } catch (error) {
@@ -58,7 +58,7 @@ const GestionProduits = () => {
     try {
       if (currentProduct) {
         // Modifier un produit
-        await axios.patch(`${apiUrl}/products/${currentProduct.product_id}`, form, {
+        await axiosInstance.patch(`/products/${currentProduct.product_id}`, form, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -66,7 +66,7 @@ const GestionProduits = () => {
         addNotification('Produit mis à jour avec succès', 'success');
       } else {
         // Ajouter un produit
-        await axios.post(`${apiUrl}/products`, form, {
+        await axiosInstance.post('/products', form, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

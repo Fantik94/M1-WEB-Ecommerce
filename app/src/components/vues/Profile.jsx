@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import axios from 'axios';
+import React, { useContext, useState, useEffect } from 'react';
+import axiosInstance from '../../utils/AxiosInstance';
 import AuthContext from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 
@@ -7,9 +7,16 @@ const Profile = () => {
   const { userInfo, fetchUserInfo } = useContext(AuthContext);
   const { addNotification } = useNotification();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(userInfo);
+  const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const userId = sessionStorage.getItem('userId');
+
+  useEffect(() => {
+    if (userInfo) {
+      setFormData(userInfo);
+    }
+  }, [userInfo]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,10 +25,10 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.patch(`${apiUrl}/users/${userInfo.user_id}`, formData);
+      const response = await axiosInstance.patch(`/users/${userId}`, formData);
       addNotification('Profile updated successfully!', 'success');
       setIsEditing(false);
-      fetchUserInfo(userInfo.user_id);
+      fetchUserInfo(userId);
     } catch (error) {
       if (error.response && error.response.data.errors) {
         const newErrors = {};
@@ -53,7 +60,7 @@ const Profile = () => {
             <input
               type="text"
               name="username"
-              value={formData.username}
+              value={formData.username || ''}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
             />
@@ -64,7 +71,7 @@ const Profile = () => {
             <input
               type="email"
               name="email"
-              value={formData.email}
+              value={formData.email || ''}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
             />
@@ -75,7 +82,7 @@ const Profile = () => {
             <input
               type="password"
               name="password"
-              value={formData.password}
+              value={formData.password || ''}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
             />
@@ -86,7 +93,7 @@ const Profile = () => {
             <input
               type="text"
               name="first_name"
-              value={formData.first_name}
+              value={formData.first_name || ''}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
             />
@@ -97,7 +104,7 @@ const Profile = () => {
             <input
               type="text"
               name="last_name"
-              value={formData.last_name}
+              value={formData.last_name || ''}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
             />
@@ -108,7 +115,7 @@ const Profile = () => {
             <input
               type="text"
               name="phone_number"
-              value={formData.phone_number}
+              value={formData.phone_number || ''}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
             />
