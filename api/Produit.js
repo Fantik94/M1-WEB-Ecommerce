@@ -4,6 +4,7 @@ import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
+import { authenticateJWT, authorizeRoles } from './middleware/authMiddleware.js'; 
 
 dotenv.config();
 
@@ -215,8 +216,9 @@ const produitRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
+
   //Endpoint pour supprimer un produit
-  router.delete('/products/:productId', async (req, res) => {
+ router.delete('/products/:productId', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     const { productId } = req.params;
     let connection;
     try {
@@ -255,6 +257,7 @@ const produitRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
+
 
   //Page Recherche
   router.get('/search', async (req, res) => {
