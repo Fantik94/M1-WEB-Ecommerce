@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProductForm from '../forms/Produit';
+import ConfirmModal from '../vues/Confirm';
+import { useNotification } from '../../context/NotificationContext';
 
 const GestionProduits = () => {
   const [products, setProducts] = useState([]);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
+  const { addNotification } = useNotification();
 
   const fetchProducts = async () => {
     try {
@@ -31,9 +36,17 @@ const GestionProduits = () => {
     try {
       await axios.delete(`${apiUrl}/products/${id}`);
       setProducts(products.filter(product => product.product_id !== id));
+      addNotification('Produit supprimé avec succès', 'success');
     } catch (error) {
       console.error('Error deleting product:', error);
+      addNotification('Erreur lors de la suppression du produit', 'error');
     }
+    setShowConfirmModal(false);
+  };
+
+  const confirmDelete = (id) => {
+    setSelectedProductId(id);
+    setShowConfirmModal(true);
   };
 
   const handleAdd = () => {
@@ -45,25 +58,26 @@ const GestionProduits = () => {
     try {
       if (currentProduct) {
         // Modifier un produit
-        console.log('Updating product:', form);
         await axios.patch(`${apiUrl}/products/${currentProduct.product_id}`, form, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
+        addNotification('Produit mis à jour avec succès', 'success');
       } else {
         // Ajouter un produit
-        console.log('Adding product:', form);
         await axios.post(`${apiUrl}/products`, form, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
+        addNotification('Produit ajouté avec succès', 'success');
       }
       setShowForm(false);
       fetchProducts();
     } catch (error) {
       console.error('Error saving product:', error);
+      addNotification('Erreur lors de la sauvegarde du produit', 'error');
     }
   };
 
@@ -112,7 +126,7 @@ const GestionProduits = () => {
                   Modifier
                 </button>
                 <button
-                  onClick={() => handleDelete(product.product_id)}
+                  onClick={() => confirmDelete(product.product_id)}
                   className="px-2 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none"
                 >
                   Supprimer
@@ -122,6 +136,12 @@ const GestionProduits = () => {
           ))}
         </tbody>
       </table>
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => handleDelete(selectedProductId)}
+        message="Êtes-vous sûr de vouloir supprimer ce produit ?"
+      />
     </div>
   );
 };

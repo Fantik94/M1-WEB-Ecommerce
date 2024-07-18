@@ -14,14 +14,23 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// Fonction pour normaliser les noms de fichiers
+const normalizeFileName = (originalname) => {
+  return originalname
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[^a-zA-Z0-9]/g, '_');  // Replace non-alphanumeric characters with underscores
+};
+
 // Configurer Multer avec Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary.v2,
   params: async (req, file) => {
+    const normalizedFileName = normalizeFileName(file.originalname.split('.')[0]);
     return {
       folder: 'Gaming_avenue_images/subcategories',
       format: 'jpg',
-      public_id: file.originalname.split('.')[0]
+      public_id: normalizedFileName
     };
   }
 });
@@ -34,41 +43,27 @@ const subCategorieRoutes = (dbConfig) => {
   // Route pour récupérer les sous-catégories d'une catégorie
   router.get('/subcategories', async (req, res) => {
     const { category_id } = req.query;
-    console.log(`Route /subcategories called with category_id: ${category_id}`);
     if (!category_id) {
       return res.status(400).send('category_id is required');
     }
 
     let connection;
     try {
-      console.log('Connecting to the database...');
       connection = await mysql.createConnection(dbConfig);
-      console.log('Connected to the database.');
-
       const [rows] = await connection.execute('SELECT * FROM SubCategories WHERE category_id = ?', [category_id]);
       connection.end();
-
-      console.log(`Subcategories for category ${category_id} retrieved:`, rows);
       res.json(rows);
     } catch (error) {
-      console.error(`Error fetching subcategories for category ${category_id}:`, error);
-      if (connection) {
-        connection.end();
-      }
+      if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
   });
 
   // Route pour récupérer toutes les sous-catégories avec les noms des catégories
   router.get('/allsubcategories', async (req, res) => {
-    console.log('Route /allsubcategories called');
-    
     let connection;
     try {
-      console.log('Connecting to the database...');
       connection = await mysql.createConnection(dbConfig);
-      console.log('Connected to the database.');
-
       const [subCategories] = await connection.execute('SELECT * FROM SubCategories');
       const [categories] = await connection.execute('SELECT * FROM Categories');
       connection.end();
@@ -81,13 +76,9 @@ const subCategorieRoutes = (dbConfig) => {
         };
       });
 
-      console.log('All subcategories with category names retrieved:', subCategoriesWithCategoryNames);
       res.json(subCategoriesWithCategoryNames);
     } catch (error) {
-      console.error('Error fetching subcategories:', error);
-      if (connection) {
-        connection.end();
-      }
+      if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
   });
@@ -102,10 +93,7 @@ const subCategorieRoutes = (dbConfig) => {
 
     let connection;
     try {
-      console.log('Connecting to the database...');
       connection = await mysql.createConnection(dbConfig);
-      console.log('Connected to the database.');
-
       const [result] = await connection.execute(
         'INSERT INTO SubCategories (category_id, name, description, image) VALUES (?, ?, ?, ?)',
         [category_id, name, description, req.file.path]
@@ -114,12 +102,14 @@ const subCategorieRoutes = (dbConfig) => {
       const subcategory_id = result.insertId;
       const imageUrl = req.file.path;
 
-      connection.end();
+      await connection.execute(
+        'UPDATE SubCategories SET image = ? WHERE subcategory_id = ?',
+        [imageUrl, subcategory_id]
+      );
 
-      console.log(`Sub-category ${name} added with image URL: ${imageUrl}`);
+      connection.end();
       res.status(201).send({ message: `Sub-category ${name} added.`, subcategory_id, imageUrl });
     } catch (error) {
-      console.error(`Error adding sub-category ${name}:`, error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -158,15 +148,14 @@ const subCategorieRoutes = (dbConfig) => {
         res.status(404).send(`Sub-category ${subCategoryId} not found.`);
       }
     } catch (error) {
-      console.error(`Error deleting sub-category ${subCategoryId}:`, error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
   });
 
-  // Endpoint pour modifier une sous-catégorie avec image upload
-  router.patch('/subcategories/:subcategory_id', upload.single('image'), async (req, res) => {
-    const subcategory_id = req.params.subcategory_id;
+  // Route pour modifier une sous-catégorie avec image upload
+  router.patch('/subcategories/:subCategoryId', upload.single('image'), async (req, res) => {
+    const subCategoryId = req.params.subCategoryId;
     const { category_id, name, description } = req.body;
 
     if (!category_id || !name || !description) {
@@ -176,25 +165,44 @@ const subCategorieRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
+
+      // Récupérer l'ancienne image
+      const [rows] = await connection.execute(
+        'SELECT image FROM SubCategories WHERE subcategory_id = ?',
+        [subCategoryId]
+      );
+
+      const oldImageUrl = rows.length > 0 ? rows[0].image : null;
+
+      // Supprimer l'ancienne image de Cloudinary
+      if (oldImageUrl) {
+        const publicId = oldImageUrl.split('/').pop().split('.')[0];
+        await cloudinary.v2.uploader.destroy(`Gaming_avenue_images/subcategories/${publicId}`, (error, result) => {
+          if (error) {
+            console.error('Error deleting old image from Cloudinary:', error);
+          } else {
+            console.log('Old image deleted from Cloudinary:', result);
+          }
+        });
+      }
+
       const imageUrl = req.file ? req.file.path : null;
 
       if (imageUrl) {
         await connection.execute(
           'UPDATE SubCategories SET category_id = ?, name = ?, description = ?, image = ? WHERE subcategory_id = ?',
-          [category_id, name, description, imageUrl, subcategory_id]
+          [category_id, name, description, imageUrl, subCategoryId]
         );
       } else {
         await connection.execute(
           'UPDATE SubCategories SET category_id = ?, name = ?, description = ? WHERE subcategory_id = ?',
-          [category_id, name, description, subcategory_id]
+          [category_id, name, description, subCategoryId]
         );
       }
 
       connection.end();
-
-      res.status(200).send(`Sub-category ${subcategory_id} updated.`);
+      res.status(200).send(`Sub-category ${subCategoryId} updated.`);
     } catch (error) {
-      console.error(`Error updating sub-category ${subcategory_id}:`, error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
