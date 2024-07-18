@@ -136,9 +136,9 @@ const BackofficeRoutes = (dbConfig) => {
     }
   });
 
-  // Route to delete a user and their profile
+  // Route pour supprimer un utilisateur
   router.delete('/users/:userId', async (req, res) => {
-    const { userId } = req.params;
+    const userId = req.params.userId;
     console.log(`Route DELETE /users/${userId} called`);
     let connection;
     try {
@@ -146,22 +146,17 @@ const BackofficeRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to the database.');
 
-      // Start a transaction
-      await connection.beginTransaction();
+      // Supprimer les entrées dans les tables dépendantes
+      await connection.execute('DELETE FROM userrolesmapping WHERE user_id = ?', [userId]);
+      await connection.execute('DELETE FROM userprofiles WHERE user_id = ?', [userId]);
 
-      // Delete user profile
-      await connection.execute('DELETE FROM UserProfiles WHERE user_id = ?', [userId]);
-
-      // Delete user
-      const [result] = await connection.execute('DELETE FROM Users WHERE user_id = ?', [userId]);
-
-      // Commit the transaction
-      await connection.commit();
+      // Supprimer l'utilisateur
+      const [result] = await connection.execute('DELETE FROM users WHERE user_id = ?', [userId]);
       connection.end();
 
       if (result.affectedRows > 0) {
-        console.log(`User ${userId} and profile deleted.`);
-        res.status(200).send(`User ${userId} and profile deleted.`);
+        console.log(`User ${userId} deleted.`);
+        res.status(200).send(`User ${userId} deleted.`);
       } else {
         console.log(`User ${userId} not found.`);
         res.status(404).send(`User ${userId} not found.`);
@@ -169,7 +164,6 @@ const BackofficeRoutes = (dbConfig) => {
     } catch (error) {
       console.error(`Error deleting user ${userId}:`, error);
       if (connection) {
-        await connection.rollback();
         connection.end();
       }
       res.status(500).send('Internal Server Error');

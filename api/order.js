@@ -102,7 +102,7 @@ const orderRoutes = (dbConfig) => {
   });
 
   // Endpoint pour modifier une commande
-  router.patch('/orders/:user_id/:order_id',
+  router.patch('/orders/:order_id',
     // Validation des champs
     body('order_status').isLength({ min: 1 }).withMessage('Order status is required'),
     async (req, res) => {
@@ -111,7 +111,7 @@ const orderRoutes = (dbConfig) => {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { user_id, order_id } = req.params;
+      const { order_id } = req.params;
       const { total_amount, shipping_address, payment_status, order_status } = req.body;
 
       let connection;
@@ -121,29 +121,29 @@ const orderRoutes = (dbConfig) => {
         console.log('Connected to the database.');
 
         // Vérifier si la commande existe
-        const [orderRows] = await connection.execute('SELECT * FROM Orders WHERE order_id = ? AND user_id = ?', [order_id, user_id]);
+        const [orderRows] = await connection.execute('SELECT * FROM Orders WHERE order_id = ?', [order_id]);
         if (orderRows.length === 0) {
           connection.end();
-          console.log(`Order ID ${order_id} for user ID ${user_id} does not exist.`);
-          return res.status(404).send(`Order ID ${order_id} for user ID ${user_id} does not exist.`);
+          console.log(`Order ID ${order_id} does not exist.`);
+          return res.status(404).send(`Order ID ${order_id} does not exist.`);
         }
 
         // Mettre à jour la commande dans la base de données
         const [result] = await connection.execute(
-          'UPDATE Orders SET total_amount = ?, shipping_address = ?, payment_status = ?, order_status = ? WHERE order_id = ? AND user_id = ?',
-          [total_amount, shipping_address, payment_status, order_status, order_id, user_id]
+          'UPDATE Orders SET total_amount = COALESCE(?, total_amount), shipping_address = COALESCE(?, shipping_address), payment_status = COALESCE(?, payment_status), order_status = ? WHERE order_id = ?',
+          [total_amount || orderRows[0].total_amount, shipping_address || orderRows[0].shipping_address, payment_status || orderRows[0].payment_status, order_status, order_id]
         );
         connection.end();
 
         if (result.affectedRows > 0) {
-          console.log(`Order ${order_id} for user ${user_id} updated successfully.`);
-          res.status(200).send(`Order ${order_id} for user ${user_id} updated successfully.`);
+          console.log(`Order ${order_id} updated successfully.`);
+          res.status(200).send(`Order ${order_id} updated successfully.`);
         } else {
-          console.log(`Failed to update order ${order_id} for user ${user_id}.`);
-          res.status(500).send(`Failed to update order ${order_id} for user ${user_id}.`);
+          console.log(`Failed to update order ${order_id}.`);
+          res.status(500).send(`Failed to update order ${order_id}.`);
         }
       } catch (error) {
-        console.error(`Error updating order ${order_id} for user ${user_id}:`, error);
+        console.error(`Error updating order ${order_id}:`, error);
         if (connection) {
           connection.end();
         }

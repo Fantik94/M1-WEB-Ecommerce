@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ConfirmModal from '../vues/Confirm';
+import { useNotification } from '../../context/NotificationContext';
 
 const GestionUtilisateur = () => {
   const [users, setUsers] = useState([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const { addNotification } = useNotification(); // Destructure addNotification from useNotification
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -18,18 +23,21 @@ const GestionUtilisateur = () => {
     fetchUsers();
   }, []);
 
-  const handleEdit = (user) => {
-    console.log('Edit user with id:', user.user_id);
-    // Handle edit functionality here
-  };
-
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${apiUrl}/users/${id}`);
       setUsers(users.filter(user => user.user_id !== id));
+      addNotification('Utilisateur supprimé avec succès', 'success');
     } catch (error) {
       console.error('Error deleting user:', error);
+      addNotification('Erreur lors de la suppression de l\'utilisateur', 'error');
     }
+    setShowConfirmModal(false); // Close the modal after deletion
+  };
+
+  const confirmDelete = (id) => {
+    setSelectedUserId(id);
+    setShowConfirmModal(true);
   };
 
   return (
@@ -56,13 +64,7 @@ const GestionUtilisateur = () => {
               <td className="py-2 px-4 border-b dark:border-gray-700">{new Date(user.updated_at).toLocaleDateString()}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
                 <button
-                  onClick={() => handleEdit(user)}
-                  className="px-2 py-1 bg-yellow-500 text-white rounded-lg mr-2 hover:bg-yellow-600 focus:outline-none"
-                >
-                  Modifier
-                </button>
-                <button
-                  onClick={() => handleDelete(user.user_id)}
+                  onClick={() => confirmDelete(user.user_id)}
                   className="px-2 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none"
                 >
                   Supprimer
@@ -72,6 +74,12 @@ const GestionUtilisateur = () => {
           ))}
         </tbody>
       </table>
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => handleDelete(selectedUserId)}
+        message="Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+      />
     </div>
   );
 };
