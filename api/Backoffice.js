@@ -154,6 +154,7 @@ const BackofficeRoutes = (dbConfig) => {
       await connection.execute('DELETE FROM payments WHERE user_id = ?', [userId]);
       await connection.execute('DELETE FROM userrolesmapping WHERE user_id = ?', [userId]);
       await connection.execute('DELETE FROM userprofiles WHERE user_id = ?', [userId]);
+      await connection.execute('DELETE FROM orders WHERE user_id = ?', [userId]);
 
       // Supprimer l'utilisateur
       const [result] = await connection.execute('DELETE FROM users WHERE user_id = ?', [userId]);
