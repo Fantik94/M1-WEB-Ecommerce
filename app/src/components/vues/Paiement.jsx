@@ -27,7 +27,7 @@ const Paiement = () => {
   const [cvcCarte, setCvcCarte] = useState('');
   const [nomCarte, setNomCarte] = useState('');
   const [editingPaymentId, setEditingPaymentId] = useState(null);
-  const [userId] = useState(localStorage.getItem('userId'));
+  const [userId] = useState(sessionStorage.getItem('userId'));
   const [isFormVisible, setIsFormVisible] = useState(false);
   const totalHT = getTotalPanier();
   const totalTTC = totalHT * 1.20;

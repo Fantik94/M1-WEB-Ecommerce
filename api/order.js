@@ -1,9 +1,23 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
 import { body, validationResult } from 'express-validator';
+import nodemailer from 'nodemailer';
+
 
 const orderRoutes = (dbConfig) => {
   const router = express.Router();
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, 
+    auth: {
+      user: "gamingavenue.shop@gmail.com",
+      pass: "lhdn hcuh ovyx lolt",
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
 
   // Endpoint pour créer une nouvelle commande
   router.post('/orders',
@@ -40,10 +54,23 @@ const orderRoutes = (dbConfig) => {
           'INSERT INTO Orders (user_id, total_amount, shipping_address, payment_status, order_status) VALUES (?, ?, ?, ?, ?)',
           [user_id, total_amount, shipping_address, payment_status, order_status]
         );
-        connection.end();
+        
 
         if (result.affectedRows > 0) {
           console.log(`Order for user ${user_id} added successfully.`);
+
+          // Récupérez l'e-mail de l'utilisateur à partir de la base de données
+          const [userRows] = await connection.execute('SELECT email FROM Users WHERE user_id = ?', [user_id]);
+          const userEmail = userRows[0].email;
+
+          // Envoyez l'e-mail de confirmation
+          await transporter.sendMail({
+            from: 'gamingavenue.shop@gmail.com',
+            to: userEmail,
+            subject: 'Commande confirmée',
+            text: `Bonjour,\n\nVotre commande a été confirmée. Le montant total est de ${total_amount}.\n\nCordialement,\nL'équipe de Gaming Avenue`,
+          });
+
           res.status(201).send(`Order for user ${user_id} added successfully.`);
         } else {
           console.log(`Failed to add order for user ${user_id}.`);
@@ -57,6 +84,7 @@ const orderRoutes = (dbConfig) => {
         res.status(500).send('Internal Server Error');
       }
     }
+    
   );
 
       // Endpoint pour récupérer toutes les commandes d'un utilisateur

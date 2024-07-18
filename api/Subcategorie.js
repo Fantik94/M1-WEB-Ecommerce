@@ -95,8 +95,8 @@ const subCategorieRoutes = (dbConfig) => {
     try {
       connection = await mysql.createConnection(dbConfig);
       const [result] = await connection.execute(
-        'INSERT INTO SubCategories (category_id, name, description) VALUES (?, ?, ?)',
-        [category_id, name, description]
+        'INSERT INTO SubCategories (category_id, name, description, image) VALUES (?, ?, ?, ?)',
+        [category_id, name, description, req.file.path]
       );
 
       const subcategory_id = result.insertId;

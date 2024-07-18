@@ -12,7 +12,7 @@
     const [postalCode, setPostalCode] = useState('');
     const [country, setCountry] = useState('');
     const [editingAddressId, setEditingAddressId] = useState(null);
-    const [userId] = useState(localStorage.getItem('userId'));
+    const [userId] = useState(sessionStorage.getItem('userId'));
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
@@ -78,7 +78,7 @@
     const updateAddress = async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.put(`${apiUrl}/addresses/${userId}/${editingAddressId}`, {
+        const response = await axios.patch(`${apiUrl}/addresses/${userId}/${editingAddressId}`, {
           street,
           city,
           state,

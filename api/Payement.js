@@ -110,58 +110,58 @@ const paymentRoutes = (dbConfig) => {
   });
 
    // Endpoint pour modifier une méthode de paiement
-   router.patch('/payments/:user_id/:payments_id',
-   // Validation des champs
-   body('numero_carte').optional().isLength({ min: 16, max: 20 }).withMessage('Card number must be between 16 and 20 characters'),
-   body('date_expiration_carte').optional().isDate().withMessage('Expiration date must be a valid date'),
-   body('cvc_carte').optional().isLength({ min: 3, max: 4 }).withMessage('CVC must be 3 or 4 characters'),
-   body('nom_carte').optional().isLength({ min: 1 }).withMessage('Name on card is required'),
-   async (req, res) => {
-     const errors = validationResult(req);
-     if (!errors.isEmpty()) {
-       return res.status(400).json({ errors: errors.array() });
-     }
+router.patch('/payments/:user_id/:payments_id',
+// Validation des champs
+body('numero_carte').optional().isLength({ min: 16, max: 20 }).withMessage('Card number must be between 16 and 20 characters'),
+body('date_expiration_carte').optional().isDate().withMessage('Expiration date must be a valid date'),
+body('cvc_carte').optional().isLength({ min: 3, max: 4 }).withMessage('CVC must be 3 or 4 characters'),
+body('nom_carte').optional().isLength({ min: 1 }).withMessage('Name on card is required'),
+async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-     const { user_id, payments_id } = req.params;
-     const { numero_carte, date_expiration_carte, cvc_carte, nom_carte } = req.body;
+  const { user_id, payments_id } = req.params;
+  const { numero_carte, date_expiration_carte, cvc_carte, nom_carte } = req.body;
 
-     let connection;
-     try {
-       console.log('Connecting to the database...');
-       connection = await mysql.createConnection(dbConfig);
-       console.log('Connected to the database.');
+  let connection;
+  try {
+    console.log('Connecting to the database...');
+    connection = await mysql.createConnection(dbConfig);
+    console.log('Connected to the database.');
 
-       // Vérifier si la méthode de paiement existe
-       const [paymentRows] = await connection.execute('SELECT * FROM Payments WHERE user_id = ? AND payments_id = ?', [user_id, payments_id]);
-       if (paymentRows.length === 0) {
-         connection.end();
-         console.log(`Payment ID ${payments_id} for user ID ${user_id} does not exist.`);
-         return res.status(404).send(`Payment ID ${payments_id} for user ID ${user_id} does not exist.`);
-       }
+    // Vérifier si la méthode de paiement existe
+    const [paymentRows] = await connection.execute('SELECT * FROM Payments WHERE user_id = ? AND payments_id = ?', [user_id, payments_id]);
+    if (paymentRows.length === 0) {
+      connection.end();
+      console.log(`Payment ID ${payments_id} for user ID ${user_id} does not exist.`);
+      return res.status(404).send(`Payment ID ${payments_id} for user ID ${user_id} does not exist.`);
+    }
 
-       // Mettre à jour la méthode de paiement dans la base de données
-       const [result] = await connection.execute(
-         'UPDATE Payments SET numero_carte = IFNULL(?, numero_carte), date_expiration_carte = IFNULL(?, date_expiration_carte), cvc_carte = IFNULL(?, cvc_carte), nom_carte = IFNULL(?, nom_carte) WHERE user_id = ? AND payments_id = ?',
-         [numero_carte, date_expiration_carte, cvc_carte, nom_carte, user_id, payments_id]
-       );
-       connection.end();
+    // Mettre à jour la méthode de paiement dans la base de données
+    const [result] = await connection.execute(
+      'UPDATE Payments SET numero_carte = IFNULL(?, numero_carte), date_expiration_carte = IFNULL(?, date_expiration_carte), cvc_carte = IFNULL(?, cvc_carte), nom_carte = IFNULL(?, nom_carte) WHERE user_id = ? AND payments_id = ?',
+      [numero_carte || paymentRows[0].numero_carte, date_expiration_carte || paymentRows[0].date_expiration_carte, cvc_carte || paymentRows[0].cvc_carte, nom_carte || paymentRows[0].nom_carte, user_id, payments_id]
+    );
+    connection.end();
 
-       if (result.affectedRows > 0) {
-         console.log(`Payment ${payments_id} for user ${user_id} updated successfully.`);
-         res.status(200).send(`Payment ${payments_id} for user ${user_id} updated successfully.`);
-       } else {
-         console.log(`Failed to update payment ${payments_id} for user ${user_id}.`);
-         res.status(500).send(`Failed to update payment ${payments_id} for user ${user_id}.`);
-       }
-     } catch (error) {
-       console.error(`Error updating payment ${payments_id} for user ${user_id}:`, error);
-       if (connection) {
-         connection.end();
-       }
-       res.status(500).send('Internal Server Error');
-     }
-   }
- );
+    if (result.affectedRows > 0) {
+      console.log(`Payment ${payments_id} for user ${user_id} updated successfully.`);
+      res.status(200).send(`Payment ${payments_id} for user ${user_id} updated successfully.`);
+    } else {
+      console.log(`Failed to update payment ${payments_id} for user ${user_id}.`);
+      res.status(500).send(`Failed to update payment ${payments_id} for user ${user_id}.`);
+    }
+  } catch (error) {
+    console.error(`Error updating payment ${payments_id} for user ${user_id}:`, error);
+    if (connection) {
+      connection.end();
+    }
+    res.status(500).send('Internal Server Error');
+  }
+}
+);
 
   return router;
 };

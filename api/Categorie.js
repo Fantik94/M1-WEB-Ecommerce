@@ -43,6 +43,7 @@ const categorieRoutes = (dbConfig) => {
       connection.end();
       res.json(rows);
     } catch (error) {
+      console.error('Error fetching categories:', error);
       res.status(500).send('Internal Server Error');
     }
   });
@@ -61,16 +62,18 @@ const categorieRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
-      const [result] = await connection.execute('INSERT INTO Categories (name, description) VALUES (?, ?)', [name, description]);
+      const imageUrl = req.file ? req.file.path : null;
+      const [result] = await connection.execute(
+        'INSERT INTO Categories (name, description, image) VALUES (?, ?, ?)',
+        [name, description, imageUrl]
+      );
       const category_id = result.insertId;
 
-      const imageUrl = req.file.path;
-
-      await connection.execute('UPDATE Categories SET image = ? WHERE category_id = ?', [imageUrl, category_id]);
       const [newCategory] = await connection.execute('SELECT * FROM Categories WHERE category_id = ?', [category_id]);
       connection.end();
       res.status(201).json(newCategory[0]);
     } catch (error) {
+      console.error('Error adding category:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -105,6 +108,7 @@ const categorieRoutes = (dbConfig) => {
         res.status(404).send(`Category ${categoryId} not found.`);
       }
     } catch (error) {
+      console.error('Error deleting category:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -154,6 +158,7 @@ const categorieRoutes = (dbConfig) => {
       connection.end();
       res.status(200).send(`Category ${categoryId} updated.`);
     } catch (error) {
+      console.error('Error updating category:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
