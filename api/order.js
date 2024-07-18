@@ -63,7 +63,7 @@ const orderRoutes = (dbConfig) => {
           const orderDetails = `
             <h1>Confirmation de commande</h1>
             <p>Bonjour,</p>
-            <p>Votre commande a été confirmée avec succès. Voici les détails de votre commande :</p>
+            <p> 🎉Votre commande a été confirmée avec succès.🎉 Voici les détails de votre commande :</p>
             <ul>
               <li><strong>ID de la commande :</strong> ${result.insertId}</li>
               <li><strong>Montant total :</strong> ${total_amount} €</li>
