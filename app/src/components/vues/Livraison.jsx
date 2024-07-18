@@ -36,7 +36,7 @@ const Livraison = () => {
   const [state, setState] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('');
-  const [userId] = useState(localStorage.getItem('userId'));
+  const [userId] = useState(sessionStorage.getItem('userId'));
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isFormVisible, setIsFormVisible] = useState(false);
