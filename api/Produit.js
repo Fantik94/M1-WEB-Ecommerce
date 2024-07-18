@@ -49,6 +49,7 @@ const produitRoutes = (dbConfig) => {
       connection.end();
       res.json(rows);
     } catch (error) {
+      console.error('Error fetching products:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -62,6 +63,7 @@ const produitRoutes = (dbConfig) => {
       connection.end();
       res.json(rows);
     } catch (error) {
+      console.error('Error fetching products:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -80,6 +82,7 @@ const produitRoutes = (dbConfig) => {
         res.status(404).send(`Product ${productId} not found.`);
       }
     } catch (error) {
+      console.error('Error fetching product by ID:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -93,6 +96,7 @@ const produitRoutes = (dbConfig) => {
       connection.end();
       res.json(rows);
     } catch (error) {
+      console.error('Error fetching random products:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -116,16 +120,16 @@ const produitRoutes = (dbConfig) => {
 
       // Insérer le produit dans la base de données
       const [result] = await connection.execute(
-        'INSERT INTO Products (subcategory_id, name, description, price, stock) VALUES (?, ?, ?, ?, ?)',
-        [subcategory_id, name, description, price, stock]
+        'INSERT INTO Products (subcategory_id, name, description, price, stock, image1, image2, image3) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [subcategory_id, name, description, price, stock, '', '', '']
       );
 
       if (result.affectedRows > 0) {
         const product_id = result.insertId;
         const imageUrls = {
-          image1: req.files.image1 ? req.files.image1[0].path : null,
-          image2: req.files.image2 ? req.files.image2[0].path : null,
-          image3: req.files.image3 ? req.files.image3[0].path : null
+          image1: req.files.image1 ? req.files.image1[0].path : '',
+          image2: req.files.image2 ? req.files.image2[0].path : '',
+          image3: req.files.image3 ? req.files.image3[0].path : ''
         };
 
         // Mettre à jour les URL des images dans la base de données
@@ -134,12 +138,13 @@ const produitRoutes = (dbConfig) => {
           [imageUrls.image1, imageUrls.image2, imageUrls.image3, product_id]
         );
 
-        res.status(201).send(`Product ${name} added.`);
+        res.status(201).send({ message: `Product ${name} added.`, product_id });
       } else {
         res.status(500).send(`Failed to add product ${name}.`);
       }
       connection.end();
     } catch (error) {
+      console.error('Error adding product:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -186,9 +191,9 @@ const produitRoutes = (dbConfig) => {
       }
 
       const imageUrls = {
-        image1: req.files.image1 ? req.files.image1[0].path : null,
-        image2: req.files.image2 ? req.files.image2[0].path : null,
-        image3: req.files.image3 ? req.files.image3[0].path : null
+        image1: req.files.image1 ? req.files.image1[0].path : '',
+        image2: req.files.image2 ? req.files.image2[0].path : '',
+        image3: req.files.image3 ? req.files.image3[0].path : ''
       };
 
       // Mettre à jour le produit dans la base de données
@@ -204,6 +209,7 @@ const produitRoutes = (dbConfig) => {
       }
       connection.end();
     } catch (error) {
+      console.error('Error updating product:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
@@ -243,6 +249,7 @@ const produitRoutes = (dbConfig) => {
       }
       connection.end();
     } catch (error) {
+      console.error('Error deleting product:', error);
       if (connection) connection.end();
       res.status(500).send('Internal Server Error');
     }
