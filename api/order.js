@@ -2,7 +2,7 @@ import express from 'express';
 import mysql from 'mysql2/promise';
 import { body, validationResult } from 'express-validator';
 import nodemailer from 'nodemailer';
-
+import { authenticateJWT, authorizeRoles } from './middleware/authMiddleware.js';
 
 const orderRoutes = (dbConfig) => {
   const router = express.Router();
@@ -11,8 +11,8 @@ const orderRoutes = (dbConfig) => {
     port: 465,
     secure: true, 
     auth: {
-      user: "gamingavenue.shop@gmail.com",
-      pass: "lhdn hcuh ovyx lolt",
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
     tls: {
       rejectUnauthorized: false
@@ -21,6 +21,8 @@ const orderRoutes = (dbConfig) => {
 
   // Endpoint pour créer une nouvelle commande
   router.post('/orders',
+    authenticateJWT, 
+    authorizeRoles(['user', 'admin']),
     // Validation des champs
     body('user_id').isInt().withMessage('User ID must be an integer'),
     body('total_amount').isDecimal().withMessage('Total amount must be a decimal value'),
@@ -61,19 +63,21 @@ const orderRoutes = (dbConfig) => {
           // Envoyer un email de confirmation de commande
           const email = userRows[0].email;
           const orderDetails = `
-            <h1>Confirmation de commande</h1>
-            <p>Bonjour,</p>
-            <p> 🎉Votre commande a été confirmée avec succès.🎉 Voici les détails de votre commande :</p>
-            <ul>
-              <li><strong>ID de la commande :</strong> ${result.insertId}</li>
-              <li><strong>Montant total :</strong> ${total_amount} €</li>
-              <li><strong>Adresse de livraison :</strong> ${shipping_address}</li>
-              <li><strong>Statut du paiement :</strong> ${payment_status}</li>
-              <li><strong>Statut de la commande :</strong> ${order_status}</li>
-            </ul>
-            <p>Merci pour votre achat chez Gaming Avenue.</p>
-            <p>Cordialement,</p>
-            <p>L'équipe de Gaming Avenue</p>
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+              <h1 style="color: #4CAF50;">Confirmation de commande</h1>
+              <p>Bonjour,</p>
+              <p>🎉 Votre commande a été confirmée avec succès. 🎉 Voici les détails de votre commande :</p>
+              <ul>
+                <li><strong>ID de la commande :</strong> ${result.insertId}</li>
+                <li><strong>Montant total :</strong> ${total_amount} €</li>
+                <li><strong>Adresse de livraison :</strong> ${shipping_address}</li>
+                <li><strong>Statut du paiement :</strong> ${payment_status}</li>
+                <li><strong>Statut de la commande :</strong> ${order_status}</li>
+              </ul>
+              <p>Merci pour votre achat chez Gaming Avenue.</p>
+              <p>Cordialement,</p>
+              <p>L'équipe de Gaming Avenue</p>
+            </div>
           `;
 
           await transporter.sendMail({
@@ -98,38 +102,38 @@ const orderRoutes = (dbConfig) => {
     }
   );
 
-      // Endpoint pour récupérer toutes les commandes d'un utilisateur
-      router.get('/orders/:user_id', async (req, res) => {
-        const { user_id } = req.params;
-        console.log(`Route GET /orders/${user_id} called`);
-        let connection;
-        try {
-          console.log('Connecting to the database...');
-          connection = await mysql.createConnection(dbConfig);
-          console.log('Connected to the database.');
-    
-          // Récupérer les commandes de l'utilisateur
-          const [rows] = await connection.execute('SELECT * FROM Orders WHERE user_id = ?', [user_id]);
-          connection.end();
-    
-          if (rows.length > 0) {
-            console.log(`Orders for user ${user_id} retrieved:`, rows);
-            res.json(rows);
-          } else {
-            console.log(`No orders found for user ${user_id}.`);
-            res.status(404).send(`No orders found for user ${user_id}.`);
-          }
-        } catch (error) {
-          console.error(`Error fetching orders for user ${user_id}:`, error);
-          if (connection) {
-            connection.end();
-          }
-          res.status(500).send('Internal Server Error');
-        }
-      });
+  // Endpoint pour récupérer toutes les commandes d'un utilisateur
+  router.get('/orders/:user_id', authenticateJWT, authorizeRoles(['user', 'admin']), async (req, res) => {
+    const { user_id } = req.params;
+    console.log(`Route GET /orders/${user_id} called`);
+    let connection;
+    try {
+      console.log('Connecting to the database...');
+      connection = await mysql.createConnection(dbConfig);
+      console.log('Connected to the database.');
+
+      // Récupérer les commandes de l'utilisateur
+      const [rows] = await connection.execute('SELECT * FROM Orders WHERE user_id = ?', [user_id]);
+      connection.end();
+
+      if (rows.length > 0) {
+        console.log(`Orders for user ${user_id} retrieved:`, rows);
+        res.json(rows);
+      } else {
+        console.log(`No orders found for user ${user_id}.`);
+        res.status(404).send(`No orders found for user ${user_id}.`);
+      }
+    } catch (error) {
+      console.error(`Error fetching orders for user ${user_id}:`, error);
+      if (connection) {
+        connection.end();
+      }
+      res.status(500).send('Internal Server Error');
+    }
+  });
 
   // Route pour récupérer toutes les commandes
-  router.get('/allorders', async (req, res) => {
+  router.get('/allorders', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     try {
       const connection = await mysql.createConnection(dbConfig);
       const [rows] = await connection.execute('SELECT * FROM Orders');
@@ -141,7 +145,7 @@ const orderRoutes = (dbConfig) => {
   });
 
   // Endpoint pour modifier une commande
-  router.patch('/orders/:order_id',
+  router.patch('/orders/:order_id', authenticateJWT, authorizeRoles(['admin']),
     // Validation des champs
     body('order_status').isLength({ min: 1 }).withMessage('Order status is required'),
     async (req, res) => {
@@ -192,7 +196,7 @@ const orderRoutes = (dbConfig) => {
   );
 
   // Route pour supprimer une commande
-  router.delete('/orders/:order_id', async (req, res) => {
+  router.delete('/orders/:order_id', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     const { order_id } = req.params;
 
     let connection;
