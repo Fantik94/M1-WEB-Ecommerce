@@ -40,7 +40,7 @@ const upload = multer({ storage: storage });
 const subCategorieRoutes = (dbConfig) => {
   const router = express.Router();
 
-  // Route pour récupérer les sous-catégories d'une catégorie
+  // Endpoint pour récupérer les sous-catégories d'une catégorie
   router.get('/subcategories', async (req, res) => {
     const { category_id } = req.query;
     if (!category_id) {
@@ -59,7 +59,7 @@ const subCategorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour récupérer toutes les sous-catégories avec les noms des catégories
+  // Endpoint pour récupérer toutes les sous-catégories avec les noms des catégories
   router.get('/allsubcategories', async (req, res) => {
     let connection;
     try {
@@ -83,7 +83,7 @@ const subCategorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour créer une nouvelle sous-catégorie
+  // Endpoint pour créer une nouvelle sous-catégorie
   router.post('/subcategories', upload.single('image'), async (req, res) => {
     const { category_id, name, description } = req.body;
 
@@ -115,7 +115,7 @@ const subCategorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour supprimer une sous-catégorie
+  // Endpoint pour supprimer une sous-catégorie
   router.delete('/subcategories/:subCategoryId', async (req, res) => {
     const subCategoryId = req.params.subCategoryId;
     let connection;
@@ -153,7 +153,7 @@ const subCategorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour modifier une sous-catégorie avec image upload
+  // Endpoint pour modifier une sous-catégorie avec image upload
   router.patch('/subcategories/:subCategoryId', upload.single('image'), async (req, res) => {
     const subCategoryId = req.params.subCategoryId;
     const { category_id, name, description } = req.body;

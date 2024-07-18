@@ -17,10 +17,9 @@ cloudinary.v2.config({
 // Fonction de nettoyage pour les noms de fichiers
 const cleanFileName = (fileName) => {
   return fileName.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
-    .replace(/[^a-zA-Z0-9]/g, '_'); // Remplacer les caractères spéciaux par des underscores
+    .replace(/[^a-zA-Z0-9]/g, '_'); // Remplace les caractères spéciaux par des underscores
 };
 
-// Configurer Multer avec Cloudinary pour les catégories
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary.v2,
   params: {
@@ -35,7 +34,7 @@ const upload = multer({ storage: storage });
 const categorieRoutes = (dbConfig) => {
   const router = express.Router();
 
-  // Route pour récupérer toutes les catégories
+  // Endpoint pour récupérer toutes les catégories
   router.get('/categories', async (req, res) => {
     try {
       const connection = await mysql.createConnection(dbConfig);
@@ -48,7 +47,7 @@ const categorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour ajouter une nouvelle catégorie avec image
+  // Endpoint pour ajouter une nouvelle catégorie avec image
   router.post('/categories', upload.single('image'), async (req, res) => {
     const { name, description } = req.body;
     if (!name || !description) {
@@ -79,7 +78,7 @@ const categorieRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour supprimer une catégorie et son image associée
+  // Endpoint pour supprimer une catégorie et son image associée
   router.delete('/categories/:categoryId', async (req, res) => {
     const categoryId = req.params.categoryId;
     let connection;

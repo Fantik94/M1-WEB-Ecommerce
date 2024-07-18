@@ -19,6 +19,7 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
+//info db
 const dbConfig = {
   host: 'localhost',
   user: 'myuser',
@@ -27,6 +28,7 @@ const dbConfig = {
   port: 3306
 };
 
+//Routes
 app.get('/', (req, res) => res.send('Bienvenue sur notre API!'));
 app.get('/test', (req, res) => res.send('Ceci est une route de test'));
 
