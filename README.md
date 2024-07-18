@@ -8,6 +8,12 @@
 ## Aperçu du Projet
 Gaming Avenue est une plateforme e-commerce complète conçue pour gérer une large gamme de produits, permettre aux utilisateurs de naviguer et d'acheter des articles, gérer les paniers et passer des commandes. Ce projet inclut des fonctionnalités de gestion de produits, d'authentification des utilisateurs et de traitement des commandes, le tout dans une interface conviviale.
 
+---
+
+Site web du projet ! :  [site web](http://gamingavenue.ddns.net/).
+
+---
+
 ## Fonctionnalités
 
 ### Gestion des Produits
@@ -106,4 +112,3 @@ Pour plus d'informations, veuillez visiter notre [site web](http://gamingavenue.
 
 ---
 
-Ce README fournit une vue d'ensemble détaillée du projet e-commerce Gaming Avenue, incluant les fonctionnalités développées, l'architecture et les critères d'évaluation utilisés pour noter le projet.
