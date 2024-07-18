@@ -6,9 +6,9 @@ import { body, validationResult } from 'express-validator';
 const BackofficeRoutes = (dbConfig) => {
   const router = express.Router();
 
-  // Route to update a user and their profile
+    // Endpoint pour modifier un user
   router.patch('/users/:userId',
-    // Field validations
+    // validation des champs
     body('username').isLength({ min: 5 }).withMessage('Username must be at least 5 characters long')
       .matches(/^[a-zA-Z0-9 ]+$/).withMessage('Username must not contain special characters'),
     body('email').isEmail().withMessage('Invalid email address')
@@ -24,7 +24,7 @@ const BackofficeRoutes = (dbConfig) => {
       const { userId } = req.params;
       const { username, email, password, first_name, last_name, phone_number } = req.body;
 
-      // Validate fields
+    // validation des champs
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -42,10 +42,9 @@ const BackofficeRoutes = (dbConfig) => {
         connection = await mysql.createConnection(dbConfig);
         console.log('Connected to the database.');
 
-        // Start a transaction
         await connection.beginTransaction();
 
-        // Update user in the database
+        // Update le user
         let userQuery = 'UPDATE Users SET username = ?, email = ?';
         const userParams = [username, email];
 
@@ -59,13 +58,12 @@ const BackofficeRoutes = (dbConfig) => {
 
         await connection.execute(userQuery, userParams);
 
-        // Update user profile in the database
+        // Update le user
         await connection.execute(
           'UPDATE UserProfiles SET first_name = ?, last_name = ?, phone_number = ? WHERE user_id = ?',
           [first_name, last_name, phone_number, userId]
         );
 
-        // Commit the transaction
         await connection.commit();
         connection.end();
 
@@ -82,7 +80,7 @@ const BackofficeRoutes = (dbConfig) => {
     }
   );
 
-  // Route to get all users
+    // Endpoint pour avoir tout les user
   router.get('/users', async (req, res) => {
     console.log('Route GET /users called');
     let connection;
@@ -105,7 +103,7 @@ const BackofficeRoutes = (dbConfig) => {
     }
   });
 
-  // Route to get a user and their profile
+    // Endpoint pour avoir un user
   router.get('/users/:userId', async (req, res) => {
     const { userId } = req.params;
     let connection;
@@ -136,7 +134,7 @@ const BackofficeRoutes = (dbConfig) => {
     }
   });
 
-  // Route pour supprimer un utilisateur
+  // Endpoint pour supprimer un utilisateur
   router.delete('/users/:userId', async (req, res) => {
     const userId = req.params.userId;
     console.log(`Route DELETE /users/${userId} called`);
@@ -146,7 +144,6 @@ const BackofficeRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to the database.');
 
-      // Démarrer une transaction
       await connection.beginTransaction();
 
       // Supprimer les entrées dans les tables dépendantes
