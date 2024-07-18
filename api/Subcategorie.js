@@ -92,7 +92,6 @@ const subCategorieRoutes = (dbConfig) => {
     }
   });
 
-
   // Route pour créer une nouvelle sous-catégorie
   router.post('/subcategories', upload.single('image'), async (req, res) => {
     const { category_id, name, description } = req.body;
@@ -108,18 +107,12 @@ const subCategorieRoutes = (dbConfig) => {
       console.log('Connected to the database.');
 
       const [result] = await connection.execute(
-        'INSERT INTO SubCategories (category_id, name, description) VALUES (?, ?, ?)',
-        [category_id, name, description]
+        'INSERT INTO SubCategories (category_id, name, description, image) VALUES (?, ?, ?, ?)',
+        [category_id, name, description, req.file.path]
       );
 
       const subcategory_id = result.insertId;
       const imageUrl = req.file.path;
-
-      console.log(`Updating database with image URL: ${imageUrl}`);
-      await connection.execute(
-        'UPDATE SubCategories SET image = ? WHERE subcategory_id = ?',
-        [imageUrl, subcategory_id]
-      );
 
       connection.end();
 
