@@ -9,7 +9,7 @@ import { useNotification } from '../../context/NotificationContext';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline';
 
 const Paiement = () => {
-  const { panier, getTotalPanier } = useContext(PanierContext);
+  const { reinitialiserPanier, getTotalPanier } = useContext(PanierContext);
   const { adresseLivraison } = useContext(CommandeContext);
   const descriptions = {
     1: 'Vérifiez les articles dans votre panier',
@@ -98,7 +98,7 @@ const Paiement = () => {
       });
 
       if (response.status === 200 || response.status === 201) {
-        fetchPayments(); // Refresh the payment list
+        fetchPayments(); // Refresh la liste de paiement
         setNumeroCarte('');
         setDateExpirationCarte('');
         setCvcCarte('');
@@ -110,28 +110,6 @@ const Paiement = () => {
     } catch (error) {
       console.error(`Erreur lors de ${editingPaymentId ? 'la mise à jour' : 'l\'ajout'} du moyen de paiement:`, error);
       addNotification(`Erreur lors de ${editingPaymentId ? 'la mise à jour' : 'l\'ajout'} du moyen de paiement`, 'error');
-    }
-  };
-
-  const handleEditPayment = (payment) => {
-    setEditingPaymentId(payment.payments_id);
-    setNumeroCarte(formatCardNumber(payment.numero_carte));
-    setDateExpirationCarte(payment.date_expiration_carte);
-    setCvcCarte(payment.cvc_carte);
-    setNomCarte(payment.nom_carte);
-    setIsFormVisible(true);
-  };
-
-  const handleDeletePayment = async (paymentId) => {
-    try {
-      const response = await axios.delete(`${apiUrl}/payments/${userId}/${paymentId}`);
-      if (response.status === 200) {
-        fetchPayments(); // Refresh the payment list
-        addNotification('Moyen de paiement supprimé avec succès', 'success');
-      }
-    } catch (error) {
-      console.error('Erreur lors de la suppression du moyen de paiement:', error);
-      addNotification('Erreur lors de la suppression du moyen de paiement', 'error');
     }
   };
 
@@ -165,6 +143,7 @@ const Paiement = () => {
       if (response.status === 201) {
         addNotification('Commande créée avec succès', 'success');
         navigate('/thanks');
+        reinitialiserPanier();
       } else {
         addNotification('Erreur lors de la création de la commande', 'error');
       }
@@ -192,7 +171,7 @@ const Paiement = () => {
                 >
                   {payments.map((payment) => (
                     <option key={payment.payments_id} value={payment.payments_id}>
-                      {maskCardNumber(payment.numero_carte)}, {payment.date_expiration_carte}, {payment.nom_carte}
+                      {maskCardNumber(payment.numero_carte)}, {new Date(payment.date_expiration_carte).toLocaleDateString()}, {payment.nom_carte}
                     </option>
                   ))}
                 </select>
@@ -201,7 +180,7 @@ const Paiement = () => {
 
             <button
               onClick={() => setIsFormVisible(!isFormVisible)}
-              className="flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="flex items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-gray-900"
             >
               {isFormVisible ? 'Masquer le formulaire' : 'Ajouter / Modifier une méthode de paiement'}
               {isFormVisible ? <ChevronUpIcon className="ml-2 h-5 w-5" /> : <ChevronDownIcon className="ml-2 h-5 w-5" />}
@@ -278,12 +257,6 @@ const Paiement = () => {
                 </div>
               </form>
             )}
-
-            {payments.length > 0 && (
-              <form className="space-y-6 mt-4" onSubmit={handleSubmit}>
-                <button type="submit" className="w-full py-3 px-6 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Suivant</button>
-              </form>
-            )}
           </div>
 
           <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
@@ -294,11 +267,6 @@ const Paiement = () => {
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Prix d'origine</dt>
                     <dd className="text-base font-medium text-gray-900 dark:text-white">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalHT)}</dd>
-                  </dl>
-
-                  <dl className="flex items-center justify-between gap-4">
-                    <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Économies</dt>
-                    <dd className="text-base font-medium text-green-600">-{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalHT * 0.2)}</dd>
                   </dl>
 
                   <dl className="flex items-center justify-between gap-4">

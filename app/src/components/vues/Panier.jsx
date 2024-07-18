@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProgressBar from './ProgressBar';
 import { PanierContext } from "../../context/PanierContext";
@@ -10,31 +10,13 @@ const Panier = () => {
     panier,
     retirer,
     supprimer,
-    nombreProduits,
-    getTotalProduit,
     getTotalPanier,
   } = useContext(PanierContext);
 
-  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [promoCode, setPromoCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const totalHT = getTotalPanier();
-  const totalTTC = totalHT * 1.20;
-
-  const handleApplyPromoCode = (e) => {
-    e.preventDefault();
-    if (promoCode === "caca") {
-      setDiscount(0.99); // 99% discount
-    } else {
-      setDiscount(0);
-    }
-  };
-
-  const discountedTotal = totalHT * (1 - discount) * 1.20;
-  const savings = totalHT * discount * 1.20;
+  const totalTTC = getTotalPanier() * 1.20;
 
   const descriptions = {
     1: 'Vérifiez les articles dans votre panier',
@@ -132,12 +114,7 @@ const Panier = () => {
                 <div className="space-y-2">
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Prix d'origine</dt>
-                    <dd className="text-base font-medium text-gray-900 dark:text-white">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalHT)}</dd>
-                  </dl>
-
-                  <dl className="flex items-center justify-between gap-4">
-                    <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Économies</dt>
-                    <dd className="text-base font-medium text-green-600">-{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(savings)}</dd>
+                    <dd className="text-base font-medium text-gray-900 dark:text-white">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(getTotalPanier())}</dd>
                   </dl>
 
                   <dl className="flex items-center justify-between gap-4">
@@ -148,7 +125,7 @@ const Panier = () => {
 
                 <dl className="flex items-center justify-between gap-4 border-t border-gray-300 pt-2 dark:border-gray-700">
                   <dt className="text-base font-bold text-gray-900 dark:text-white">Total TTC</dt>
-                  <dd className="text-base font-bold text-gray-900 dark:text-white">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(discountedTotal)}</dd>
+                  <dd className="text-base font-bold text-gray-900 dark:text-white">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalTTC)}</dd>
                 </dl>
               </div>
 
@@ -168,29 +145,6 @@ const Panier = () => {
                   </svg>
                 </Link>
               </div>
-            </div>
-
-            <div className="space-y-4 rounded-lg border border-gray-300 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-              <form className="space-y-4" onSubmit={handleApplyPromoCode}>
-                <div>
-                  <label htmlFor="voucher" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Avez-vous un bon de réduction ou une carte cadeau? </label>
-                  <input
-                    type="text"
-                    id="voucher"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                    placeholder=""
-                    required
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
-                  Appliquer le code
-                </button>
-              </form>
             </div>
           </div>
         </div>

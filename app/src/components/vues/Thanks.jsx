@@ -1,5 +1,5 @@
-import React, { useEffect, useContext } from 'react';
-import { useNavigate, Link, Navigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 
 const Thanks = () => {
@@ -13,9 +13,9 @@ const Thanks = () => {
         <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
           Vous pouvez consulter vos commandes en allant dans votre profil.
         </p>
-        <Navigate to="/profil/orders" className="inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+        <Link to="/profil/orders" className="flex items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-gray-900">
           Voir mes commandes
-        </Navigate>
+        </Link>
       </div>
     </div>
   );
