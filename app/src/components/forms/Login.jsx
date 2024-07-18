@@ -70,7 +70,7 @@ const Login = () => {
               </Link>
             </div>
             <div>
-              <button type="submit" className="w-full shadow-xl py-3 px-6 text-sm font-semibold rounded-md text-white bg-gray-800 hover:bg-[#222] dark:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none">
+              <button data-cy="login-submit" type="submit" className="w-full shadow-xl py-3 px-6 text-sm font-semibold rounded-md text-white bg-gray-800 hover:bg-[#222] dark:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none">
                 Connexion
               </button>
             </div>
