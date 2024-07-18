@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CategoryForm from '../forms/Categorie';
+import ConfirmModal from '../vues/Confirm'; // Importer le composant ConfirmModal
+import { useNotification } from '../../context/NotificationContext'; // Importer le contexte de notification
 
 const GestionCategorie = () => {
   const [categories, setCategories] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // État pour la boîte de dialogue de confirmation
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // État pour l'ID de la catégorie sélectionnée
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
-  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
+  const { addNotification } = useNotification(); // Destructure addNotification from useNotification
 
   const fetchCategories = async () => {
     try {
@@ -31,9 +35,17 @@ const GestionCategorie = () => {
     try {
       await axios.delete(`${apiUrl}/categories/${id}`);
       setCategories(categories.filter(category => category.category_id !== id));
+      addNotification('Catégorie supprimée avec succès', 'success');
     } catch (error) {
       console.error('Error deleting category:', error);
+      addNotification('Erreur lors de la suppression de la catégorie', 'error');
     }
+    setShowConfirmModal(false); // Fermer la boîte de dialogue après suppression
+  };
+
+  const confirmDelete = (id) => {
+    setSelectedCategoryId(id);
+    setShowConfirmModal(true); // Ouvrir la boîte de dialogue de confirmation
   };
 
   const handleAdd = () => {
@@ -46,14 +58,17 @@ const GestionCategorie = () => {
       if (currentCategory) {
         // Modifier une catégorie
         await axios.patch(`${apiUrl}/categories/${currentCategory.category_id}`, formData);
+        addNotification('Catégorie modifiée avec succès', 'success');
       } else {
         // Ajouter une nouvelle catégorie
         await axios.post(`${apiUrl}/categories`, formData);
+        addNotification('Catégorie ajoutée avec succès', 'success');
       }
       setShowForm(false);
       fetchCategories(); // Actualiser la liste des catégories
     } catch (error) {
       console.error('Error saving category:', error);
+      addNotification('Erreur lors de la sauvegarde de la catégorie', 'error');
     }
   };
 
@@ -98,7 +113,7 @@ const GestionCategorie = () => {
                   Modifier
                 </button>
                 <button
-                  onClick={() => handleDelete(category.category_id)}
+                  onClick={() => confirmDelete(category.category_id)}
                   className="px-2 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none"
                 >
                   Supprimer
@@ -108,6 +123,12 @@ const GestionCategorie = () => {
           ))}
         </tbody>
       </table>
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => handleDelete(selectedCategoryId)}
+        message="Êtes-vous sûr de vouloir supprimer cette catégorie ?"
+      />
     </div>
   );
 };
