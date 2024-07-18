@@ -152,6 +152,37 @@ const orderRoutes = (dbConfig) => {
     }
   );
 
+  // Route pour supprimer une commande
+  router.delete('/orders/:order_id', async (req, res) => {
+    const { order_id } = req.params;
+
+    let connection;
+    try {
+      console.log(`Route DELETE /orders/${order_id} called`);
+      console.log('Connecting to the database...');
+      connection = await mysql.createConnection(dbConfig);
+      console.log('Connected to the database.');
+
+      // Supprimer la commande de la base de données
+      const [result] = await connection.execute('DELETE FROM Orders WHERE order_id = ?', [order_id]);
+      connection.end();
+
+      if (result.affectedRows > 0) {
+        console.log(`Order ${order_id} deleted successfully.`);
+        res.status(200).send(`Order ${order_id} deleted successfully.`);
+      } else {
+        console.log(`Order ${order_id} not found.`);
+        res.status(404).send(`Order ${order_id} not found.`);
+      }
+    } catch (error) {
+      console.error(`Error deleting order ${order_id}:`, error);
+      if (connection) {
+        connection.end();
+      }
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
   return router;
 };
 

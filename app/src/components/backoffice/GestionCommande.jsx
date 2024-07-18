@@ -32,7 +32,7 @@ const GestionCommande = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/commandes/${id}`);
+      await axios.delete(`${apiUrl}/orders/${id}`);
       setCommandes(commandes.filter(commande => commande.order_id !== id));
       addNotification('Commande supprimée avec succès', 'success');
     } catch (error) {
@@ -74,9 +74,7 @@ const GestionCommande = () => {
       
       {editCommande && (
         <div className="mb-6 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-          <h3 className="text-xl font-bold mb-4">
-            Modifier le statut de la commande N°{editCommande.order_id}
-          </h3>
+          <h3 className="text-xl font-bold mb-4">Modifier le statut de la commande #{editCommande.order_id}</h3>
           <div className="mb-4">
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Statut de la commande</label>
             <select
@@ -150,7 +148,7 @@ const GestionCommande = () => {
       </table>
 
       <ConfirmModal
-        show={showConfirmModal}
+        isOpen={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
         onConfirm={() => handleDelete(selectedCommandeId)}
         message="Êtes-vous sûr de vouloir supprimer cette commande ?"
