@@ -6,6 +6,7 @@ const Orders = () => {
   const { isAuthenticated, userInfo } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
+  const [userId] = useState(sessionStorage.getItem('userId'));
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const statusColors = {
@@ -18,13 +19,9 @@ const Orders = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      if (!userInfo || !userInfo.user_id) {
-        setError('Utilisateur non authentifié.');
-        return;
-      }
-
+      
       try {
-        const response = await axios.get(`${apiUrl}/orders/${userInfo.user_id}`);
+        const response = await axios.get(`${apiUrl}/orders/${userId}`);
         setOrders(response.data);
       } catch (err) {
         setError('Erreur lors de la récupération des commandes.');

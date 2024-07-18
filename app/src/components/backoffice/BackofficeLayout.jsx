@@ -1,8 +1,15 @@
-import React from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const BackofficeLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname === '/backoffice') {
+      navigate('/backoffice/gestion-utilisateur');
+    }
+  }, [location.pathname, navigate]);
 
   const isActive = (path) => location.pathname === path;
 

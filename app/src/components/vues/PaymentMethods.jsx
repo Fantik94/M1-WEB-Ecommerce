@@ -10,7 +10,7 @@ const PaymentMethods = () => {
   const [cvcCarte, setCvcCarte] = useState('');
   const [nomCarte, setNomCarte] = useState('');
   const [editingPaymentId, setEditingPaymentId] = useState(null);
-  const [userId] = useState(localStorage.getItem('userId'));
+  const [userId] = useState(sessionStorage.getItem('userId'));
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
