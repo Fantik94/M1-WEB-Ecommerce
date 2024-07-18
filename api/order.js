@@ -42,7 +42,7 @@ const orderRoutes = (dbConfig) => {
         console.log('Connected to the database.');
 
         // Vérifier si l'utilisateur existe
-        const [userRows] = await connection.execute('SELECT * FROM Users WHERE user_id = ?', [user_id]);
+        const [userRows] = await connection.execute('SELECT email FROM Users WHERE user_id = ?', [user_id]);
         if (userRows.length === 0) {
           connection.end();
           console.log(`User ID ${user_id} does not exist.`);
@@ -54,24 +54,36 @@ const orderRoutes = (dbConfig) => {
           'INSERT INTO Orders (user_id, total_amount, shipping_address, payment_status, order_status) VALUES (?, ?, ?, ?, ?)',
           [user_id, total_amount, shipping_address, payment_status, order_status]
         );
-        
 
         if (result.affectedRows > 0) {
           console.log(`Order for user ${user_id} added successfully.`);
+          
+          // Envoyer un email de confirmation de commande
+          const email = userRows[0].email;
+          const orderDetails = `
+            <h1>Confirmation de commande</h1>
+            <p>Bonjour,</p>
+            <p>Votre commande a été confirmée avec succès. Voici les détails de votre commande :</p>
+            <ul>
+              <li><strong>ID de la commande :</strong> ${result.insertId}</li>
+              <li><strong>Montant total :</strong> ${total_amount} €</li>
+              <li><strong>Adresse de livraison :</strong> ${shipping_address}</li>
+              <li><strong>Statut du paiement :</strong> ${payment_status}</li>
+              <li><strong>Statut de la commande :</strong> ${order_status}</li>
+            </ul>
+            <p>Merci pour votre achat chez Gaming Avenue.</p>
+            <p>Cordialement,</p>
+            <p>L'équipe de Gaming Avenue</p>
+          `;
 
-          // Récupérez l'e-mail de l'utilisateur à partir de la base de données
-          const [userRows] = await connection.execute('SELECT email FROM Users WHERE user_id = ?', [user_id]);
-          const userEmail = userRows[0].email;
-
-          // Envoyez l'e-mail de confirmation
           await transporter.sendMail({
             from: 'gamingavenue.shop@gmail.com',
-            to: userEmail,
-            subject: 'Commande confirmée',
-            text: `Bonjour,\n\nVotre commande a été confirmée. Le montant total est de ${total_amount}.\n\nCordialement,\nL'équipe de Gaming Avenue`,
+            to: email,
+            subject: 'Confirmation de commande',
+            html: orderDetails,
           });
 
-          res.status(201).send(`Order for user ${user_id} added successfully.`);
+          res.status(201).send(`Order for user ${user_id} added successfully and confirmation email sent.`);
         } else {
           console.log(`Failed to add order for user ${user_id}.`);
           res.status(500).send(`Failed to add order for user ${user_id}.`);
@@ -84,7 +96,6 @@ const orderRoutes = (dbConfig) => {
         res.status(500).send('Internal Server Error');
       }
     }
-    
   );
 
       // Endpoint pour récupérer toutes les commandes d'un utilisateur
