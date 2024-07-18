@@ -14,13 +14,19 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// Fonction de nettoyage pour les noms de fichiers
+const cleanFileName = (fileName) => {
+  return fileName.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
+    .replace(/[^a-zA-Z0-9]/g, '_'); // Remplacer les caractères spéciaux par des underscores
+};
+
 // Configurer Multer avec Cloudinary pour les catégories
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary.v2,
   params: {
     folder: 'Gaming_avenue_images/categories',
     format: 'jpg',
-    public_id: (req, file) => file.originalname.split('.')[0]
+    public_id: (req, file) => cleanFileName(file.originalname.split('.')[0])
   }
 });
 
@@ -120,6 +126,17 @@ const categorieRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
+
+      // Récupérer l'ancienne image
+      const [rows] = await connection.execute('SELECT image FROM Categories WHERE category_id = ?', [categoryId]);
+      const oldImageUrl = rows.length > 0 ? rows[0].image : null;
+
+      // Supprimer l'ancienne image de Cloudinary
+      if (oldImageUrl) {
+        const publicId = oldImageUrl.split('/').pop().split('.')[0];
+        await cloudinary.v2.uploader.destroy(`Gaming_avenue_images/categories/${publicId}`);
+      }
+
       const imageUrl = req.file ? req.file.path : null;
 
       if (imageUrl) {
