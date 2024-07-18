@@ -10,12 +10,6 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline';
 
 const Livraison = () => {
   const {
-    ajouter,
-    panier,
-    retirer,
-    supprimer,
-    nombreProduits,
-    getTotalProduit,
     getTotalPanier,
   } = useContext(PanierContext);
 
@@ -37,13 +31,9 @@ const Livraison = () => {
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('');
   const [userId] = useState(sessionStorage.getItem('userId'));
-  const [promoCode, setPromoCode] = useState("");
-  const [discount, setDiscount] = useState(0);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const totalHT = getTotalPanier();
   const totalTTC = totalHT * 1.20;
-  const discountedTotal = totalHT * (1 - discount) * 1.20;
-  const savings = totalHT * discount * 1.20;
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const navigate = useNavigate();
@@ -107,7 +97,7 @@ const Livraison = () => {
         country
       });
       if (response.status === 200 || response.status === 201) {
-        fetchAddresses(); // Refresh the address list
+        fetchAddresses(); // Refresh la liste d'adresse
         setStreet('');
         setCity('');
         setState('');
@@ -149,7 +139,7 @@ const Livraison = () => {
 
             <button
               onClick={() => setIsFormVisible(!isFormVisible)}
-              className="flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="flex items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-gray-900"
             >
               {isFormVisible ? 'Masquer le formulaire' : 'Ajouter / Modifier une adresse'}
               {isFormVisible ? <ChevronUpIcon className="ml-2 h-5 w-5" /> : <ChevronDownIcon className="ml-2 h-5 w-5" />}
@@ -203,12 +193,6 @@ const Livraison = () => {
                 </div>
               </form>
             )}
-
-            {addresses.length > 0 && (
-              <form className="space-y-6 mt-4" onSubmit={handleCheckout}>
-                <button type="submit" className="w-full py-3 px-6 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Suivant</button>
-              </form>
-            )}
           </div>
 
           <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
@@ -222,11 +206,6 @@ const Livraison = () => {
                   </dl>
 
                   <dl className="flex items-center justify-between gap-4">
-                    <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Économies</dt>
-                    <dd className="text-base font-medium text-green-600">-{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(savings)}</dd>
-                  </dl>
-
-                  <dl className="flex items-center justify-between gap-4">
                     <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Taxe</dt>
                     <dd className="text-base font-medium text-gray-900 dark:text-white">20 % TVA</dd>
                   </dl>
@@ -234,7 +213,7 @@ const Livraison = () => {
 
                 <dl className="flex items-center justify-between gap-4 border-t border-gray-300 pt-2 dark:border-gray-700">
                   <dt className="text-base font-bold text-gray-900 dark:text-white">Total TTC</dt>
-                  <dd className="text-base font-bold text-gray-900 dark:text-white">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(discountedTotal)}</dd>
+                  <dd className="text-base font-bold text-gray-900 dark:text-white">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalTTC)}</dd>
                 </dl>
               </div>
 

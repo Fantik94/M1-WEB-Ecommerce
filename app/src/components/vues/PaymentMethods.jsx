@@ -203,7 +203,7 @@ const PaymentMethods = () => {
       <ul className="space-y-2">
         {payments.map(payment => (
           <li key={payment.payments_id} className="p-4 border border-gray-300 rounded flex justify-between items-center">
-            <span>{maskCardNumber(payment.numero_carte)}, {payment.date_expiration_carte}, {payment.nom_carte}</span>
+            <span>{maskCardNumber(payment.numero_carte)}, {new Date(payment.date_expiration_carte).toLocaleDateString()}, {payment.nom_carte}</span>
             <div className="flex space-x-2">
               <button onClick={() => editPayment(payment)} className="text-blue-500 hover:text-blue-700">
                 Modifier
