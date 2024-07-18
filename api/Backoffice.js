@@ -146,24 +146,33 @@ const BackofficeRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to the database.');
 
+      // Démarrer une transaction
+      await connection.beginTransaction();
+
       // Supprimer les entrées dans les tables dépendantes
+      await connection.execute('DELETE FROM addresses WHERE user_id = ?', [userId]);
+      await connection.execute('DELETE FROM payments WHERE user_id = ?', [userId]);
       await connection.execute('DELETE FROM userrolesmapping WHERE user_id = ?', [userId]);
       await connection.execute('DELETE FROM userprofiles WHERE user_id = ?', [userId]);
+      await connection.execute('DELETE FROM orders WHERE user_id = ?', [userId]);
 
       // Supprimer l'utilisateur
       const [result] = await connection.execute('DELETE FROM users WHERE user_id = ?', [userId]);
-      connection.end();
 
       if (result.affectedRows > 0) {
         console.log(`User ${userId} deleted.`);
+        await connection.commit();
         res.status(200).send(`User ${userId} deleted.`);
       } else {
         console.log(`User ${userId} not found.`);
+        await connection.rollback();
         res.status(404).send(`User ${userId} not found.`);
       }
+      connection.end();
     } catch (error) {
       console.error(`Error deleting user ${userId}:`, error);
       if (connection) {
+        await connection.rollback();
         connection.end();
       }
       res.status(500).send('Internal Server Error');

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu } from '@headlessui/react';
-import { ChevronDownIcon, ShoppingCartIcon, UserCircleIcon, MoonIcon, SunIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, ShoppingCartIcon, UserCircleIcon, MoonIcon, SunIcon, SearchIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import ThemeContext from '../../context/ThemeContext';
 import { PanierContext } from "../../context/PanierContext";
@@ -14,6 +14,7 @@ const Navbar = () => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
   const [openMenu, setOpenMenu] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -54,6 +55,11 @@ const Navbar = () => {
     setOpenMenu(openMenu === categoryId ? null : categoryId);
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/recherche?query=${searchQuery}`);
+  };
+
   return (
     <nav className="bg-white border-b-2 border-gray-300 dark:bg-gray-900 dark:border-gray-700 z-50">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
@@ -61,6 +67,21 @@ const Navbar = () => {
           <img src="/icon.webp" className="h-14 rounded-b-full rounded-t-full" alt="Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gaming Avenue</span>
         </Link>
+        <form onSubmit={handleSearchSubmit} className="flex items-center space-x-2">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 border rounded"
+            placeholder="Rechercher un produit..."
+          />
+          <button
+            type="submit"
+            className="p-2 bg-primary-700 text-white rounded hover:bg-primary-800 focus:outline-none"
+          >
+            <SearchIcon className="h-5 w-5" />
+          </button>
+        </form>
         <div className="hidden w-full md:block md:w-auto" id="navbar-multi-level">
           <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             {categories.map(category => (
