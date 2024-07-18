@@ -46,8 +46,6 @@ Gaming Avenue est une plateforme e-commerce complète conçue pour gérer une la
 ## Architecture du Projet
 L'architecture de la plateforme e-commerce Gaming Avenue est conçue pour être évolutive, maintenable et compatible avec diverses plateformes matérielles. Ci-dessous se trouve une représentation graphique du design du système, montrant l'interaction entre les différents composants.
 
-### Design du Système
-![Diagramme de Design du Système](system_design_diagram.png)
 
 ## Développement et Déploiement
 ### Technologie Utilisée
