@@ -248,6 +248,30 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
+  //Page Recherche
+  router.get('/search', async (req, res) => {
+    const { query } = req.query;
+    if (!query) {
+      return res.status(400).send('Query parameter is required');
+    }
+  
+    let connection;
+    try {
+      connection = await mysql.createConnection(dbConfig);
+  
+      const [results] = await connection.execute(
+        'SELECT * FROM Products WHERE name LIKE ? OR description LIKE ?',
+        [`%${query}%`, `%${query}%`]
+      );
+  
+      connection.end();
+      res.json(results);
+    } catch (error) {
+      if (connection) connection.end();
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
   return router;
 };
 
