@@ -4,6 +4,7 @@ import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
+import { authenticateJWT, authorizeRoles } from './middleware/authMiddleware.js'; 
 
 dotenv.config();
 
@@ -216,7 +217,7 @@ const produitRoutes = (dbConfig) => {
     }
   });
   //Endpoint pour supprimer un produit
-  router.delete('/products/:productId', async (req, res) => {
+  router.delete('/products/:productId', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     const { productId } = req.params;
     let connection;
     try {

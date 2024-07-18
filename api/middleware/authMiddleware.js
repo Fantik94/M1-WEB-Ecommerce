@@ -1,26 +1,32 @@
+// authMiddleware.js
 import jwt from 'jsonwebtoken';
 
-export const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+// Middleware pour vérifier le token JWT
+export const authenticateJWT = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
 
-  if (token == null) return res.sendStatus(401);
+    jwt.verify(token, 'your_secret_key', (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
+      req.user = user;
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
 };
 
-export const authorizeRoles = (...allowedRoles) => {
+// Middleware pour vérifier les rôles
+export const authorizeRoles = (roles) => {
   return (req, res, next) => {
-    const { roles } = req.user;
-    if (!roles) return res.sendStatus(403);
-
-    const hasRole = roles.some(role => allowedRoles.includes(role));
-    if (!hasRole) return res.sendStatus(403);
-
-    next();
+    if (roles.includes(req.user.roles)) {
+      next();
+    } else {
+      res.sendStatus(403);
+    }
   };
 };
