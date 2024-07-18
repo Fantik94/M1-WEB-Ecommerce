@@ -216,8 +216,9 @@ const produitRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
+
   //Endpoint pour supprimer un produit
-  router.delete('/products/:productId', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
+ router.delete('/products/:productId', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     const { productId } = req.params;
     let connection;
     try {
@@ -256,6 +257,7 @@ const produitRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
+
 
   //Page Recherche
   router.get('/search', async (req, res) => {

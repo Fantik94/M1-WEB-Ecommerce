@@ -1,4 +1,3 @@
-// authMiddleware.js
 import jwt from 'jsonwebtoken';
 
 // Middleware pour vérifier le token JWT
@@ -9,13 +8,16 @@ export const authenticateJWT = (req, res, next) => {
 
     jwt.verify(token, 'your_secret_key', (err, user) => {
       if (err) {
+        console.log('Token verification failed:', err);
         return res.sendStatus(403);
       }
 
       req.user = user;
+      console.log('Token verified successfully:', user);
       next();
     });
   } else {
+    console.log('No auth header provided');
     res.sendStatus(401);
   }
 };
@@ -23,9 +25,12 @@ export const authenticateJWT = (req, res, next) => {
 // Middleware pour vérifier les rôles
 export const authorizeRoles = (roles) => {
   return (req, res, next) => {
-    if (roles.includes(req.user.roles)) {
+    console.log('Checking roles:', req.user.roles);
+    if (req.user && roles.some(role => req.user.roles.includes(roles))) {
+      console.log('Role authorized:', req.user.roles);
       next();
     } else {
+      console.log('Role not authorized:', req.user.roles);
       res.sendStatus(403);
     }
   };
