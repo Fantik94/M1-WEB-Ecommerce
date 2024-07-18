@@ -9,6 +9,7 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
     image: null,
   });
   const [allCategories, setAllCategories] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (currentCategory) {
@@ -16,7 +17,7 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
         name: currentCategory.name,
         category_id: currentCategory.category_id,
         description: currentCategory.description,
-        image: null, // No need to pre-fill the image
+        image: null,
       });
     }
   }, [currentCategory]);
@@ -24,7 +25,7 @@ const SousCategorieForm = ({ currentCategory, onSave, onCancel }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/categories');
+        const response = await axios.get(`${apiUrl}/categories`);
         setAllCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
