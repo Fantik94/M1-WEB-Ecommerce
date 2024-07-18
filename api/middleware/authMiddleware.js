@@ -26,7 +26,7 @@ export const authenticateJWT = (req, res, next) => {
 export const authorizeRoles = (roles) => {
   return (req, res, next) => {
     console.log('Checking roles:', req.user.roles);
-    if (req.user && roles.some(role => req.user.roles.includes(roles))) {
+    if (req.user && roles.some(role => req.user.roles.includes(role))) {
       console.log('Role authorized:', req.user.roles);
       next();
     } else {
