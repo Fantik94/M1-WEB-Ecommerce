@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SousCategorieForm from '../forms/SousCategorie';
+import ConfirmModal from '../vues/Confirm';
+import { useNotification } from '../../context/NotificationContext';
 
 const GestionSousCategorie = () => {
   const [categories, setCategories] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
+  const { addNotification } = useNotification();
 
   const fetchSubCategories = async () => {
     try {
@@ -31,9 +36,17 @@ const GestionSousCategorie = () => {
     try {
       await axios.delete(`${apiUrl}/subcategories/${id}`);
       setCategories(categories.filter(category => category.subcategory_id !== id));
+      addNotification('Sous-catégorie supprimée avec succès', 'success');
     } catch (error) {
       console.error('Error deleting subcategory:', error);
+      addNotification('Erreur lors de la suppression de la sous-catégorie', 'error');
     }
+    setShowConfirmModal(false);
+  };
+
+  const confirmDelete = (id) => {
+    setSelectedCategoryId(id);
+    setShowConfirmModal(true);
   };
 
   const handleAdd = () => {
@@ -45,25 +58,26 @@ const GestionSousCategorie = () => {
     try {
       if (currentCategory) {
         // Update subcategory
-        console.log('Updating subcategory:', formData);
         await axios.patch(`${apiUrl}/subcategories/${currentCategory.subcategory_id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
+        addNotification('Sous-catégorie mise à jour avec succès', 'success');
       } else {
         // Add new subcategory
-        console.log('Adding subcategory:', formData);
         await axios.post(`${apiUrl}/subcategories`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
+        addNotification('Sous-catégorie ajoutée avec succès', 'success');
       }
       setShowForm(false);
       fetchSubCategories(); // Refresh the subcategories list
     } catch (error) {
       console.error('Error saving subcategory:', error);
+      addNotification('Erreur lors de la sauvegarde de la sous-catégorie', 'error');
     }
   };
 
@@ -97,7 +111,7 @@ const GestionSousCategorie = () => {
             <tr key={category.subcategory_id}>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.subcategory_id}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">
-                  <img src={`${category.image}`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
+                <img src={`${category.image}`} alt={category.name} className="w-16 h-16 object-cover rounded-md" />
               </td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.name}</td>
               <td className="py-2 px-4 border-b dark:border-gray-700">{category.category_name}</td>
@@ -110,7 +124,7 @@ const GestionSousCategorie = () => {
                   Modifier
                 </button>
                 <button
-                  onClick={() => handleDelete(category.subcategory_id)}
+                  onClick={() => confirmDelete(category.subcategory_id)}
                   className="px-2 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none"
                 >
                   Supprimer
@@ -120,6 +134,13 @@ const GestionSousCategorie = () => {
           ))}
         </tbody>
       </table>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => handleDelete(selectedCategoryId)}
+        message="Êtes-vous sûr de vouloir supprimer cette sous-catégorie ?"
+      />
     </div>
   );
 };
