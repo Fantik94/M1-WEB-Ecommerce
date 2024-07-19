@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../server.js'; // Assurez-vous que le chemin vers votre fichier server.js est correct
+import app from '../server.js';
 import path from 'path';
 
 describe('Categories API', () => {
@@ -10,7 +10,7 @@ describe('Categories API', () => {
       .post('/categories')
       .field('name', 'Test Category')
       .field('description', 'A category for testing')
-      .attach('image', path.resolve(__dirname, 'test.png')); // Utilisez une image de test
+      .attach('image', path.resolve(__dirname, 'test.png')); // Utilise une image de test
 
     console.log('Add category response:', response.body, response.status);
     expect(response.status).toBe(201);
@@ -31,7 +31,7 @@ describe('Categories API', () => {
       .patch(`/categories/${testCategoryId}`)
       .field('name', 'Updated Test Category')
       .field('description', 'An updated category for testing')
-      .attach('image', path.resolve(__dirname, 'test.png')); // Utilisez une image de test
+      .attach('image', path.resolve(__dirname, 'test.png')); // Utilise une image de test
 
     console.log('Update category response:', response.body, response.status);
     expect(response.status).toBe(200);
