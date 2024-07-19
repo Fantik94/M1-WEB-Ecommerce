@@ -50,7 +50,8 @@ Site web du projet ! :  [site web](http://gamingavenue.ddns.net/).
 - **Service Email :** Nodemailer pour envoyer les e-mails de confirmation de commande.
 
 ## Architecture du Projet
-L'architecture de la plateforme e-commerce Gaming Avenue est conçue pour être évolutive, maintenable et compatible avec diverses plateformes matérielles. Ci-dessous se trouve une représentation graphique du design du système, montrant l'interaction entre les différents composants.
+Le projet suit une architecture basée sur Node.js avec Express.js en tant que framework côté serveur. Un middleware est utilisé pour vérifier le rôle de l'utilisateur et s'assurer de son authentification. Les requêtes vers la base de données MySQL sont effectuées pour récupérer les données nécessaires.
+Le front quand à lui envoie le token à chaque appel api en Autorization grace à l'instance Axios.
 
 
 ## Développement et Déploiement

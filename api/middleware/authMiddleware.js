@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-// Middleware pour vérifier le token JWT
+//  vérifier le token JWT
 export const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
@@ -22,7 +22,7 @@ export const authenticateJWT = (req, res, next) => {
   }
 };
 
-// Middleware pour vérifier les rôles
+// vérifier les rôles
 export const authorizeRoles = (roles) => {
   return (req, res, next) => {
     console.log('Checking roles:', req.user.roles);
