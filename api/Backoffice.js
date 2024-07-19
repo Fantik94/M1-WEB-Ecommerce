@@ -8,7 +8,7 @@ const BackofficeRoutes = (dbConfig) => {
   const router = express.Router();
 
   // Endpoint pour modifier un utilisateur
-  router.patch('/users/:userId', authenticateJWT, authorizeRoles(['admin']),
+  router.patch('/users/:userId', authenticateJWT, authorizeRoles(['admin', 'user']),
     // validation des champs
     body('username').isLength({ min: 5 }).withMessage('Username must be at least 5 characters long')
       .matches(/^[a-zA-Z0-9 ]+$/).withMessage('Username must not contain special characters'),
