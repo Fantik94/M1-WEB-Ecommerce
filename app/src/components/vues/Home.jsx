@@ -51,10 +51,10 @@ const Home = () => {
             <Comment
               name="Damien Raunier"
               dateJoined="Juillet 2024"
-              rating={2}
+              rating={4}
               title="Je pense en acheter un autre !"
               reviewDate="15 juillet 2024"
-              reviewText="J'adore Hitema, c'est faux c trop de la merde"
+              reviewText="J'adore ce site!!!!!!!!"
               helpfulCount={1259}
             />
             <Comment

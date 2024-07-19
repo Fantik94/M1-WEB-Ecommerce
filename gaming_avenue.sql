@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 18 juil. 2024 à 12:16
+-- Généré le : ven. 19 juil. 2024 à 09:57
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.0.30
 
@@ -44,11 +44,12 @@ CREATE TABLE `addresses` (
 --
 
 INSERT INTO `addresses` (`address_id`, `user_id`, `street`, `city`, `state`, `postal_code`, `country`, `created_at`, `updated_at`) VALUES
-(1, 1, 'rue des Bourcacac', 'cacsdc', 'csdsqdd', '91230', 'sdsqdsd', '2024-07-17 08:46:38', '2024-07-17 08:46:38'),
 (5, 8, '69 Avenue de la paix', 'Fresnes', 'asa', '94260', 'France', '2024-07-17 13:54:57', '2024-07-17 13:54:57'),
-(6, 9, '69 Avenue de la paix', 'Fresnes', 'a', '94260', 'France', '2024-07-17 15:28:10', '2024-07-17 15:28:10'),
 (7, 6, '69 Avenue de la paix', 'Fresnes', 'france', '94260', 'France', '2024-07-17 19:28:07', '2024-07-17 19:28:07'),
-(8, 10, '69 Avenue de la paix', 'Fresnes', 'freance', '94260', 'France', '2024-07-17 20:27:29', '2024-07-17 20:27:29');
+(12, 11, '69 Avenue de la paix', 'Fresnes', 'fracer', '94260', 'France', '2024-07-18 12:52:34', '2024-07-18 12:52:34'),
+(13, 12, 'test', 'test', 'test', '92130', 'France', '2024-07-18 16:20:54', '2024-07-18 16:20:54'),
+(14, 13, 'Rue Vieille du Temple', 'Paris', 'Ile de France', '75000', 'France', '2024-07-18 20:24:22', '2024-07-19 07:12:30'),
+(15, 14, 'Rue Vieille du Temple', 'Paris', 'Ile de France', '75000', 'France', '2024-07-19 07:37:33', '2024-07-19 07:37:33');
 
 -- --------------------------------------------------------
 
@@ -114,16 +115,21 @@ INSERT INTO `orders` (`order_id`, `user_id`, `total_amount`, `shipping_address`,
 (2, 6, 6479.96, '69 Avenue de la paix, Fresnes, france, 94260, France', 'Paid', 'En cours d\'acheminement', '2024-07-17 19:46:06', '2024-07-17 21:10:28'),
 (3, 6, 1799.99, '69 Avenue de la paix, Fresnes, france, 94260, France', 'Paid', 'Livrée', '2024-07-17 20:05:01', '2024-07-17 21:10:34'),
 (4, 6, 1799.99, '69 Avenue de la paix, Fresnes, france, 94260, France', 'Paid', 'Annulée', '2024-07-17 20:05:33', '2024-07-17 21:10:40'),
-(5, 10, 5162.40, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'Processing', '2024-07-17 20:27:52', '2024-07-17 20:27:52'),
-(6, 10, 7002.00, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'Processing', '2024-07-17 20:30:08', '2024-07-17 20:30:08'),
-(7, 10, 2159.99, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'En cours d\'acheminement', '2024-07-17 20:34:51', '2024-07-18 09:07:36'),
-(8, 10, 2159.99, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'Annulée', '2024-07-17 20:40:55', '2024-07-18 09:07:30'),
-(15, 10, 621.60, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'Validée', '2024-07-18 09:07:44', '2024-07-18 09:07:58'),
-(16, 10, 4319.98, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'Processing', '2024-07-18 09:08:13', '2024-07-18 09:08:13'),
-(17, 10, 288.00, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'Processing', '2024-07-18 09:11:21', '2024-07-18 09:11:21'),
-(18, 10, 288.00, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'Processing', '2024-07-18 09:12:23', '2024-07-18 09:12:23'),
-(20, 10, 2159.99, '69 Avenue de la paix, Fresnes, freance, 94260, France', 'Paid', 'Processing', '2024-07-18 09:24:16', '2024-07-18 09:24:16'),
-(21, 6, 0.00, '69 Avenue de la paix, Fresnes, france, 94260, France', 'Paid', 'Processing', '2024-07-18 09:36:21', '2024-07-18 09:36:21');
+(23, 6, 10799.96, '69 Avenue de la paix, Fresnes, france, 94260, France', 'Paid', 'Processing', '2024-07-18 12:50:51', '2024-07-18 12:50:51'),
+(24, 6, 10799.96, '69 Avenue de la paix, Fresnes, france, 94260, France', 'Paid', 'Processing', '2024-07-18 12:51:41', '2024-07-18 12:51:41'),
+(25, 11, 10799.96, '69 Avenue de la paix, Fresnes, fracer, 94260, France', 'Paid', 'Processing', '2024-07-18 12:52:48', '2024-07-18 12:52:48'),
+(26, 11, 17279.90, '69 Avenue de la paix, Fresnes, fracer, 94260, France', 'Paid', 'Processing', '2024-07-18 13:38:01', '2024-07-18 13:38:01'),
+(38, 6, 1799.99, '69 Avenue de la paix, Fresnes, france, 94260, France', 'Paid', 'En cours d\'acheminement', '2024-07-18 20:00:59', '2024-07-18 20:01:28'),
+(39, 13, 5999.98, 'rue des Bourcacac, Montgeron, csdsqdd, 91230, France', 'Paid', 'Processing', '2024-07-18 20:24:43', '2024-07-18 20:24:43'),
+(40, 13, 2.40, 'rue des Bourcacac, Montgeron, csdsqdd, 91230, France', 'Paid', 'Processing', '2024-07-19 06:23:01', '2024-07-19 06:23:01'),
+(41, 12, 28799.90, 'test, test, test, 92130, France', 'Paid', 'Processing', '2024-07-19 06:59:32', '2024-07-19 06:59:32'),
+(42, 13, 3599.99, 'rue des Bourcacac, Montgeron, csdsqdd, 91230, France', 'Paid', 'Processing', '2024-07-19 07:00:14', '2024-07-19 07:00:14'),
+(43, 13, 3599.99, 'rue des Bourcacac, Montgeron, csdsqdd, 91230, France', 'Paid', 'Processing', '2024-07-19 07:04:16', '2024-07-19 07:04:16'),
+(44, 13, 3599.99, 'rue des Bourcacac, Montgeron, csdsqdd, 91230, France', 'Paid', 'Processing', '2024-07-19 07:09:47', '2024-07-19 07:09:47'),
+(45, 13, 3599.99, 'Rue Vieille du Temple, Paris, Ile de France, 75000, France', 'Paid', 'Processing', '2024-07-19 07:19:18', '2024-07-19 07:19:18'),
+(46, 13, 3599.99, 'Rue Vieille du Temple, Paris, Ile de France, 75000, France', 'Paid', 'Processing', '2024-07-19 07:20:13', '2024-07-19 07:20:13'),
+(47, 14, 1828.79, 'Rue Vieille du Temple, Paris, Ile de France, 75000, France', 'Paid', 'Processing', '2024-07-19 07:37:56', '2024-07-19 07:37:56'),
+(48, 14, 26999.82, 'Rue Vieille du Temple, Paris, Ile de France, 75000, France', 'Paid', 'Processing', '2024-07-19 07:39:50', '2024-07-19 07:39:50');
 
 -- --------------------------------------------------------
 
@@ -148,9 +154,11 @@ CREATE TABLE `payments` (
 INSERT INTO `payments` (`payments_id`, `user_id`, `numero_carte`, `date_expiration_carte`, `cvc_carte`, `nom_carte`, `date_ajout`) VALUES
 (2, 8, '5555555555555555', '2222-12-14', '555', 'SALUT', '2024-07-17 13:25:28'),
 (3, 8, '4444444444444444', '2220-03-14', '114', 'dfg', '2024-07-17 14:03:12'),
-(4, 9, '4444444444444444', '2024-05-20', '111', 'marion ringler', '2024-07-17 15:29:35'),
 (5, 6, '4444444444444444', '2200-03-14', '111', 'BOB test 1', '2024-07-17 19:28:27'),
-(6, 10, '9999999999999999', '2024-07-26', '656', 'er', '2024-07-17 20:27:48');
+(8, 11, '4444444444444444', '2024-07-06', '111', 'zderz', '2024-07-18 12:52:47'),
+(9, 12, '1234123412341234', '2026-12-30', '123', 'Test', '2024-07-18 16:23:26'),
+(10, 13, '1234123412341234', '2026-05-31', '123', 'Raunier', '2024-07-18 20:24:40'),
+(11, 14, '1234123412341234', '2026-06-21', '123', 'Cascio', '2024-07-19 07:37:55');
 
 -- --------------------------------------------------------
 
@@ -192,7 +200,14 @@ INSERT INTO `products` (`product_id`, `subcategory_id`, `name`, `description`, `
 (13, 10, 'Corsair Dark Core RGB Pro SE', 'Proposant une connexion filaire (USB) et non filaire (Bluetooth/RF), la souris Dark Core RGB Pro SE de Corsair vous donne un avantage certain sur tous vos adversaires. Équipée d\'un capteur optique de 18 000 dpi, elle offre des performances de gaming exceptionnelles. Cette souris allie précision et contrôle, et est de plus rechargeable via la technologie sans fil Qi.', 119.00, 30, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/13-1.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/13-2.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/12-3.jpg', '2024-07-15 13:43:13', '2024-07-17 22:46:53'),
 (14, 10, 'Logitech G Pro X Gaming Headset', 'Conçu en collaboration avec de nombreux joueurs professionnels sur divers genres de jeux, le Logitech G Pro X Gaming Headset va vous permettre d\'entendre les sons de votre jeu avec précision. Avec des transducteurs Pro-G de 50 mm en similicuir isolants, un son surround DTS Headphone:X 2.0, un microphone de qualité professionnelle disposant de la technologie Blue Vo!ce et une construction légère, le Logitech G Pro X Gaming Headset est l\'accessoire idéal pour les tournois intenses.', 119.00, 25, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/14-1.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/14-2.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/14-3.jpg', '2024-07-15 13:51:42', '2024-07-17 22:47:25'),
 (15, 10, 'Corsair HS65', 'Le micro-casque Corsair HS65 offre confort, légèreté et durabilité afin de vous garantir des heures de gameplay dans les meilleures conditions. Retrouvez un son surround Dolby Vision 7.1 pour une expérience audio multicanale, mais également un microphone omnidirectionnel ou encore une compatibilité multiplateforme.', 89.00, 30, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/15-1.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/15-2.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721210761/Gaming_avenue_images/images/15-3.jpg', '2024-07-15 13:54:40', '2024-07-17 22:47:41'),
-(18, 8, 'test', 'test', 60.00, 20, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721256698/Gaming_avenue_images/images/test_image1_1721256699691.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721256699/Gaming_avenue_images/images/test_image2_1721256700504.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721256699/Gaming_avenue_images/images/test_image3_1721256701172.jpg', '2024-07-17 22:51:42', '2024-07-17 22:51:42');
+(19, 11, 'Red Bull', 'Red Bull', 5.00, 1000000, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721304347/Gaming_avenue_images/images/Red%20Bull_image1_tA_lA_chargement.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721304347/Gaming_avenue_images/images/Red%20Bull_image2_images.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721304347/Gaming_avenue_images/images/Red%20Bull_image3_2526251.jpg', '2024-07-18 12:05:49', '2024-07-18 12:05:49'),
+(20, 11, 'Coca Cola', 'Coca', 4.00, 200, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308067/Gaming_avenue_images/images/Coca%20Cola_image1_coca_33cl_0.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308067/Gaming_avenue_images/images/Coca%20Cola_image2_images__1_.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308067/Gaming_avenue_images/images/Coca%20Cola_image3_istockphoto_458464735_612x612.jpg', '2024-07-18 13:07:49', '2024-07-18 13:07:49'),
+(21, 11, 'MONSTER', 'Monster', 2.00, 900, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308154/Gaming_avenue_images/images/MONSTER_image1_500x500.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308154/Gaming_avenue_images/images/MONSTER_image2_images__2_.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308154/Gaming_avenue_images/images/MONSTER_image3_IMG_1115.jpg', '2024-07-18 13:09:17', '2024-07-18 13:09:17'),
+(22, 13, 'Chips Lays', 'Chips', 2.00, 27, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308222/Gaming_avenue_images/images/Chips%20Lays_image1_chips_nature.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308222/Gaming_avenue_images/images/Chips%20Lays_image2_640px_Kartoffelchips_1.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308223/Gaming_avenue_images/images/Chips%20Lays_image3_shutterstock_795135682_1.jpg', '2024-07-18 13:10:25', '2024-07-18 13:10:25'),
+(23, 13, 'Chips Pringles', 'Chips', 3.00, 60, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308308/Gaming_avenue_images/images/Chips%20Pringles_image1_shutterstock_795135682_1.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308308/Gaming_avenue_images/images/Chips%20Pringles_image2_s_l1200.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308308/Gaming_avenue_images/images/Chips%20Pringles_image3_2Z_431368.jpg', '2024-07-18 13:11:50', '2024-07-18 13:11:50'),
+(24, 12, 'Baton de berger JUSTIN BRIDOU', 'Mini saucisson baton de berger nature JUSTIN BRIDOU', 3.00, 60, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308413/Gaming_avenue_images/images/B%C3%A2ton%20de%20berger%20JUSTIN%20BRIDOU_image1_mini_saucisson_baton_de_berger_nature_justin_bridou.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308413/Gaming_avenue_images/images/B%C3%A2ton%20de%20berger%20JUSTIN%20BRIDOU_image2_4080753_47df8bda7d5a12.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308413/Gaming_avenue_images/images/B%C3%A2ton%20de%20berger%20JUSTIN%20BRIDOU_image3_petits_saucissons_nature_justin_bridou_petits_saucissons_nature_justin_bridou.jpg', '2024-07-18 13:13:43', '2024-07-18 13:20:25'),
+(25, 12, 'Auvernou Saucisson sec pur porc', 'Auvernou Saucisson sec pur porc', 3.00, 90, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308495/Gaming_avenue_images/images/Auvernou%20Saucisson%20sec%20pur%20porc_image1_61j42m_n2kL.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308495/Gaming_avenue_images/images/Auvernou%20Saucisson%20sec%20pur%20porc_image2_tA_lA_chargement.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308495/Gaming_avenue_images/images/Auvernou%20Saucisson%20sec%20pur%20porc_image3_616Wur7P84L.jpg', '2024-07-18 13:14:57', '2024-07-18 13:14:58'),
+(26, 14, 'Bonbon Haribo', 'Bonbon', 4.00, 150, 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308570/Gaming_avenue_images/images/Bonbon%20Haribo_image1_haribo_dragibus_mini_sachets.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308570/Gaming_avenue_images/images/Bonbon%20Haribo_image2_haribo_pommes_sauer_200g_1200x1200.jpg', 'https://res.cloudinary.com/djtvjwxrj/image/upload/v1721308570/Gaming_avenue_images/images/Bonbon%20Haribo_image3_haribo_rainbow_piks.jpg', '2024-07-18 13:16:12', '2024-07-18 13:16:12');
 
 -- --------------------------------------------------------
 
@@ -245,13 +260,13 @@ CREATE TABLE `userprofiles` (
 --
 
 INSERT INTO `userprofiles` (`profile_id`, `user_id`, `first_name`, `last_name`, `address`, `phone_number`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Damien', 'Raunier', NULL, '0683324880', '2024-07-16 10:50:44', '2024-07-16 10:50:44'),
 (5, 5, 'test', 'test', NULL, '0783475206', '2024-07-16 17:37:55', '2024-07-16 17:37:55'),
 (6, 6, 'adminadmin', 'adminadmin', NULL, '0000000000', '2024-07-16 17:40:56', '2024-07-16 17:40:56'),
-(7, 7, 'yoyoyo', 'yoyoyo', NULL, '0000000000', '2024-07-17 09:21:31', '2024-07-17 09:21:31'),
 (8, 8, 'bonjour', 'bonjour', NULL, '1234567890', '2024-07-17 13:16:01', '2024-07-17 13:16:01'),
-(9, 9, 'marion', 'marion', NULL, '0783475206', '2024-07-17 15:27:45', '2024-07-17 15:27:45'),
-(11, 11, 'Baptiste', 'RINGLER', NULL, '0783475206', '2024-07-18 08:46:21', '2024-07-18 08:46:21');
+(11, 11, 'Baptiste', 'RINGLER', NULL, '0783475206', '2024-07-18 08:46:21', '2024-07-18 08:46:21'),
+(12, 12, 'cypress', 'cypress', NULL, '0606060606', '2024-07-18 15:57:20', '2024-07-18 15:57:20'),
+(13, 13, 'Damien', 'Raunier', NULL, '0606060606', '2024-07-18 20:24:05', '2024-07-19 07:25:41'),
+(14, 14, 'Romain', 'Cascio', NULL, '0606060606', '2024-07-19 07:36:11', '2024-07-19 07:36:11');
 
 -- --------------------------------------------------------
 
@@ -291,10 +306,11 @@ CREATE TABLE `userrolesmapping` (
 INSERT INTO `userrolesmapping` (`user_role_id`, `user_id`, `role_id`) VALUES
 (1, 5, 1),
 (2, 6, 2),
-(3, 7, 1),
 (4, 8, 1),
-(5, 9, 1),
-(7, 11, 1);
+(7, 11, 1),
+(8, 12, 1),
+(9, 13, 1),
+(10, 14, 1);
 
 -- --------------------------------------------------------
 
@@ -316,14 +332,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'Damien', 'damienraunier@gmail.com', '$2b$10$0L9STkpt3gGzyIwu8BsPTOlyk5xnPAWPMjYclxakBhsq1KW59xY8u', '2024-07-16 12:50:44', '2024-07-17 08:17:58'),
 (5, 'test12', 'test12@test.fr', '$2b$10$IcxXB7r/UBnadbDlYBnTK.nnhcRlNvRkwk.LYwdEAmOeAct8l.iUW', '2024-07-16 17:37:55', '2024-07-16 17:37:55'),
 (6, 'admin', 'admin@gmail.com', '$2b$10$ycLwFmSdAyR0XSLeydrWVOcgA1cbJqE5QOIe.L43CREMGQU0MI8ca', '2024-07-16 17:40:56', '2024-07-16 17:40:56'),
-(7, 'yoyoyo', 'yoyoyo@yoyoyo.fr', '$2b$10$0WBf9A3g81Rc2lkSHmeOa./sJWlrheSOEQX62y8F4pmIDyqFXbweu', '2024-07-17 09:21:31', '2024-07-17 09:21:31'),
 (8, 'bonjour', 'bonjour@bonjour.fr', '$2b$10$igj4BdJ8NRphUad1UGuqtOEFCeWnB3PUL/zIWs1G9SVKhXvodB3Pi', '2024-07-17 13:16:01', '2024-07-17 13:16:01'),
-(9, 'marion', 'marion@marion.marion', '$2b$10$ptCv1x1Wz5vqyElxWJV1/uU3lue/A3ZxYxvv/EBT5nBZ24c1NS9PC', '2024-07-17 15:27:44', '2024-07-17 15:27:44'),
-(10, 'Fantik', 'fantik@gmail.com', '$2b$10$nZQol67PRJXTC/ZFj3oz9uOaBOhCVckr6A/BkvGcAAsaPna4Uhl/G', '2024-07-17 20:26:48', '2024-07-17 20:26:48'),
-(11, 'baptiste', 'ringlerbaptiste@gmail.com', '$2b$10$hvsdqbp08NlMkuin2cL.wey9a58OJL3R1OJ9lmW78cCHrxkutBt6S', '2024-07-18 08:46:21', '2024-07-18 08:46:21');
+(11, 'baptiste', 'ringlerbaptiste@gmail.com', '$2b$10$hvsdqbp08NlMkuin2cL.wey9a58OJL3R1OJ9lmW78cCHrxkutBt6S', '2024-07-18 08:46:21', '2024-07-18 08:46:21'),
+(12, 'Cypress', 'cypress@gmail.com', '$2b$10$kzU.4qOgGzZ6lHusAHSvJefLoluKtkcDMmiC.G7CsgAW9x/yovKdm', '2024-07-18 15:57:20', '2024-07-18 15:57:20'),
+(13, 'Damien', 'damienraunier@gmail.com', '$2b$10$aUxjyb0OIOVi7pgvZWUdbutuOCht6MbnG/pdh9DOO8JUjosuHCzum', '2024-07-18 20:24:05', '2024-07-19 07:25:41'),
+(14, 'Romain', 'romain.cascio.pro@gmail.com', '$2b$10$yTw3XE2GiSiOljZ02wfhTO8c/De7oE5QkVp3C6XXtndv1vYWOCwHq', '2024-07-19 07:36:10', '2024-07-19 07:36:10');
 
 --
 -- Index pour les tables déchargées
@@ -416,13 +431,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT pour la table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `orderitems`
@@ -434,31 +449,31 @@ ALTER TABLE `orderitems`
 -- AUTO_INCREMENT pour la table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT pour la table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `payments_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `payments_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT pour la table `subcategories`
 --
 ALTER TABLE `subcategories`
-  MODIFY `subcategory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `subcategory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT pour la table `userprofiles`
 --
 ALTER TABLE `userprofiles`
-  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT pour la table `userroles`
@@ -470,13 +485,13 @@ ALTER TABLE `userroles`
 -- AUTO_INCREMENT pour la table `userrolesmapping`
 --
 ALTER TABLE `userrolesmapping`
-  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Contraintes pour les tables déchargées

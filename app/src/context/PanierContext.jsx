@@ -27,7 +27,7 @@ export function PanierContextProvider({ children }) {
     if (nouveauPanier[produit.product_id]) {
       const quantiteDisponible = produit.stock - nouveauPanier[produit.product_id].quantite;
       const quantiteAJouter = Math.min(quantite, quantiteDisponible);
-      if (quantiteAJouter >= 0) {
+      if (quantiteAJouter > 0) {
         nouveauPanier[produit.product_id].quantite += quantiteAJouter;
         setPanier(nouveauPanier);
         setNombreProduits(nombreProduits + quantiteAJouter);
