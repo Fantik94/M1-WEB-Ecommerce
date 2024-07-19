@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/AxiosInstance';  // Importez axiosInstance
 import AuthContext from "../../context/AuthContext";
 
 const Orders = () => {
@@ -19,9 +19,8 @@ const Orders = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      
       try {
-        const response = await axios.get(`${apiUrl}/orders/${userId}`);
+        const response = await axiosInstance.get(`${apiUrl}/orders/${userId}`);
         setOrders(response.data);
       } catch (err) {
         setError('Erreur lors de la récupération des commandes.');

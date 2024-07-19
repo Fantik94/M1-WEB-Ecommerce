@@ -13,22 +13,21 @@ import orderRoutes from './order.js';
 import imageRoutes from './gestion_image.js';
 import paymentRoutes from './Payement.js';
 
-dotenv.config();
+dotenv.config();  // Charge les variables d'environnement du fichier .env
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-//info db
 const dbConfig = {
-  host: 'localhost',
-  user: 'myuser',
-  password: 'mypassword',
-  database: 'gaming_avenue',
-  port: 3306
+  host: process.env.VITE_DB_HOST,
+  user: process.env.VITE_DB_USER,
+  password: process.env.VITE_DB_PASSWORD,
+  database: process.env.VITE_DB_DATABASE,
+  port: process.env.VITE_DB_PORT
 };
 
-//Routes
 app.get('/', (req, res) => res.send('Bienvenue sur notre API!'));
 app.get('/test', (req, res) => res.send('Ceci est une route de test'));
 

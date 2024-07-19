@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/AxiosInstance';
 import ConfirmModal from '../vues/Confirm';
 import { useNotification } from '../../context/NotificationContext';
 
@@ -7,13 +7,12 @@ const GestionUtilisateur = () => {
   const [users, setUsers] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
-  const { addNotification } = useNotification(); // Destructure addNotification from useNotification
+  const { addNotification } = useNotification();
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/users`);
+        const response = await axiosInstance.get('/users');
         setUsers(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -25,7 +24,7 @@ const GestionUtilisateur = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/users/${id}`);
+      await axiosInstance.delete(`/users/${id}`);
       setUsers(users.filter(user => user.user_id !== id));
       addNotification('Utilisateur supprimé avec succès', 'success');
     } catch (error) {

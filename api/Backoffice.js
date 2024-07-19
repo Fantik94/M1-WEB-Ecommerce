@@ -2,12 +2,13 @@ import express from 'express';
 import mysql from 'mysql2/promise';
 import bcrypt from 'bcrypt';
 import { body, validationResult } from 'express-validator';
+import { authenticateJWT, authorizeRoles } from './middleware/authMiddleware.js';
 
 const BackofficeRoutes = (dbConfig) => {
   const router = express.Router();
 
-    // Endpoint pour modifier un user
-  router.patch('/users/:userId',
+  // Endpoint pour modifier un utilisateur
+  router.patch('/users/:userId', authenticateJWT, authorizeRoles(['admin']),
     // validation des champs
     body('username').isLength({ min: 5 }).withMessage('Username must be at least 5 characters long')
       .matches(/^[a-zA-Z0-9 ]+$/).withMessage('Username must not contain special characters'),
@@ -24,7 +25,7 @@ const BackofficeRoutes = (dbConfig) => {
       const { userId } = req.params;
       const { username, email, password, first_name, last_name, phone_number } = req.body;
 
-    // validation des champs
+      // validation des champs
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -80,8 +81,8 @@ const BackofficeRoutes = (dbConfig) => {
     }
   );
 
-    // Endpoint pour avoir tout les user
-  router.get('/users', async (req, res) => {
+  // Endpoint pour avoir tout les user
+  router.get('/users', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     console.log('Route GET /users called');
     let connection;
     try {
@@ -103,8 +104,8 @@ const BackofficeRoutes = (dbConfig) => {
     }
   });
 
-    // Endpoint pour avoir un user
-  router.get('/users/:userId', async (req, res) => {
+  // Endpoint pour avoir un user
+  router.get('/users/:userId', authenticateJWT, authorizeRoles(['admin','user']), async (req, res) => {
     const { userId } = req.params;
     let connection;
     try {
@@ -135,7 +136,7 @@ const BackofficeRoutes = (dbConfig) => {
   });
 
   // Endpoint pour supprimer un utilisateur
-  router.delete('/users/:userId', async (req, res) => {
+  router.delete('/users/:userId', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     const userId = req.params.userId;
     console.log(`Route DELETE /users/${userId} called`);
     let connection;
@@ -180,3 +181,4 @@ const BackofficeRoutes = (dbConfig) => {
 };
 
 export default BackofficeRoutes;
+

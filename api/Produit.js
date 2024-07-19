@@ -4,7 +4,7 @@ import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
-import { authenticateJWT, authorizeRoles } from './middleware/authMiddleware.js'; 
+import { authenticateJWT, authorizeRoles } from './middleware/authMiddleware.js';
 
 dotenv.config();
 
@@ -39,7 +39,8 @@ const upload = multer({ storage: storage });
 
 const produitRoutes = (dbConfig) => {
   const router = express.Router();
-  //Endpoint pour prduit en fonction de la categorie et sa subcategorie
+  
+  // Routes accessibles à tous les utilisateurs
   router.get('/categories/:categoryId/subcategories/:subCategoryId/products', async (req, res) => {
     const { subCategoryId } = req.params;
     let connection;
@@ -54,7 +55,7 @@ const produitRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
-  //Endpoint de tout les produits
+
   router.get('/products', async (req, res) => {
     let connection;
     try {
@@ -69,7 +70,6 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
-  //Endpoint pour un produit en fonction de son ID
   router.get('/products/:productId', async (req, res) => {
     const { productId } = req.params;
     let connection;
@@ -89,7 +89,6 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
-  //Endpoint pour avoir 3 produits aléatiore
   router.get('/rng-products', async (req, res) => {
     let connection;
     try {
@@ -103,8 +102,9 @@ const produitRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
-  //Endpoint pour ajouter un produit
-  router.post('/products', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }]), async (req, res) => {
+
+  // Routes protégées par JWT et rôle admin
+  router.post('/products', authenticateJWT, authorizeRoles(['admin']), upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }]), async (req, res) => {
     const { subcategory_id, name, description, price, stock } = req.body;
 
     // Vérification des champs
@@ -151,8 +151,8 @@ const produitRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
-  //Endpoint pour modifier un produit
-  router.patch('/products/:productId', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }]), async (req, res) => {
+
+  router.patch('/products/:productId', authenticateJWT, authorizeRoles(['admin']), upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }]), async (req, res) => {
     const { productId } = req.params;
     const { subcategory_id, name, description, price, stock } = req.body;
 
@@ -217,8 +217,7 @@ const produitRoutes = (dbConfig) => {
     }
   });
 
-  //Endpoint pour supprimer un produit
- router.delete('/products/:productId', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
+  router.delete('/products/:productId', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     const { productId } = req.params;
     let connection;
     try {
@@ -257,7 +256,6 @@ const produitRoutes = (dbConfig) => {
       res.status(500).send('Internal Server Error');
     }
   });
-
 
   //Page Recherche
   router.get('/search', async (req, res) => {

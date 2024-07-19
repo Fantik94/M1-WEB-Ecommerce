@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/AxiosInstance';
 import ConfirmModal from '../vues/Confirm';
 import { useNotification } from '../../context/NotificationContext';
 
@@ -9,13 +9,12 @@ const GestionCommande = () => {
   const [selectedCommandeId, setSelectedCommandeId] = useState(null);
   const [editCommande, setEditCommande] = useState(null);
   const [orderStatus, setOrderStatus] = useState('');
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const { addNotification } = useNotification();
 
   useEffect(() => {
     const fetchCommandes = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/allorders`);
+        const response = await axiosInstance.get('/allorders');
         setCommandes(response.data);
       } catch (error) {
         console.error('Error fetching commandes:', error);
@@ -32,7 +31,7 @@ const GestionCommande = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/orders/${id}`);
+      await axiosInstance.delete(`/orders/${id}`);
       setCommandes(commandes.filter(commande => commande.order_id !== id));
       addNotification('Commande supprimée avec succès', 'success');
     } catch (error) {
@@ -56,7 +55,7 @@ const GestionCommande = () => {
     const payload = { order_status: orderStatus };
 
     try {
-      await axios.patch(`${apiUrl}/orders/${order_id}`, payload);
+      await axiosInstance.patch(`/orders/${order_id}`, payload);
       setCommandes(commandes.map(commande => 
         commande.order_id === order_id ? { ...commande, order_status: orderStatus } : commande
       ));

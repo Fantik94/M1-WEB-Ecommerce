@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/AxiosInstance';
 import SousCategorieForm from '../forms/SousCategorie';
 import ConfirmModal from '../vues/Confirm';
 import { useNotification } from '../../context/NotificationContext';
@@ -11,12 +11,11 @@ const GestionSousCategorie = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
-  const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
   const { addNotification } = useNotification();
 
   const fetchSubCategories = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/allsubcategories`);
+      const response = await axiosInstance.get('/allsubcategories');
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching subcategories:', error);
@@ -34,7 +33,7 @@ const GestionSousCategorie = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/subcategories/${id}`);
+      await axiosInstance.delete(`/subcategories/${id}`);
       setCategories(categories.filter(category => category.subcategory_id !== id));
       addNotification('Sous-catégorie supprimée avec succès', 'success');
     } catch (error) {
@@ -58,7 +57,7 @@ const GestionSousCategorie = () => {
     try {
       if (currentCategory) {
         // Update subcategory
-        await axios.patch(`${apiUrl}/subcategories/${currentCategory.subcategory_id}`, formData, {
+        await axiosInstance.patch(`/subcategories/${currentCategory.subcategory_id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -66,7 +65,7 @@ const GestionSousCategorie = () => {
         addNotification('Sous-catégorie mise à jour avec succès', 'success');
       } else {
         // Add new subcategory
-        await axios.post(`${apiUrl}/subcategories`, formData, {
+        await axiosInstance.post('/subcategories', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
