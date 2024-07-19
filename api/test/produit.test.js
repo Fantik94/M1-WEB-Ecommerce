@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../server'; // Assurez-vous que le chemin est correct
+import app from '../server'; 
 import path from 'path';
 
 describe('Products API', () => {

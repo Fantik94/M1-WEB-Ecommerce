@@ -1,9 +1,9 @@
 import request from 'supertest';
-import app from '../server'; // Assurez-vous que le chemin est correct
+import app from '../server';
 import path from 'path';
 
 describe('SubCategories API', () => {
-  let testCategoryId = 1; // Assurez-vous que cette catégorie existe dans votre base de données pour les tests
+  let testCategoryId = 1;
   let testSubCategoryId;
 
   it('should add a new sub-category', async () => {
@@ -37,7 +37,7 @@ describe('SubCategories API', () => {
   });
 
   it('should update a sub-category', async () => {
-    expect(testSubCategoryId).toBeDefined(); // Assurez-vous que l'ID est défini
+    expect(testSubCategoryId).toBeDefined(); 
     const response = await request(app)
       .patch(`/subcategories/${testSubCategoryId}`)
       .field('category_id', testCategoryId)
@@ -51,7 +51,7 @@ describe('SubCategories API', () => {
   });
 
   it('should delete a sub-category', async () => {
-    expect(testSubCategoryId).toBeDefined(); // Assurez-vous que l'ID est défini
+    expect(testSubCategoryId).toBeDefined(); 
     const response = await request(app).delete(`/subcategories/${testSubCategoryId}`);
     console.log('Delete sub-category response:', response.body, response.status);
     expect(response.status).toBe(200);

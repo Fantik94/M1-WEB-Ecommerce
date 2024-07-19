@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../server.js';
 
 describe('Payments API', () => {
-  let testUserId = 5; // Remplacez par un ID valide de votre base de données
+  let testUserId = 5;
   let testPaymentId;
 
   describe('POST /payments/:user_id', () => {
