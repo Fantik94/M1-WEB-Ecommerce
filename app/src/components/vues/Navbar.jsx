@@ -61,7 +61,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white border-b-2 border-gray-300 dark:bg-gray-900 dark:border-gray-700 z-50">
+    <nav className="bg-white border-b-2 border-gray-300 dark:bg-gray-900 dark:border-gray-700 z-50 relative">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/icon.webp" className="h-14 rounded-b-full rounded-t-full" alt="Logo" />
