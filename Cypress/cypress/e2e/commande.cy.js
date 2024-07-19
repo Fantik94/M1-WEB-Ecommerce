@@ -5,8 +5,8 @@ describe('template spec', () => {
     
         //Connexion
         cy.get('a[href="/login"]').click();
-        cy.get('input[name="email"]').type('cypress@gmail.com');
-        cy.get('input[name="password"]').type('cypress');
+        cy.get('input[name="email"]').type('damienraunier@gmail.com');
+        cy.get('input[name="password"]').type('Damien');
         cy.get('[data-cy=login-submit]').click();
     
         //attendre le chargement de la page d'acceuil
@@ -26,10 +26,14 @@ describe('template spec', () => {
         cy.get('button').contains('Étape suivante').click();
     
         //passer à l'étape de paiement
+        cy.contains('France');
         cy.get('button').contains('Étape suivante').click();
     
         //passer la commande
+        cy.contains('Raunier');
         cy.get('button').contains('Procéder au paiement').click();
+
+        //*[@id="root"]/div/div/div/section/div[2]/div/div[2]/div/button
     
         //vérifier que la commande est terminée
         cy.url().should('include', '/thanks');
