@@ -4,18 +4,15 @@ import React from "react";
 export const PanierContext = React.createContext();
 
 export function PanierContextProvider({ children }) {
-  const [panier, setPanier] = useState({});
-  const [nombreProduits, setNombreProduits] = useState([]);
-
-  useEffect(() => {
+  const [panier, setPanier] = useState(() => {
     const panierSession = sessionStorage.getItem("panier");
+    return panierSession ? JSON.parse(panierSession) : {};
+  });
+  
+  const [nombreProduits, setNombreProduits] = useState(() => {
     const nombreProduitsSession = sessionStorage.getItem("nombreProduits");
-
-    if (panierSession && nombreProduitsSession) {
-      setPanier(JSON.parse(panierSession));
-      setNombreProduits(Number(nombreProduitsSession));
-    }
-  }, []);
+    return nombreProduitsSession ? Number(nombreProduitsSession) : 0;
+  });
 
   useEffect(() => {
     sessionStorage.setItem("panier", JSON.stringify(panier));
@@ -30,14 +27,14 @@ export function PanierContextProvider({ children }) {
       if (quantiteAJouter > 0) {
         nouveauPanier[produit.product_id].quantite += quantiteAJouter;
         setPanier(nouveauPanier);
-        setNombreProduits(nombreProduits + quantiteAJouter);
+        setNombreProduits(prevNombre => prevNombre + quantiteAJouter);
       }
     } else {
       const quantiteAJouter = Math.min(quantite, produit.stock);
       if (quantiteAJouter > 0) {
         nouveauPanier[produit.product_id] = { ...produit, quantite: quantiteAJouter };
         setPanier(nouveauPanier);
-        setNombreProduits(nombreProduits + quantiteAJouter);
+        setNombreProduits(prevNombre => prevNombre + quantiteAJouter);
       }
     }
   }
@@ -46,18 +43,21 @@ export function PanierContextProvider({ children }) {
     const nouveauPanier = { ...panier };
     if (nouveauPanier[produit.product_id].quantite > 1) {
       nouveauPanier[produit.product_id].quantite -= 1;
+      setPanier(nouveauPanier);
+      setNombreProduits(prevNombre => prevNombre - 1);
     } else {
       delete nouveauPanier[produit.product_id];
+      setPanier(nouveauPanier);
+      setNombreProduits(prevNombre => prevNombre - 1);
     }
-    setPanier(nouveauPanier);
-    setNombreProduits(nombreProduits - 1);
   }
 
   function supprimer(produit) {
     const nouveauPanier = { ...panier };
+    const quantiteASupprimer = nouveauPanier[produit.product_id].quantite;
     delete nouveauPanier[produit.product_id];
     setPanier(nouveauPanier);
-    setNombreProduits(nombreProduits - produit.quantite);
+    setNombreProduits(prevNombre => prevNombre - quantiteASupprimer);
   }
 
   function getTotalProduit(produit) {
