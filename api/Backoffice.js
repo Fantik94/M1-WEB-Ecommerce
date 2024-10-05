@@ -46,7 +46,7 @@ const BackofficeRoutes = (dbConfig) => {
         await connection.beginTransaction();
 
         // Update le user
-        let userQuery = 'UPDATE Users SET username = ?, email = ?';
+        let userQuery = 'UPDATE users SET username = ?, email = ?';
         const userParams = [username, email];
 
         if (password) {
@@ -61,7 +61,7 @@ const BackofficeRoutes = (dbConfig) => {
 
         // Update le user
         await connection.execute(
-          'UPDATE UserProfiles SET first_name = ?, last_name = ?, phone_number = ? WHERE user_id = ?',
+          'UPDATE userprofiles SET first_name = ?, last_name = ?, phone_number = ? WHERE user_id = ?',
           [first_name, last_name, phone_number, userId]
         );
 
@@ -90,7 +90,7 @@ const BackofficeRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to the database.');
 
-      const [rows] = await connection.execute('SELECT * FROM Users');
+      const [rows] = await connection.execute('SELECT * FROM users');
       connection.end();
 
       console.log('Users retrieved:', rows);
@@ -113,8 +113,8 @@ const BackofficeRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to the database.');
 
-      const [userRows] = await connection.execute('SELECT * FROM Users WHERE user_id = ?', [userId]);
-      const [profileRows] = await connection.execute('SELECT * FROM UserProfiles WHERE user_id = ?', [userId]);
+      const [userRows] = await connection.execute('SELECT * FROM users WHERE user_id = ?', [userId]);
+      const [profileRows] = await connection.execute('SELECT * FROM userprofiles WHERE user_id = ?', [userId]);
       connection.end();
 
       if (userRows.length > 0) {

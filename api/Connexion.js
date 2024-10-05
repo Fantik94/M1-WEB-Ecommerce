@@ -28,7 +28,7 @@ const connexionRoutes = (dbConfig) => {
         console.log('Connected to the database.');
 
         // Vérifier si l'utilisateur existe
-        const [userRows] = await connection.execute('SELECT * FROM Users WHERE email = ?', [email]);
+        const [userRows] = await connection.execute('SELECT * FROM users WHERE email = ?', [email]);
         if (userRows.length === 0) {
           console.log('User not found');
           return res.status(401).send('Invalid email or password');
@@ -44,7 +44,7 @@ const connexionRoutes = (dbConfig) => {
         }
 
         // Récupérer le rôle de l'utilisateur
-        const [roleRows] = await connection.execute('SELECT role_name FROM UserRoles ur JOIN UserRolesMapping urm ON ur.role_id = urm.role_id WHERE urm.user_id = ?', [user.user_id]);
+        const [roleRows] = await connection.execute('SELECT role_name FROM userroles ur JOIN userrolesmapping urm ON ur.role_id = urm.role_id WHERE urm.user_id = ?', [user.user_id]);
         const roles = roleRows.map(row => row.role_name);
         
         // Générer un jeton JWT incluant le rôle

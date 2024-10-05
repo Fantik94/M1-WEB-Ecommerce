@@ -50,7 +50,7 @@ const subCategorieRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
-      const [rows] = await connection.execute('SELECT * FROM SubCategories WHERE category_id = ?', [category_id]);
+      const [rows] = await connection.execute('SELECT * FROM subcategories WHERE category_id = ?', [category_id]);
       connection.end();
       res.json(rows);
     } catch (error) {
@@ -64,8 +64,8 @@ const subCategorieRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
-      const [subCategories] = await connection.execute('SELECT * FROM SubCategories');
-      const [categories] = await connection.execute('SELECT * FROM Categories');
+      const [subCategories] = await connection.execute('SELECT * FROM subcategories');
+      const [categories] = await connection.execute('SELECT * FROM categories');
       connection.end();
 
       const subCategoriesWithCategoryNames = subCategories.map(subCategory => {
@@ -95,7 +95,7 @@ const subCategorieRoutes = (dbConfig) => {
     try {
       connection = await mysql.createConnection(dbConfig);
       const [result] = await connection.execute(
-        'INSERT INTO SubCategories (category_id, name, description, image) VALUES (?, ?, ?, ?)',
+        'INSERT INTO subcategories (category_id, name, description, image) VALUES (?, ?, ?, ?)',
         [category_id, name, description, req.file.path]
       );
 
@@ -103,7 +103,7 @@ const subCategorieRoutes = (dbConfig) => {
       const imageUrl = req.file.path;
 
       await connection.execute(
-        'UPDATE SubCategories SET image = ? WHERE subcategory_id = ?',
+        'UPDATE subcategories SET image = ? WHERE subcategory_id = ?',
         [imageUrl, subcategory_id]
       );
 
@@ -123,18 +123,18 @@ const subCategorieRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
       
       // Vérifier s'il y a des produits dans cette sous-catégorie
-      const [products] = await connection.execute('SELECT * FROM Products WHERE subcategory_id = ?', [subCategoryId]);
+      const [products] = await connection.execute('SELECT * FROM products WHERE subcategory_id = ?', [subCategoryId]);
       if (products.length > 0) {
         connection.end();
         return res.status(400).send(`Cannot delete sub-category ${subCategoryId} because it has associated products.`);
       }
 
       // Récupérer l'URL de l'image
-      const [subCategory] = await connection.execute('SELECT image FROM SubCategories WHERE subcategory_id = ?', [subCategoryId]);
+      const [subCategory] = await connection.execute('SELECT image FROM subcategories WHERE subcategory_id = ?', [subCategoryId]);
       const imageUrl = subCategory[0]?.image;
 
       // Supprimer la sous-catégorie
-      const [result] = await connection.execute('DELETE FROM SubCategories WHERE subcategory_id = ?', [subCategoryId]);
+      const [result] = await connection.execute('DELETE FROM subcategories WHERE subcategory_id = ?', [subCategoryId]);
 
       if (result.affectedRows > 0) {
         if (imageUrl) {
@@ -168,7 +168,7 @@ const subCategorieRoutes = (dbConfig) => {
 
       // Récupérer l'ancienne image
       const [rows] = await connection.execute(
-        'SELECT image FROM SubCategories WHERE subcategory_id = ?',
+        'SELECT image FROM subcategories WHERE subcategory_id = ?',
         [subCategoryId]
       );
 
@@ -190,12 +190,12 @@ const subCategorieRoutes = (dbConfig) => {
 
       if (imageUrl) {
         await connection.execute(
-          'UPDATE SubCategories SET category_id = ?, name = ?, description = ?, image = ? WHERE subcategory_id = ?',
+          'UPDATE subcategories SET category_id = ?, name = ?, description = ?, image = ? WHERE subcategory_id = ?',
           [category_id, name, description, imageUrl, subCategoryId]
         );
       } else {
         await connection.execute(
-          'UPDATE SubCategories SET category_id = ?, name = ?, description = ? WHERE subcategory_id = ?',
+          'UPDATE subcategories SET category_id = ?, name = ?, description = ? WHERE subcategory_id = ?',
           [category_id, name, description, subCategoryId]
         );
       }

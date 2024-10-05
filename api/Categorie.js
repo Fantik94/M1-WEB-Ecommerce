@@ -38,7 +38,7 @@ const categorieRoutes = (dbConfig) => {
   router.get('/categories', async (req, res) => {
     try {
       const connection = await mysql.createConnection(dbConfig);
-      const [rows] = await connection.execute('SELECT * FROM Categories');
+      const [rows] = await connection.execute('SELECT * FROM categories');
       connection.end();
       res.json(rows);
     } catch (error) {
@@ -63,12 +63,12 @@ const categorieRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
       const imageUrl = req.file ? req.file.path : null;
       const [result] = await connection.execute(
-        'INSERT INTO Categories (name, description, image) VALUES (?, ?, ?)',
+        'INSERT INTO categories (name, description, image) VALUES (?, ?, ?)',
         [name, description, imageUrl]
       );
       const category_id = result.insertId;
 
-      const [newCategory] = await connection.execute('SELECT * FROM Categories WHERE category_id = ?', [category_id]);
+      const [newCategory] = await connection.execute('SELECT * FROM categories WHERE category_id = ?', [category_id]);
       connection.end();
       res.status(201).json(newCategory[0]);
     } catch (error) {
@@ -85,16 +85,16 @@ const categorieRoutes = (dbConfig) => {
     try {
       connection = await mysql.createConnection(dbConfig);
 
-      const [subcategories] = await connection.execute('SELECT * FROM SubCategories WHERE category_id = ?', [categoryId]);
+      const [subcategories] = await connection.execute('SELECT * FROM subcategories WHERE category_id = ?', [categoryId]);
       if (subcategories.length > 0) {
         connection.end();
         return res.status(400).send(`Cannot delete category ${categoryId} because it has associated subcategories.`);
       }
 
-      const [category] = await connection.execute('SELECT image FROM Categories WHERE category_id = ?', [categoryId]);
+      const [category] = await connection.execute('SELECT image FROM categories WHERE category_id = ?', [categoryId]);
       const imageUrl = category[0]?.image;
 
-      const [result] = await connection.execute('DELETE FROM Categories WHERE category_id = ?', [categoryId]);
+      const [result] = await connection.execute('DELETE FROM categories WHERE category_id = ?', [categoryId]);
       if (result.affectedRows > 0) {
         if (imageUrl) {
           const publicId = imageUrl.split('/').pop().split('.')[0];
@@ -131,7 +131,7 @@ const categorieRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
 
       // Récupérer l'ancienne image
-      const [rows] = await connection.execute('SELECT image FROM Categories WHERE category_id = ?', [categoryId]);
+      const [rows] = await connection.execute('SELECT image FROM categories WHERE category_id = ?', [categoryId]);
       const oldImageUrl = rows.length > 0 ? rows[0].image : null;
 
       // Supprimer l'ancienne image de Cloudinary
@@ -144,12 +144,12 @@ const categorieRoutes = (dbConfig) => {
 
       if (imageUrl) {
         await connection.execute(
-          'UPDATE Categories SET name = ?, description = ?, image = ? WHERE category_id = ?',
+          'UPDATE categories SET name = ?, description = ?, image = ? WHERE category_id = ?',
           [name, description, imageUrl, categoryId]
         );
       } else {
         await connection.execute(
-          'UPDATE Categories SET name = ?, description = ? WHERE category_id = ?',
+          'UPDATE categories SET name = ?, description = ? WHERE category_id = ?',
           [name, description, categoryId]
         );
       }

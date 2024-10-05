@@ -29,7 +29,7 @@ const paymentRoutes = (dbConfig) => {
 
         // Ajouter un nouveau paiement dans la base de données
         const [result] = await connection.execute(
-          'INSERT INTO Payments (user_id, numero_carte, date_expiration_carte, cvc_carte, nom_carte) VALUES (?, ?, ?, ?, ?)',
+          'INSERT INTO payments (user_id, numero_carte, date_expiration_carte, cvc_carte, nom_carte) VALUES (?, ?, ?, ?, ?)',
           [user_id, numero_carte, date_expiration_carte, cvc_carte, nom_carte]
         );
         connection.end();
@@ -60,7 +60,7 @@ const paymentRoutes = (dbConfig) => {
       console.log('Connected to the database.');
 
       // Récupérer les méthodes de paiement de l'utilisateur
-      const [rows] = await connection.execute('SELECT * FROM Payments WHERE user_id = ?', [user_id]);
+      const [rows] = await connection.execute('SELECT * FROM payments WHERE user_id = ?', [user_id]);
       connection.end();
 
       if (rows.length > 0) {
@@ -90,7 +90,7 @@ const paymentRoutes = (dbConfig) => {
       console.log('Connected to the database.');
 
       // Supprimer la méthode de paiement de l'utilisateur
-      const [result] = await connection.execute('DELETE FROM Payments WHERE user_id = ? AND payments_id = ?', [user_id, payments_id]);
+      const [result] = await connection.execute('DELETE FROM payments WHERE user_id = ? AND payments_id = ?', [user_id, payments_id]);
       connection.end();
 
       if (result.affectedRows > 0) {
@@ -132,7 +132,7 @@ async (req, res) => {
     console.log('Connected to the database.');
 
     // Vérifier si la méthode de paiement existe
-    const [paymentRows] = await connection.execute('SELECT * FROM Payments WHERE user_id = ? AND payments_id = ?', [user_id, payments_id]);
+    const [paymentRows] = await connection.execute('SELECT * FROM payments WHERE user_id = ? AND payments_id = ?', [user_id, payments_id]);
     if (paymentRows.length === 0) {
       connection.end();
       console.log(`Payment ID ${payments_id} for user ID ${user_id} does not exist.`);
@@ -141,7 +141,7 @@ async (req, res) => {
 
     // Mettre à jour la méthode de paiement dans la base de données
     const [result] = await connection.execute(
-      'UPDATE Payments SET numero_carte = IFNULL(?, numero_carte), date_expiration_carte = IFNULL(?, date_expiration_carte), cvc_carte = IFNULL(?, cvc_carte), nom_carte = IFNULL(?, nom_carte) WHERE user_id = ? AND payments_id = ?',
+      'UPDATE payments SET numero_carte = IFNULL(?, numero_carte), date_expiration_carte = IFNULL(?, date_expiration_carte), cvc_carte = IFNULL(?, cvc_carte), nom_carte = IFNULL(?, nom_carte) WHERE user_id = ? AND payments_id = ?',
       [numero_carte || paymentRows[0].numero_carte, date_expiration_carte || paymentRows[0].date_expiration_carte, cvc_carte || paymentRows[0].cvc_carte, nom_carte || paymentRows[0].nom_carte, user_id, payments_id]
     );
     connection.end();

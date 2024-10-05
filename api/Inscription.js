@@ -33,7 +33,7 @@ const inscriptionRoutes = (dbConfig) => {
         connection = await mysql.createConnection(dbConfig);
         console.log('Connected to the database.');
 
-        const [existingUser] = await connection.execute('SELECT * FROM Users WHERE email = ?', [email]);
+        const [existingUser] = await connection.execute('SELECT * FROM users WHERE email = ?', [email]);
         if (existingUser.length > 0) {
           connection.end();
           return res.status(400).send('User already exists with this email');
@@ -44,24 +44,24 @@ const inscriptionRoutes = (dbConfig) => {
         await connection.beginTransaction();
 
         const [userResult] = await connection.execute(
-          'INSERT INTO Users (username, email, password) VALUES (?, ?, ?)',
+          'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
           [username, email, hashedPassword]
         );
 
         const userId = userResult.insertId;
 
         await connection.execute(
-          'INSERT INTO UserProfiles (user_id, first_name, last_name, phone_number) VALUES (?, ?, ?, ?)',
+          'INSERT INTO userprofiles (user_id, first_name, last_name, phone_number) VALUES (?, ?, ?, ?)',
           [userId, firstName, lastName, phoneNumber]
         );
 
         const [roleResult] = await connection.execute(
-          'SELECT role_id FROM UserRoles WHERE role_name = ?',
+          'SELECT role_id FROM userroles WHERE role_name = ?',
           ['user']
         );
         const roleId = roleResult[0].role_id;
         await connection.execute(
-          'INSERT INTO UserRolesMapping (user_id, role_id) VALUES (?, ?)',
+          'INSERT INTO userrolesmapping (user_id, role_id) VALUES (?, ?)',
           [userId, roleId]
         );
 

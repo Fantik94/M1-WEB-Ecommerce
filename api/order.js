@@ -44,7 +44,7 @@ const orderRoutes = (dbConfig) => {
         console.log('Connected to the database.');
 
         // Vérifier si l'utilisateur existe
-        const [userRows] = await connection.execute('SELECT email FROM Users WHERE user_id = ?', [user_id]);
+        const [userRows] = await connection.execute('SELECT email FROM users WHERE user_id = ?', [user_id]);
         if (userRows.length === 0) {
           connection.end();
           console.log(`User ID ${user_id} does not exist.`);
@@ -53,7 +53,7 @@ const orderRoutes = (dbConfig) => {
 
         // Insérer la nouvelle commande dans la base de données
         const [result] = await connection.execute(
-          'INSERT INTO Orders (user_id, total_amount, shipping_address, payment_status, order_status) VALUES (?, ?, ?, ?, ?)',
+          'INSERT INTO orders (user_id, total_amount, shipping_address, payment_status, order_status) VALUES (?, ?, ?, ?, ?)',
           [user_id, total_amount, shipping_address, payment_status, order_status]
         );
 
@@ -113,7 +113,7 @@ const orderRoutes = (dbConfig) => {
       console.log('Connected to the database.');
 
       // Récupérer les commandes de l'utilisateur
-      const [rows] = await connection.execute('SELECT * FROM Orders WHERE user_id = ?', [user_id]);
+      const [rows] = await connection.execute('SELECT * FROM orders WHERE user_id = ?', [user_id]);
       connection.end();
 
       if (rows.length > 0) {
@@ -136,7 +136,7 @@ const orderRoutes = (dbConfig) => {
   router.get('/allorders', authenticateJWT, authorizeRoles(['admin']), async (req, res) => {
     try {
       const connection = await mysql.createConnection(dbConfig);
-      const [rows] = await connection.execute('SELECT * FROM Orders');
+      const [rows] = await connection.execute('SELECT * FROM orders');
       connection.end();
       res.json(rows);
     } catch (error) {
@@ -164,7 +164,7 @@ const orderRoutes = (dbConfig) => {
         console.log('Connected to the database.');
 
         // Vérifier si la commande existe
-        const [orderRows] = await connection.execute('SELECT * FROM Orders WHERE order_id = ?', [order_id]);
+        const [orderRows] = await connection.execute('SELECT * FROM orders WHERE order_id = ?', [order_id]);
         if (orderRows.length === 0) {
           connection.end();
           console.log(`Order ID ${order_id} does not exist.`);
@@ -173,7 +173,7 @@ const orderRoutes = (dbConfig) => {
 
         // Mettre à jour la commande dans la base de données
         const [result] = await connection.execute(
-          'UPDATE Orders SET total_amount = COALESCE(?, total_amount), shipping_address = COALESCE(?, shipping_address), payment_status = COALESCE(?, payment_status), order_status = ? WHERE order_id = ?',
+          'UPDATE orders SET total_amount = COALESCE(?, total_amount), shipping_address = COALESCE(?, shipping_address), payment_status = COALESCE(?, payment_status), order_status = ? WHERE order_id = ?',
           [total_amount || orderRows[0].total_amount, shipping_address || orderRows[0].shipping_address, payment_status || orderRows[0].payment_status, order_status, order_id]
         );
         connection.end();
@@ -207,7 +207,7 @@ const orderRoutes = (dbConfig) => {
       console.log('Connected to the database.');
 
       // Supprimer la commande de la base de données
-      const [result] = await connection.execute('DELETE FROM Orders WHERE order_id = ?', [order_id]);
+      const [result] = await connection.execute('DELETE FROM orders WHERE order_id = ?', [order_id]);
       connection.end();
 
       if (result.affectedRows > 0) {

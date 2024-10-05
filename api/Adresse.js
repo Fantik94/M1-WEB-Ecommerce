@@ -60,7 +60,7 @@ const adresseRoutes = (dbConfig) => {
       console.log('Connected to the database.');
 
       // Récupérer les adresses de l'utilisateur
-      const [rows] = await connection.execute('SELECT * FROM Addresses WHERE user_id = ?', [user_id]);
+      const [rows] = await connection.execute('SELECT * FROM addresses WHERE user_id = ?', [user_id]);
       connection.end();
 
       if (rows.length > 0) {
@@ -90,7 +90,7 @@ const adresseRoutes = (dbConfig) => {
       console.log('Connected to the database.');
 
       // Supprimer l'adresse de l'utilisateur
-      const [result] = await connection.execute('DELETE FROM Addresses WHERE user_id = ? AND address_id = ?', [user_id, address_id]);
+      const [result] = await connection.execute('DELETE FROM addresses WHERE user_id = ? AND address_id = ?', [user_id, address_id]);
       connection.end();
 
       if (result.affectedRows > 0) {
@@ -134,7 +134,7 @@ const adresseRoutes = (dbConfig) => {
 
         // Mettre à jour l'adresse dans la base de données
         const [result] = await connection.execute(
-          'UPDATE Addresses SET street = ?, city = ?, state = ?, postal_code = ?, country = ? WHERE user_id = ? AND address_id = ?',
+          'UPDATE addresses SET street = ?, city = ?, state = ?, postal_code = ?, country = ? WHERE user_id = ? AND address_id = ?',
           [street, city, state, postal_code, country, user_id, address_id]
         );
         connection.end();

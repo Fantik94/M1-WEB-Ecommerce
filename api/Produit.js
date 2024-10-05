@@ -46,7 +46,7 @@ const produitRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
-      const [rows] = await connection.execute('SELECT * FROM Products WHERE subcategory_id = ?', [subCategoryId]);
+      const [rows] = await connection.execute('SELECT * FROM products WHERE subcategory_id = ?', [subCategoryId]);
       connection.end();
       res.json(rows);
     } catch (error) {
@@ -60,7 +60,7 @@ const produitRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
-      const [rows] = await connection.execute('SELECT * FROM Products');
+      const [rows] = await connection.execute('SELECT * FROM products');
       connection.end();
       res.json(rows);
     } catch (error) {
@@ -75,7 +75,7 @@ const produitRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
-      const [rows] = await connection.execute('SELECT * FROM Products WHERE product_id = ?', [productId]);
+      const [rows] = await connection.execute('SELECT * FROM products WHERE product_id = ?', [productId]);
       connection.end();
       if (rows.length > 0) {
         res.json(rows[0]);
@@ -93,7 +93,7 @@ const produitRoutes = (dbConfig) => {
     let connection;
     try {
       connection = await mysql.createConnection(dbConfig);
-      const [rows] = await connection.execute('SELECT * FROM Products ORDER BY RAND() LIMIT 3');
+      const [rows] = await connection.execute('SELECT * FROM products ORDER BY RAND() LIMIT 3');
       connection.end();
       res.json(rows);
     } catch (error) {
@@ -122,7 +122,7 @@ const produitRoutes = (dbConfig) => {
 
       // Insérer le produit dans la base de données
       const [result] = await connection.execute(
-        'INSERT INTO Products (subcategory_id, name, description, price, stock, image1, image2, image3) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO products (subcategory_id, name, description, price, stock, image1, image2, image3) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
         [subcategory_id, name, description, price, stock, '', '', '']
       );
 
@@ -136,7 +136,7 @@ const produitRoutes = (dbConfig) => {
 
         // Mettre à jour les URL des images dans la base de données
         await connection.execute(
-          'UPDATE Products SET image1 = ?, image2 = ?, image3 = ? WHERE product_id = ?',
+          'UPDATE products SET image1 = ?, image2 = ?, image3 = ? WHERE product_id = ?',
           [imageUrls.image1, imageUrls.image2, imageUrls.image3, product_id]
         );
 
@@ -172,7 +172,7 @@ const produitRoutes = (dbConfig) => {
 
       // Récupérer les anciennes images
       const [rows] = await connection.execute(
-        'SELECT image1, image2, image3 FROM Products WHERE product_id = ?',
+        'SELECT image1, image2, image3 FROM products WHERE product_id = ?',
         [productId]
       );
 
@@ -200,7 +200,7 @@ const produitRoutes = (dbConfig) => {
 
       // Mettre à jour le produit dans la base de données
       const [result] = await connection.execute(
-        'UPDATE Products SET subcategory_id = ?, name = ?, description = ?, price = ?, stock = ?, image1 = ?, image2 = ?, image3 = ? WHERE product_id = ?',
+        'UPDATE products SET subcategory_id = ?, name = ?, description = ?, price = ?, stock = ?, image1 = ?, image2 = ?, image3 = ? WHERE product_id = ?',
         [subcategory_id, name, description, price, stock, imageUrls.image1, imageUrls.image2, imageUrls.image3, productId]
       );
 
@@ -224,11 +224,11 @@ const produitRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
 
       // Récupérer les images associées
-      const [rows] = await connection.execute('SELECT image1, image2, image3 FROM Products WHERE product_id = ?', [productId]);
+      const [rows] = await connection.execute('SELECT image1, image2, image3 FROM products WHERE product_id = ?', [productId]);
       const images = rows[0];
 
       // Supprimer le produit de la base de données
-      const [result] = await connection.execute('DELETE FROM Products WHERE product_id = ?', [productId]);
+      const [result] = await connection.execute('DELETE FROM products WHERE product_id = ?', [productId]);
 
       if (result.affectedRows > 0) {
         // Supprimer les images associées du cloud
@@ -269,7 +269,7 @@ const produitRoutes = (dbConfig) => {
       connection = await mysql.createConnection(dbConfig);
   
       const [results] = await connection.execute(
-        'SELECT * FROM Products WHERE name LIKE ? OR description LIKE ?',
+        'SELECT * FROM products WHERE name LIKE ? OR description LIKE ?',
         [`%${query}%`, `%${query}%`]
       );
   
