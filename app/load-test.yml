@@ -1,0 +1,15 @@
+config:
+  target: 'http://gamingavenue.ddns.net:3000'
+  phases:
+    - duration: 30
+      arrivalRate: 1000
+  plugins:
+    html:
+      output: report.html
+
+scenarios:
+  - flow:
+      - get:
+          url: '/subcategories?category_id=1'
+      - get:
+          url: '/subcategories?category_id=2'
